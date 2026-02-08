@@ -1,0 +1,23 @@
+{
+  "name": "senas-ai-website",
+  "version": "1.0.0",
+  "description": "AI-powered sign language recognition website",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx serve ."
+  },
+  "keywords": [
+    "sign-language",
+    "AI",
+    "machine-learning",
+    "accessibility",
+    "computer-vision"
+  ],
+  "author": "SalChicanoLoco",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SalChicanoLoco/senas-ai-website"
+  }
+}
