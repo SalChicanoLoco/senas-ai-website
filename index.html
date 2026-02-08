@@ -28,9 +28,29 @@
     <main>
         <section id="home" class="hero">
             <div class="container">
-                <h2>Welcome to Señas AI</h2>
-                <p>Bridging communication gaps with AI-powered sign language recognition</p>
-                <button class="cta-button">Get Started</button>
+                <div class="hero-content">
+                    <h2>Transform Communication with AI</h2>
+                    <p>Unlock the power of sign language recognition technology. Join businesses and educators revolutionizing accessibility.</p>
+                </div>
+                <div class="lead-form-container">
+                    <h3>Get Early Access</h3>
+                    <form id="leadForm" class="lead-form" action="submit-form.php" method="POST">
+                        <input type="text" name="name" id="name" placeholder="Full Name" required>
+                        <input type="email" name="email" id="email" placeholder="Email Address" required>
+                        <input type="tel" name="phone" id="phone" placeholder="Phone Number (Optional)">
+                        <input type="text" name="company" id="company" placeholder="Company/Organization">
+                        <select name="interest" id="interest" required>
+                            <option value="">Select Your Interest</option>
+                            <option value="business">Business Solutions</option>
+                            <option value="education">Education & Training</option>
+                            <option value="personal">Personal Use</option>
+                            <option value="partnership">Partnership Opportunities</option>
+                        </select>
+                        <textarea name="message" id="message" placeholder="Tell us about your needs" rows="3"></textarea>
+                        <button type="submit" class="cta-button">Request Demo</button>
+                        <p class="form-privacy">We respect your privacy. Your information is secure.</p>
+                    </form>
+                </div>
             </div>
         </section>
 
@@ -85,12 +105,10 @@
             <div class="container">
                 <h2>Contact Us</h2>
                 <p>Have questions? Get in touch with our team!</p>
-                <form class="contact-form">
-                    <input type="text" placeholder="Your Name" required>
-                    <input type="email" placeholder="Your Email" required>
-                    <textarea placeholder="Your Message" rows="5" required></textarea>
-                    <button type="submit" class="cta-button">Send Message</button>
-                </form>
+                <div class="contact-info">
+                    <p><strong>Email:</strong> salvador.sena@quetzalcoro.com</p>
+                    <p><strong>Business Hours:</strong> Monday - Friday, 9:00 AM - 6:00 PM PST</p>
+                </div>
             </div>
         </section>
     </main>

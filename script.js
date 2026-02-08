@@ -1,3 +1,40 @@
+// Lead form handling
+const leadForm = document.getElementById('leadForm');
+if (leadForm) {
+    leadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitButton = leadForm.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Submitting...';
+        submitButton.disabled = true;
+        
+        const formData = new FormData(leadForm);
+        
+        fetch('submit-form.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Thank you! We have received your request and will contact you soon.');
+                leadForm.reset();
+            } else {
+                alert('There was an error submitting your request. Please try again or email us directly at salvador.sena@quetzalcoro.com');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error submitting your request. Please try again or email us directly at salvador.sena@quetzalcoro.com');
+        })
+        .finally(() => {
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+        });
+    });
+}
+
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -48,15 +85,7 @@ function stopDemo() {
     };
 }
 
-// Contact form handling
-const contactForm = document.querySelector('.contact-form');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Thank you for your message! We will get back to you soon.');
-        contactForm.reset();
-    });
-}
+// Contact form handling - removed as lead form is used instead
 
 // Add animation on scroll
 const observerOptions = {
