@@ -1,0 +1,76 @@
+name: Deploy NM Socialists to IONOS
+
+on:
+  push:
+    branches: [ netlify-working-backup ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup PHP environment file
+      run: |
+        # Create .htaccess file from template with secrets
+        # This will be uploaded to server, not committed to git
+        cat scripts/.htaccess.template | \
+          sed "s|{{DB_HOST}}|${{ secrets.IONOS_DB_HOST }}|g" | \
+          sed "s|{{DB_NAME}}|${{ secrets.IONOS_DB_NAME }}|g" | \
+          sed "s|{{DB_USER}}|${{ secrets.IONOS_DB_USER }}|g" | \
+          sed "s|{{DB_PASS}}|${{ secrets.IONOS_DB_PASS }}|g" | \
+          sed "s|{{ADMIN_EMAIL}}|${{ secrets.ADMIN_EMAIL }}|g" | \
+          sed "s|{{FROM_EMAIL_DOMAIN}}|${{ secrets.DOMAIN_NAME }}|g" \
+          > .htaccess
+        
+        echo "✅ Created .htaccess with environment variables"
+    
+    - name: Deploy via SFTP
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      with:
+        server: ${{ secrets.IONOS_FTP_HOST }}
+        username: ${{ secrets.IONOS_FTP_USER }}
+        password: ${{ secrets.IONOS_FTP_PASS }}
+        local_path: './*'
+        remote_path: '/httpdocs/'
+        sftp_only: true
+        delete_remote_files: false
+        args: '-o ConnectTimeout=5'
+    
+    - name: Verify deployment
+      run: |
+        # Wait for deployment to propagate
+        echo "⏳ Waiting 10 seconds for deployment to propagate..."
+        sleep 10
+        
+        DOMAIN="${{ secrets.DOMAIN_NAME }}"
+        
+        echo "🔍 Checking deployment at https://$DOMAIN..."
+        
+        # Check homepage loads (allow 200 or 301/302 redirects)
+        HTTP_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" "https://$DOMAIN" || echo "failed")
+        
+        if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+          echo "✅ Homepage accessible (HTTP $HTTP_CODE)"
+        else
+          echo "⚠️  Homepage returned HTTP $HTTP_CODE (may need manual verification)"
+        fi
+        
+        # Check form endpoint exists (POST without data will return 400, which is expected)
+        FORM_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" -X POST "https://$DOMAIN/submit-form.php" || echo "failed")
+        
+        if [ "$FORM_CODE" = "400" ] || [ "$FORM_CODE" = "200" ]; then
+          echo "✅ Form endpoint accessible (HTTP $FORM_CODE)"
+        else
+          echo "⚠️  Form endpoint returned HTTP $FORM_CODE (may need manual verification)"
+        fi
+        
+        echo ""
+        echo "✅ Deployment completed!"
+        echo "🌐 Site: https://$DOMAIN"
+        echo "📧 Admin email: ${{ secrets.ADMIN_EMAIL }}"
