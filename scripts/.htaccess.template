@@ -12,7 +12,8 @@ SetEnv FROM_EMAIL_DOMAIN "{{FROM_EMAIL_DOMAIN}}"
 # PHP Settings
 php_flag display_errors Off
 php_flag log_errors On
-php_value error_log /var/log/php_errors.log
+# Error log location - uses server default
+# Custom path may not be writable on shared hosting
 
 # Security Headers
 <IfModule mod_headers.c>

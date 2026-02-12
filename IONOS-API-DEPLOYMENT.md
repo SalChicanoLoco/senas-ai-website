@@ -90,15 +90,15 @@ Before setting up automated deployment, you need:
 
 ### Step 3: (Optional) Get IONOS API Credentials
 
-For advanced automation, get API credentials:
+For advanced automation, you may get API credentials from IONOS:
 
-1. Go to [IONOS Developer Portal](https://developer.hosting.ionos.com/)
-2. Create an API key:
-   - Navigate to **API Keys**
-   - Click **Create New Key**
-   - Save the API Key and API Secret
+1. Log in to [IONOS Control Panel](https://my.ionos.com/)
+2. Navigate to **API** or **Developer Tools** section (location may vary)
+3. Create an API key if available:
+   - Click **Create New Key** or similar
+   - Save the API Key and API Secret securely
 
-*Note: API credentials are optional for basic deployment but recommended for advanced features.*
+*Note: IONOS API credentials are optional for basic deployment. The workflow primarily uses SFTP for deployment. API features are for advanced automation and may not be available on all IONOS hosting plans.*
 
 ## GitHub Secrets Configuration
 

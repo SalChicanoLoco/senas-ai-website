@@ -15,7 +15,7 @@ echo ""
 
 # Check homepage loads
 echo "Testing homepage..."
-HTTP_CODE=$(curl -L -f -s -o /dev/null -w "%{http_code}" "https://$DOMAIN" 2>/dev/null || echo "failed")
+HTTP_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" "https://$DOMAIN" 2>/dev/null || echo "failed")
 
 if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
     echo "✅ Homepage accessible (HTTP $HTTP_CODE)"

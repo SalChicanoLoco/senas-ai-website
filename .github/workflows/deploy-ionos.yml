@@ -51,7 +51,7 @@ jobs:
         echo "🔍 Checking deployment at https://$DOMAIN..."
         
         # Check homepage loads (allow 200 or 301/302 redirects)
-        HTTP_CODE=$(curl -L -f -s -o /dev/null -w "%{http_code}" "https://$DOMAIN" || echo "failed")
+        HTTP_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" "https://$DOMAIN" || echo "failed")
         
         if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
           echo "✅ Homepage accessible (HTTP $HTTP_CODE)"
