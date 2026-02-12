@@ -27,7 +27,7 @@ define('DB_PASS', 'your_database_pass'); // Update with your IONOS database pass
 // Email configuration
 define('ADMIN_EMAIL', 'NewMexicoSocialists@proton.me');
 define('FROM_NAME', 'New Mexico Socialists Website');
-define('FROM_EMAIL_DOMAIN', 'newmexicosocialists.com'); // Update to match your IONOS server domain
+define('FROM_EMAIL_DOMAIN', getenv('FROM_EMAIL_DOMAIN') ?: 'newmexicosocialists.com'); // Update to match your IONOS server domain
 
 // Set JSON response header
 header('Content-Type: application/json');
@@ -81,15 +81,15 @@ try {
     
     // Validate required fields
     if (empty($name)) {
-        throw new Exception('Name is required / El nombre es requerido');
+        throw new InvalidArgumentException('Name is required / El nombre es requerido');
     }
     
     if (empty($email)) {
-        throw new Exception('Email is required / El correo electrónico es requerido');
+        throw new InvalidArgumentException('Email is required / El correo electrónico es requerido');
     }
     
     if (!validate_email($email)) {
-        throw new Exception('Invalid email address / Dirección de correo electrónico no válida');
+        throw new InvalidArgumentException('Invalid email address / Dirección de correo electrónico no válida');
     }
     
     // Validate language field
@@ -165,12 +165,20 @@ try {
         'message' => 'Thanks for signing up! ¡Gracias por unirte!'
     ]);
     
-} catch (Exception $e) {
-    // Return error response
+} catch (InvalidArgumentException $e) {
+    // Client-side validation error
     http_response_code(400);
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage()
+    ]);
+} catch (Exception $e) {
+    // Internal server error
+    error_log('Form submission error: ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'An unexpected error occurred. Please try again later / Ocurrió un error inesperado. Por favor intenta más tarde.'
     ]);
 }
 ?>

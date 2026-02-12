@@ -205,10 +205,13 @@ After uploading, verify file permissions via FTP:
 2. Verify database table was created successfully in phpMyAdmin
 3. Check PHP error logs in IONOS control panel
 4. Ensure `submit-form.php` has correct permissions (644)
-5. Test database connection:
-   - Add `echo "Testing";` at the top of `submit-form.php`
-   - Visit `https://yourdomain.com/submit-form.php` directly
-   - If you see "Testing", PHP is working
+5. Test that PHP is running:
+   - Create a new file named `health.php` in the same directory as `submit-form.php` with this content:
+     ```php
+     <?php echo "Testing"; ?>
+     ```
+   - Visit `https://yourdomain.com/health.php` directly in your browser
+   - If you see "Testing", PHP is working (you can then delete `health.php`)
 
 ### No Email Notifications
 
