@@ -6,6 +6,14 @@ set -e
 
 echo "🔧 Generating .htaccess file with environment variables..."
 
+# Validate we're in a directory with submit-form.php (likely the repo root)
+if [ ! -f "submit-form.php" ]; then
+    echo "❌ Error: submit-form.php not found in current directory"
+    echo "   This script must be run from the repository root directory"
+    echo "   Current directory: $(pwd)"
+    exit 1
+fi
+
 # Validate required environment variables
 required_vars=("DB_HOST" "DB_NAME" "DB_USER" "DB_PASS" "ADMIN_EMAIL" "FROM_EMAIL_DOMAIN")
 missing_vars=()
@@ -26,7 +34,7 @@ if [ ${#missing_vars[@]} -gt 0 ]; then
     exit 1
 fi
 
-# Generate .htaccess file
+# Generate .htaccess file in current directory (should be repo root)
 cat > .htaccess << EOF
 # Environment Variables for New Mexico Socialists
 # Generated automatically by setup-htaccess.sh

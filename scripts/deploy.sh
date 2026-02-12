@@ -142,7 +142,6 @@ echo ""
 # Clean up sensitive files
 echo "🧹 Cleaning up..."
 rm -f ~/.ssh/id_rsa
-rm -f "$SFTP_COMMANDS"
 rm -f .htaccess
 echo "✅ Sensitive files removed"
 echo ""
