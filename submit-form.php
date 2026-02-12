@@ -13,21 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Database configuration - UPDATE THESE VALUES AFTER DEPLOYMENT
-// For better security, consider using environment variables:
-// define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-// define('DB_NAME', getenv('DB_NAME') ?: 'your_database_name');
-// define('DB_USER', getenv('DB_USER') ?: 'your_database_user');
-// define('DB_PASS', getenv('DB_PASS') ?: 'your_database_pass');
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'your_database_name'); // Update with your IONOS database name
-define('DB_USER', 'your_database_user'); // Update with your IONOS database user
-define('DB_PASS', 'your_database_pass'); // Update with your IONOS database password
+// Database configuration - reads from environment variables
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_NAME', getenv('DB_NAME'));
+define('DB_USER', getenv('DB_USER'));
+define('DB_PASS', getenv('DB_PASS'));
 
-// Email configuration
-define('ADMIN_EMAIL', 'xava@newmexicosocialists.org');
+// Email configuration - reads from environment variables
+define('ADMIN_EMAIL', getenv('ADMIN_EMAIL') ?: 'xava@newmexicosocialists.org');
 define('FROM_NAME', 'New Mexico Socialists Website');
-define('FROM_EMAIL_DOMAIN', getenv('FROM_EMAIL_DOMAIN') ?: 'newmexicosocialists.com'); // Update to match your IONOS server domain
+define('FROM_EMAIL_DOMAIN', getenv('FROM_EMAIL_DOMAIN') ?: 'newmexicosocialists.org');
 
 // Set JSON response header
 header('Content-Type: application/json');

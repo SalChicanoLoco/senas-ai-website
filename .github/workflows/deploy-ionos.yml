@@ -1,0 +1,110 @@
+name: Deploy to IONOS
+
+on:
+  push:
+    branches: [ netlify-working-backup, main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup SSH key for SFTP
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SFTP_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "${{ secrets.SFTP_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+      
+      - name: Generate .htaccess with environment variables
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          FROM_EMAIL_DOMAIN: ${{ secrets.FROM_EMAIL_DOMAIN }}
+        run: |
+          bash scripts/setup-htaccess.sh
+      
+      - name: Deploy files via SFTP
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PORT: ${{ secrets.SFTP_PORT || 22 }}
+        run: |
+          # Create SFTP batch commands
+          cat > sftp_commands.txt << 'EOF'
+          cd /
+          put index.html
+          put submit-form.php
+          put .htaccess
+          cd /assets
+          lcd assets
+          put -r css
+          put -r js
+          put -r img
+          bye
+          EOF
+          
+          # Execute SFTP upload
+          sftp -P $SFTP_PORT -b sftp_commands.txt "${SFTP_USER}@${SFTP_HOST}"
+          
+          # Clean up
+          rm -f sftp_commands.txt
+      
+      - name: Set file permissions
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PORT: ${{ secrets.SFTP_PORT || 22 }}
+        run: |
+          # Attempt to set permissions (may not work on all IONOS configs)
+          ssh -p $SFTP_PORT "${SFTP_USER}@${SFTP_HOST}" << 'SSH_EOF' || echo "Permission setting not supported (this is OK)"
+          chmod 644 /index.html 2>/dev/null || true
+          chmod 644 /submit-form.php 2>/dev/null || true
+          chmod 644 /.htaccess 2>/dev/null || true
+          chmod -R 644 /assets/css/* 2>/dev/null || true
+          chmod -R 644 /assets/js/* 2>/dev/null || true
+          chmod -R 644 /assets/img/* 2>/dev/null || true
+          exit
+          SSH_EOF
+      
+      - name: Verify deployment
+        env:
+          DEPLOYMENT_URL: ${{ secrets.DEPLOYMENT_URL || 'https://newmexicosocialists.org' }}
+        run: |
+          echo "🧪 Verifying deployment at $DEPLOYMENT_URL"
+          
+          # Wait a moment for files to propagate
+          sleep 5
+          
+          # Check if main site is accessible
+          http_code=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOYMENT_URL" || echo "000")
+          if [ "$http_code" = "200" ]; then
+            echo "✅ Website is accessible (HTTP $http_code)"
+          else
+            echo "⚠️  Warning: Website returned HTTP $http_code (may need DNS propagation time)"
+          fi
+          
+          # Check if PHP file is accessible (should return 405 for GET)
+          php_code=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOYMENT_URL/submit-form.php" || echo "000")
+          if [ "$php_code" = "405" ]; then
+            echo "✅ submit-form.php is accessible (405 = POST required, as expected)"
+          else
+            echo "⚠️  submit-form.php returned HTTP $php_code"
+          fi
+          
+          echo ""
+          echo "🎉 Deployment complete!"
+      
+      - name: Clean up sensitive files
+        if: always()
+        run: |
+          rm -f ~/.ssh/id_rsa
+          rm -f .htaccess
+          rm -f sftp_commands.txt

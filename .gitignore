@@ -17,6 +17,14 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Don't commit PHP files with real credentials
-# (The version in repo should have placeholders)
-# submit-form.php with real credentials should only exist on server
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Deployment credentials
+*_credentials.txt
+*_secrets.*
+
+# Generated .htaccess with real credentials
+.htaccess
