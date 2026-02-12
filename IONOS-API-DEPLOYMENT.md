@@ -53,9 +53,9 @@ IONOS supports both password and SSH key authentication. SSH keys are more secur
 
 3. **Test SSH connection**:
    ```bash
-   ssh -i ionos_deploy_key a2040943@access-5019605769.webspace-host.com
+   ssh -i ionos_deploy_key your_username@your_host.webspace-host.com
    ```
-   - Replace username and hostname with your IONOS credentials
+   - Replace `your_username` and `your_host` with your actual IONOS credentials
    - If successful, you should see IONOS shell prompt
 
 4. **Save private key for GitHub Secrets** (see Step 2)
@@ -87,10 +87,11 @@ Add the following secrets one by one:
 
 | Secret Name | Description | Example Value |
 |------------|-------------|---------------|
-| `SFTP_HOST` | IONOS SFTP hostname | `access-5019605769.webspace-host.com` |
-| `SFTP_USER` | IONOS SFTP username | `a2040943` |
+| `SFTP_HOST` | IONOS SFTP hostname | `your_host.webspace-host.com` |
+| `SFTP_USER` | IONOS SFTP username | `your_username` |
 | `SFTP_PORT` | SFTP port (usually 22) | `22` |
 | `SFTP_PRIVATE_KEY` | SSH private key content (from Step 1) | *entire content of `ionos_deploy_key` file* |
+| `WEB_ROOT` | Web root directory path | `/` (or `/html`, `/httpdocs` depending on your IONOS setup) |
 
 **For `SFTP_PRIVATE_KEY`**:
 ```bash
@@ -103,9 +104,9 @@ Copy everything from `-----BEGIN OPENSSH PRIVATE KEY-----` to `-----END OPENSSH 
 
 | Secret Name | Description | Example Value |
 |------------|-------------|---------------|
-| `DB_HOST` | Database hostname | `db5019682681.hosting-data.io` |
-| `DB_NAME` | Database name | `dbs5019682681` |
-| `DB_USER` | Database username | `dbu924798` |
+| `DB_HOST` | Database hostname | `db1234567890.hosting-data.io` |
+| `DB_NAME` | Database name | `dbs1234567890` |
+| `DB_USER` | Database username | `dbu123456` |
 | `DB_PASS` | Database password | *your database password* |
 
 #### Email Configuration

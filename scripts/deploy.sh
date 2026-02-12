@@ -67,18 +67,26 @@ echo ""
 # Upload files via SFTP
 echo "📤 Uploading files to IONOS..."
 sftp_port="${SFTP_PORT:-22}"
+web_root="${WEB_ROOT:-/}"
 
 # Create SFTP batch file
-cat > /tmp/sftp_commands.txt << 'SFTP_EOF'
-cd /
+cat > /tmp/sftp_commands.txt << SFTP_EOF
+cd ${web_root}
 put index.html
 put submit-form.php
 put .htaccess
-cd /assets
-lcd assets
-put -r css
-put -r js
-put -r img
+mkdir -p assets/css
+mkdir -p assets/js
+mkdir -p assets/img
+cd assets/css
+lcd assets/css
+mput *
+cd ../js
+lcd ../js
+mput *
+cd ../img
+lcd ../img
+mput *
 bye
 SFTP_EOF
 
@@ -93,13 +101,14 @@ echo ""
 
 # Set correct permissions (if supported by IONOS)
 echo "🔒 Setting file permissions..."
-ssh -p "$sftp_port" "${SFTP_USER}@${SFTP_HOST}" << 'SSH_EOF' || echo "⚠️  Permission setting may not be supported on IONOS (this is OK)"
-chmod 644 /index.html
-chmod 644 /submit-form.php
-chmod 644 /.htaccess
-chmod -R 644 /assets/css/*
-chmod -R 644 /assets/js/*
-chmod -R 644 /assets/img/*
+ssh -p "$sftp_port" "${SFTP_USER}@${SFTP_HOST}" << SSH_EOF || echo "⚠️  Permission setting may not be supported on IONOS (this is OK)"
+cd ${web_root}
+chmod 644 index.html 2>/dev/null || true
+chmod 644 submit-form.php 2>/dev/null || true
+chmod 644 .htaccess 2>/dev/null || true
+chmod -R 644 assets/css/* 2>/dev/null || true
+chmod -R 644 assets/js/* 2>/dev/null || true
+chmod -R 644 assets/img/* 2>/dev/null || true
 exit
 SSH_EOF
 echo ""

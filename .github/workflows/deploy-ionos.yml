@@ -39,20 +39,31 @@ jobs:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
           SFTP_USER: ${{ secrets.SFTP_USER }}
           SFTP_PORT: ${{ secrets.SFTP_PORT || 22 }}
+          WEB_ROOT: ${{ secrets.WEB_ROOT || '/' }}
         run: |
           # Create SFTP batch commands
           cat > sftp_commands.txt << 'EOF'
-          cd /
+          cd $WEB_ROOT
           put index.html
           put submit-form.php
           put .htaccess
-          cd /assets
-          lcd assets
-          put -r css
-          put -r js
-          put -r img
+          mkdir -p assets/css
+          mkdir -p assets/js
+          mkdir -p assets/img
+          cd assets/css
+          lcd assets/css
+          mput *
+          cd ../js
+          lcd ../js
+          mput *
+          cd ../img
+          lcd ../img
+          mput *
           bye
           EOF
+          
+          # Replace $WEB_ROOT with actual value
+          sed -i "s|\$WEB_ROOT|${WEB_ROOT}|g" sftp_commands.txt
           
           # Execute SFTP upload
           sftp -P $SFTP_PORT -b sftp_commands.txt "${SFTP_USER}@${SFTP_HOST}"
@@ -65,15 +76,17 @@ jobs:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
           SFTP_USER: ${{ secrets.SFTP_USER }}
           SFTP_PORT: ${{ secrets.SFTP_PORT || 22 }}
+          WEB_ROOT: ${{ secrets.WEB_ROOT || '/' }}
         run: |
           # Attempt to set permissions (may not work on all IONOS configs)
-          ssh -p $SFTP_PORT "${SFTP_USER}@${SFTP_HOST}" << 'SSH_EOF' || echo "Permission setting not supported (this is OK)"
-          chmod 644 /index.html 2>/dev/null || true
-          chmod 644 /submit-form.php 2>/dev/null || true
-          chmod 644 /.htaccess 2>/dev/null || true
-          chmod -R 644 /assets/css/* 2>/dev/null || true
-          chmod -R 644 /assets/js/* 2>/dev/null || true
-          chmod -R 644 /assets/img/* 2>/dev/null || true
+          ssh -p $SFTP_PORT "${SFTP_USER}@${SFTP_HOST}" << SSH_EOF || echo "Permission setting not supported (this is OK)"
+          cd ${WEB_ROOT}
+          chmod 644 index.html 2>/dev/null || true
+          chmod 644 submit-form.php 2>/dev/null || true
+          chmod 644 .htaccess 2>/dev/null || true
+          chmod -R 644 assets/css/* 2>/dev/null || true
+          chmod -R 644 assets/js/* 2>/dev/null || true
+          chmod -R 644 assets/img/* 2>/dev/null || true
           exit
           SSH_EOF
       
