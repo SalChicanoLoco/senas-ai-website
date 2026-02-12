@@ -99,19 +99,9 @@
       <h3>Join / Únete</h3>
       <p>
         Sign up to get plugged into meetings, study circles, actions, and mutual aid projects.
-        This form is wired to <strong>Netlify Forms</strong>, so submissions are stored automatically
-        in your Netlify dashboard (and can be forwarded to email, Zapier, Supabase, etc.).
       </p>
 
-      <form id="join-form" class="card"
-            name="join"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field">
-        <input type="hidden" name="form-name" value="join" />
-        <p class="hidden">
-          <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
-        </p>
+      <form id="join-form" class="card" method="post" action="submit-form.php">
 
         <div class="field">
           <label for="name">Name / Nombre</label>
@@ -444,7 +434,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>&copy; 2025 New Mexico Socialists. Built for Netlify static hosting.</p>
+    <p>&copy; 2025 New Mexico Socialists.</p>
   </footer>
 
   <!-- Meme lightbox modal -->

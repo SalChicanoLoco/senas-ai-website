@@ -1,5 +1,8 @@
 
 // main.js
+// Configuration
+const FORM_SUBMIT_URL = 'submit-form.php';
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("join-form");
   const statusEl = document.getElementById("join-status");
@@ -13,47 +16,45 @@ document.addEventListener("DOMContentLoaded", () => {
     fbShareLink.href = shareUrl.toString();
   }
 
-  // Helper for Netlify AJAX submissions
-  function encode(data) {
-    return Object.keys(data)
-      .map(
-        (key) =>
-          encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
-      )
-      .join("&");
-  }
-
+  // Handle form submission via AJAX to PHP backend
   if (form && statusEl) {
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      statusEl.textContent = "Sending / Enviando...";
-      statusEl.style.color = "#f6c745";
+      
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      
+      // Disable submit button and show loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting... / Enviando...';
+      statusEl.textContent = "";
+      statusEl.style.color = "";
 
       const formData = new FormData(form);
-      const payload = {};
-      formData.forEach((value, key) => {
-        payload[key] = value;
-      });
 
-      // Add the Netlify form-name explicitly
-      payload["form-name"] = form.getAttribute("name");
-
-      fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encode(payload),
+      fetch(FORM_SUBMIT_URL, {
+        method: 'POST',
+        body: formData
       })
-        .then(() => {
-          statusEl.textContent =
-            "Thanks for signing up! ¡Gracias por unirte!";
-          statusEl.style.color = "#77e89f";
-          form.reset();
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            statusEl.textContent = data.message;
+            statusEl.style.color = "#77e89f";
+            form.reset();
+          } else {
+            statusEl.textContent = data.message;
+            statusEl.style.color = "#ffb3b3";
+          }
         })
-        .catch((error) => {
+        .catch(error => {
           console.error("Form submission error:", error);
-          statusEl.textContent =
-            "Error sending form. Please try again / Por favor intenta de nuevo.";
+          statusEl.textContent = 'Error. Please email us directly at NewMexicoSocialists@proton.me';
           statusEl.style.color = "#ffb3b3";
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
         });
     });
   }

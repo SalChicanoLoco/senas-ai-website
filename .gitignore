@@ -1,0 +1,22 @@
+# Backups
+*.backup
+*.bak
+
+# Temp files
+*.tmp
+/tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Don't commit PHP files with real credentials
+# (The version in repo should have placeholders)
+# submit-form.php with real credentials should only exist on server

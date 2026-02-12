@@ -1,22 +1,76 @@
 
-# New Mexico Socialists – Netlify Site (V8 FULL, de-duplicated memes)
+# New Mexico Socialists – Website
 
-Changes from V7 FULL:
+A bilingual (English/Spanish) website for New Mexico Socialists, featuring:
 
-- **No duplicate memes**:
-  - Only original PNGs from `/mnt/data` whose filenames do NOT start with `meme_` are used.
-  - Exact binary duplicates are removed via SHA-256 hash checking.
-  - Each source image becomes `assets/img/meme_#.png` used once in the gallery.
+- **Join form** with PHP backend and MySQL database
+- **19 memes and posters** for download and sharing
+- **Interactive gallery** with view, download, and Facebook share options
+- **Facebook page integration**
+- **Resource links** for socialist education and organizing
 
-- Keeps everything else:
-  - Interactive gallery (view/download/share/copy link).
-  - Netlify Forms wired `join` form.
-  - Resource links (Marx/Engels EN+ES, Libcom, PSL, Liberation News).
+## Technology Stack
 
-Deploy this folder as your Netlify site root and you should see a single instance of each meme.
+- HTML5/CSS3/JavaScript (vanilla)
+- PHP backend for form processing
+- MySQL database for form submissions
+- IONOS hosting
 
-Domain, email, and Facebook page baked in:
+## Deployment
 
-- Canonical / SEO domain: https://newmexicosocialists.com
-- Facebook page: https://www.facebook.com/profile.php?id=61584102062292
-- Contact email: NewMexicoSocialists@proton.me
+This website is ready for deployment on IONOS hosting with PHP and MySQL support.
+
+**See [IONOS-DEPLOYMENT.md](IONOS-DEPLOYMENT.md) for complete deployment instructions.**
+
+Quick overview:
+1. Create MySQL database in IONOS control panel
+2. Import `database-schema.sql` via phpMyAdmin
+3. Update database credentials in `submit-form.php`
+4. Upload files via FTP to web root
+5. Test form submission and verify database storage
+
+## Form Features
+
+The join form collects:
+- Name (required)
+- Email (required)
+- City (optional)
+- Preferred language: English, Español, or Both
+- Interests/how to participate (optional)
+
+Submissions are:
+- Stored in MySQL database with timestamp and IP address
+- Sent via email to NewMexicoSocialists@proton.me
+- Validated for security (SQL injection prevention, XSS protection)
+
+## File Structure
+
+```
+/
+├── index.html              # Main website page
+├── submit-form.php         # Form submission handler (update credentials before upload)
+├── database-schema.sql     # MySQL table structure (import via phpMyAdmin)
+├── IONOS-DEPLOYMENT.md     # Deployment guide
+├── README.md               # This file
+└── assets/
+    ├── css/
+    │   └── styles.css      # Site styling
+    ├── js/
+    │   └── main.js         # JavaScript (form handling, gallery, Facebook share)
+    └── img/
+        ├── meme_1.png      # 19 meme images
+        ├── meme_2.png
+        └── ...
+        └── meme_19.png
+```
+
+## Domain & Contact
+
+- Website: https://newmexicosocialists.com
+- Email: NewMexicoSocialists@proton.me
+- Facebook: https://www.facebook.com/profile.php?id=61584102062292
+
+## License
+
+Content and code created for New Mexico Socialists organizing work.
+
