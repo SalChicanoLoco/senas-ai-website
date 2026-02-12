@@ -50,7 +50,6 @@ SetEnv FROM_EMAIL_DOMAIN "${FROM_EMAIL_DOMAIN}"
 # PHP settings
 php_flag display_errors Off
 php_flag log_errors On
-php_value error_log /tmp/php_errors.log
 
 # Disable directory listing
 Options -Indexes

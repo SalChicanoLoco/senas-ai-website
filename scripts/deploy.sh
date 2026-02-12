@@ -69,8 +69,11 @@ echo "📤 Uploading files to IONOS..."
 sftp_port="${SFTP_PORT:-22}"
 WEB_ROOT="${WEB_ROOT:-/}"
 
-# Create SFTP batch file with variable substitution
-cat > /tmp/sftp_commands.txt << SFTP_EOF
+# Create secure temporary SFTP batch file
+SFTP_COMMANDS=$(mktemp)
+chmod 600 "$SFTP_COMMANDS"
+
+cat > "$SFTP_COMMANDS" << SFTP_EOF
 cd ${WEB_ROOT}
 put index.html
 put submit-form.php
@@ -91,13 +94,16 @@ bye
 SFTP_EOF
 
 # Execute SFTP upload
-if sftp -P "$sftp_port" -b /tmp/sftp_commands.txt "${SFTP_USER}@${SFTP_HOST}"; then
+if sftp -P "$sftp_port" -b "$SFTP_COMMANDS" "${SFTP_USER}@${SFTP_HOST}"; then
     echo "✅ Files uploaded successfully"
 else
     echo "❌ SFTP upload failed"
+    rm -f "$SFTP_COMMANDS"
     exit 1
 fi
-echo ""
+
+# Clean up
+rm -f "$SFTP_COMMANDS"
 
 # Set correct permissions (if supported by IONOS)
 echo "🔒 Setting file permissions..."
@@ -136,7 +142,7 @@ echo ""
 # Clean up sensitive files
 echo "🧹 Cleaning up..."
 rm -f ~/.ssh/id_rsa
-rm -f /tmp/sftp_commands.txt
+rm -f "$SFTP_COMMANDS"
 rm -f .htaccess
 echo "✅ Sensitive files removed"
 echo ""

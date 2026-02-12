@@ -41,8 +41,12 @@ jobs:
           SFTP_PORT: ${{ secrets.SFTP_PORT || 22 }}
           WEB_ROOT: ${{ secrets.WEB_ROOT || '/' }}
         run: |
-          # Create SFTP batch commands with variable substitution
-          cat > sftp_commands.txt << EOF
+          # Create secure temporary SFTP commands file
+          SFTP_COMMANDS=$(mktemp)
+          chmod 600 "$SFTP_COMMANDS"
+          
+          # Generate SFTP batch commands with variable substitution
+          cat > "$SFTP_COMMANDS" << EOF
           cd ${WEB_ROOT}
           put index.html
           put submit-form.php
@@ -63,10 +67,10 @@ jobs:
           EOF
           
           # Execute SFTP upload
-          sftp -P $SFTP_PORT -b sftp_commands.txt "${SFTP_USER}@${SFTP_HOST}"
+          sftp -P $SFTP_PORT -b "$SFTP_COMMANDS" "${SFTP_USER}@${SFTP_HOST}"
           
           # Clean up
-          rm -f sftp_commands.txt
+          rm -f "$SFTP_COMMANDS"
       
       - name: Set file permissions
         env:
@@ -120,4 +124,4 @@ jobs:
         run: |
           rm -f ~/.ssh/id_rsa
           rm -f .htaccess
-          rm -f sftp_commands.txt
+          # Note: SFTP_COMMANDS already cleaned up in deploy step
