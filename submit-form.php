@@ -89,10 +89,12 @@ try {
         $language = 'both';
     }
     
-    // Get IP address
+    // Get IP address (use first IP from X-Forwarded-For if present)
     $ip_address = $_SERVER['REMOTE_ADDR'] ?? '';
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        // Take only the first IP from the comma-separated list
+        $forwarded_ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $ip_address = trim($forwarded_ips[0]);
     }
     $ip_address = sanitize_input($ip_address);
     
@@ -129,7 +131,7 @@ try {
     $stmt->close();
     $conn->close();
     
-    // Send email notification
+    // Send email notification (log if it fails)
     $email_data = [
         'name' => $name,
         'email' => $email,
@@ -139,7 +141,11 @@ try {
         'ip_address' => $ip_address
     ];
     
-    send_notification($email_data);
+    $email_sent = send_notification($email_data);
+    if (!$email_sent) {
+        // Log email failure (submission is still saved to database)
+        error_log("Failed to send email notification for submission from: " . $email);
+    }
     
     // Return success response
     echo json_encode([

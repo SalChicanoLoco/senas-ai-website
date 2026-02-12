@@ -1,5 +1,8 @@
 
 // main.js
+// Configuration
+const FORM_SUBMIT_URL = 'submit-form.php';
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("join-form");
   const statusEl = document.getElementById("join-status");
@@ -29,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const formData = new FormData(form);
 
-      fetch('submit-form.php', {
+      fetch(FORM_SUBMIT_URL, {
         method: 'POST',
         body: formData
       })
