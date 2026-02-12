@@ -14,6 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Database configuration - UPDATE THESE VALUES AFTER DEPLOYMENT
+// For better security, consider using environment variables:
+// define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+// define('DB_NAME', getenv('DB_NAME') ?: 'your_database_name');
+// define('DB_USER', getenv('DB_USER') ?: 'your_database_user');
+// define('DB_PASS', getenv('DB_PASS') ?: 'your_database_pass');
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'your_database_name'); // Update with your IONOS database name
 define('DB_USER', 'your_database_user'); // Update with your IONOS database user
@@ -55,8 +60,11 @@ function send_notification($data) {
     $message .= "\nSubmitted: " . date('Y-m-d H:i:s') . "\n";
     $message .= "IP Address: " . $data['ip_address'] . "\n";
     
+    // Sanitize email for Reply-To header (prevent header injection)
+    $reply_to_email = str_replace(["\r", "\n", "%0d", "%0a"], '', $data['email']);
+    
     $headers = "From: " . FROM_NAME . " <noreply@newmexicosocialists.com>\r\n";
-    $headers .= "Reply-To: " . $data['email'] . "\r\n";
+    $headers .= "Reply-To: " . $reply_to_email . "\r\n";
     $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
     
     return mail(ADMIN_EMAIL, $subject, $message, $headers);
@@ -96,7 +104,10 @@ try {
         $forwarded_ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
         $ip_address = trim($forwarded_ips[0]);
     }
-    $ip_address = sanitize_input($ip_address);
+    // Validate IP address format
+    if (!filter_var($ip_address, FILTER_VALIDATE_IP)) {
+        $ip_address = 'invalid';
+    }
     
     // Connect to database
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);

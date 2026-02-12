@@ -4,7 +4,7 @@
 
 -- Create the form_submissions table
 CREATE TABLE IF NOT EXISTS `form_submissions` (
-  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   `city` VARCHAR(255) DEFAULT NULL,
