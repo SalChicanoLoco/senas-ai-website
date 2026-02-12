@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => {
           console.error("Form submission error:", error);
-          statusEl.textContent = 'Error. Please email us directly at NewMexicoSocialists@proton.me';
+          statusEl.textContent = 'Error. Please email us directly at xava@newmexicosocialists.org';
           statusEl.style.color = "#ffb3b3";
         })
         .finally(() => {

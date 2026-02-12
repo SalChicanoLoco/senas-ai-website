@@ -151,7 +151,7 @@ After uploading, verify file permissions via FTP:
    - Interests: Testing form
 3. Click **Submit / Enviar**
 4. You should see: "Thanks for signing up! ¡Gracias por unirte!" in green
-5. Check your email (NewMexicoSocialists@proton.me) for notification
+5. Check your email (xava@newmexicosocialists.org) for notification
 
 ### 4.3 Verify Database Storage
 
@@ -289,7 +289,7 @@ If you encounter issues not covered in this guide:
 1. Check IONOS support documentation
 2. Contact IONOS technical support
 3. Review PHP error logs in IONOS control panel
-4. Email technical questions to: NewMexicoSocialists@proton.me
+4. Email technical questions to: xava@newmexicosocialists.org
 
 ## Post-Deployment Checklist
 

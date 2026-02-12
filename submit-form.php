@@ -25,7 +25,7 @@ define('DB_USER', 'your_database_user'); // Update with your IONOS database user
 define('DB_PASS', 'your_database_pass'); // Update with your IONOS database password
 
 // Email configuration
-define('ADMIN_EMAIL', 'NewMexicoSocialists@proton.me');
+define('ADMIN_EMAIL', 'xava@newmexicosocialists.org');
 define('FROM_NAME', 'New Mexico Socialists Website');
 define('FROM_EMAIL_DOMAIN', getenv('FROM_EMAIL_DOMAIN') ?: 'newmexicosocialists.com'); // Update to match your IONOS server domain
 

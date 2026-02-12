@@ -40,7 +40,7 @@ The join form collects:
 
 Submissions are:
 - Stored in MySQL database with timestamp and IP address
-- Sent via email to NewMexicoSocialists@proton.me
+- Sent via email to xava@newmexicosocialists.org
 - Validated for security (SQL injection prevention, XSS protection)
 
 ## File Structure
@@ -67,7 +67,7 @@ Submissions are:
 ## Domain & Contact
 
 - Website: https://newmexicosocialists.com
-- Email: NewMexicoSocialists@proton.me
+- Email: xava@newmexicosocialists.org
 - Facebook: https://www.facebook.com/profile.php?id=61584102062292
 
 ## License
