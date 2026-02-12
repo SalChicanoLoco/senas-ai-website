@@ -27,6 +27,7 @@ define('DB_PASS', 'your_database_pass'); // Update with your IONOS database pass
 // Email configuration
 define('ADMIN_EMAIL', 'NewMexicoSocialists@proton.me');
 define('FROM_NAME', 'New Mexico Socialists Website');
+define('FROM_EMAIL_DOMAIN', 'newmexicosocialists.com'); // Update to match your IONOS server domain
 
 // Set JSON response header
 header('Content-Type: application/json');
@@ -63,7 +64,7 @@ function send_notification($data) {
     // Sanitize email for Reply-To header (prevent header injection)
     $reply_to_email = str_replace(["\r", "\n", "%0d", "%0a"], '', $data['email']);
     
-    $headers = "From: " . FROM_NAME . " <noreply@newmexicosocialists.com>\r\n";
+    $headers = "From: " . FROM_NAME . " <noreply@" . FROM_EMAIL_DOMAIN . ">\r\n";
     $headers .= "Reply-To: " . $reply_to_email . "\r\n";
     $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
     
@@ -104,9 +105,9 @@ try {
         $forwarded_ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
         $ip_address = trim($forwarded_ips[0]);
     }
-    // Validate IP address format
+    // Validate IP address format, set to null if invalid
     if (!filter_var($ip_address, FILTER_VALIDATE_IP)) {
-        $ip_address = 'invalid';
+        $ip_address = null;
     }
     
     // Connect to database

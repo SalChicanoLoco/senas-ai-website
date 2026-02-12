@@ -35,6 +35,31 @@ This guide walks you through deploying the New Mexico Socialists website on IONO
 
 ### 2.1 Update Database Credentials
 
+You have two options for configuring database credentials:
+
+#### Option A: Environment Variables (Recommended for Security)
+
+1. In IONOS control panel, set up environment variables:
+   - Navigate to **Hosting** → **PHP Settings** or **Environment Variables**
+   - Add these variables:
+     - `DB_HOST` = `localhost`
+     - `DB_NAME` = your database name
+     - `DB_USER` = your database username  
+     - `DB_PASS` = your database password
+     - `FROM_EMAIL_DOMAIN` = your domain (e.g., `newmexicosocialists.com`)
+
+2. Uncomment the environment variable lines in `submit-form.php` (lines 17-21):
+   ```php
+   define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+   define('DB_NAME', getenv('DB_NAME') ?: 'your_database_name');
+   define('DB_USER', getenv('DB_USER') ?: 'your_database_user');
+   define('DB_PASS', getenv('DB_PASS') ?: 'your_database_pass');
+   ```
+
+3. Comment out or remove the hardcoded credential lines
+
+#### Option B: Direct Configuration (Simpler but Less Secure)
+
 1. Open `submit-form.php` in a text editor
 2. Find these lines near the top:
 
@@ -54,9 +79,17 @@ define('DB_USER', 'dbu67890');           // Your actual database user
 define('DB_PASS', 'YourSecurePassword'); // Your actual database password
 ```
 
-4. Save the file
+4. Update the email domain to match your IONOS server:
+```php
+define('FROM_EMAIL_DOMAIN', 'newmexicosocialists.com'); // Your actual domain
+```
 
-**IMPORTANT:** Never commit the file with real credentials to a public repository!
+5. Save the file
+
+**IMPORTANT:** 
+- Never commit files with real credentials to a public repository!
+- Keep a backup of the configured file separate from version control
+- The FROM_EMAIL_DOMAIN must match your server's SPF/DKIM configuration to prevent emails being marked as spam
 
 ## Step 3: Upload Files via FTP
 

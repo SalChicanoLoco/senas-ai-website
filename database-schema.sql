@@ -3,8 +3,9 @@
 -- Import this file via IONOS phpMyAdmin
 
 -- Create the form_submissions table
+-- Using BIGINT for id to support large numbers of submissions over time
 CREATE TABLE IF NOT EXISTS `form_submissions` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   `city` VARCHAR(255) DEFAULT NULL,
