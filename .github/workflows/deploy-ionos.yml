@@ -41,9 +41,9 @@ jobs:
           SFTP_PORT: ${{ secrets.SFTP_PORT || 22 }}
           WEB_ROOT: ${{ secrets.WEB_ROOT || '/' }}
         run: |
-          # Create SFTP batch commands
-          cat > sftp_commands.txt << 'EOF'
-          cd $WEB_ROOT
+          # Create SFTP batch commands with variable substitution
+          cat > sftp_commands.txt << EOF
+          cd ${WEB_ROOT}
           put index.html
           put submit-form.php
           put .htaccess
@@ -61,9 +61,6 @@ jobs:
           mput *
           bye
           EOF
-          
-          # Replace $WEB_ROOT with actual value
-          sed -i "s|\$WEB_ROOT|${WEB_ROOT}|g" sftp_commands.txt
           
           # Execute SFTP upload
           sftp -P $SFTP_PORT -b sftp_commands.txt "${SFTP_USER}@${SFTP_HOST}"

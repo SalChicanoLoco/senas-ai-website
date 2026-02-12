@@ -67,11 +67,11 @@ echo ""
 # Upload files via SFTP
 echo "📤 Uploading files to IONOS..."
 sftp_port="${SFTP_PORT:-22}"
-web_root="${WEB_ROOT:-/}"
+WEB_ROOT="${WEB_ROOT:-/}"
 
-# Create SFTP batch file
+# Create SFTP batch file with variable substitution
 cat > /tmp/sftp_commands.txt << SFTP_EOF
-cd ${web_root}
+cd ${WEB_ROOT}
 put index.html
 put submit-form.php
 put .htaccess
@@ -102,7 +102,7 @@ echo ""
 # Set correct permissions (if supported by IONOS)
 echo "🔒 Setting file permissions..."
 ssh -p "$sftp_port" "${SFTP_USER}@${SFTP_HOST}" << SSH_EOF || echo "⚠️  Permission setting may not be supported on IONOS (this is OK)"
-cd ${web_root}
+cd ${WEB_ROOT}
 chmod 644 index.html 2>/dev/null || true
 chmod 644 submit-form.php 2>/dev/null || true
 chmod 644 .htaccess 2>/dev/null || true

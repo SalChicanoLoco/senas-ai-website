@@ -104,9 +104,9 @@ Copy everything from `-----BEGIN OPENSSH PRIVATE KEY-----` to `-----END OPENSSH 
 
 | Secret Name | Description | Example Value |
 |------------|-------------|---------------|
-| `DB_HOST` | Database hostname | `db1234567890.hosting-data.io` |
-| `DB_NAME` | Database name | `dbs1234567890` |
-| `DB_USER` | Database username | `dbu123456` |
+| `DB_HOST` | Database hostname | `db12345.hosting-data.io` |
+| `DB_NAME` | Database name | `dbs12345` |
+| `DB_USER` | Database username | `dbu12345` |
 | `DB_PASS` | Database password | *your database password* |
 
 #### Email Configuration
