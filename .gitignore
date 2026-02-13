@@ -39,3 +39,8 @@ Thumbs.db
 
 # Generated .htaccess with real credentials
 .htaccess
+
+# Database configuration file
+# Note: config.php is force-committed for IONOS deployment
+# In production, it should be generated from secrets in CI/CD
+config.php
