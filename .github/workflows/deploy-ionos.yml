@@ -23,6 +23,7 @@ jobs:
         cp config.php dist/
         cp -r assets dist/
         cp -r scripts dist/
+        cp -r api dist/
         mkdir -p dist/logs
         echo "✅ Production files prepared in dist/ folder"
     
