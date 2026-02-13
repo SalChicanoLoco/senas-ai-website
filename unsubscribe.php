@@ -67,7 +67,7 @@ try {
     $conn->set_charset('utf8mb4');
     
     // Check if token exists and get subscription info
-    $stmt = $conn->prepare("SELECT id, email, name, unsubscribed FROM form_submissions WHERE unsubscribe_token = ?");
+    $stmt = $conn->prepare("SELECT id, email, unsubscribed FROM form_submissions WHERE unsubscribe_token = ?");
     if (!$stmt) {
         throw new Exception('Database error');
     }
@@ -86,7 +86,6 @@ try {
     $row = $result->fetch_assoc();
     $id = $row['id'];
     $email = $row['email'];
-    $name = $row['name'];
     $already_unsubscribed = $row['unsubscribed'];
     
     $stmt->close();
@@ -114,7 +113,7 @@ try {
     $conn->close();
     
     // Show success page
-    render_success_page($email, $name);
+    render_success_page($email);
     
 } catch (Exception $e) {
     error_log('Unsubscribe error: ' . $e->getMessage());
@@ -125,9 +124,8 @@ try {
 /**
  * Render success page
  */
-function render_success_page($email, $name) {
+function render_success_page($email) {
     $safe_email = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
-    $safe_name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -213,7 +211,7 @@ function render_success_page($email, $name) {
     </head>
     <body>
         <div class="container">
-            <div class="icon">✓</div>
+            <div class="icon" role="img" aria-label="Success checkmark">✓</div>
             <h1>You Have Been Unsubscribed</h1>
             <p>The email address <span class="email"><?php echo $safe_email; ?></span> has been successfully removed from our mailing list.</p>
             <p>You will no longer receive emails from New Mexico Socialists.</p>
@@ -326,7 +324,7 @@ function render_already_unsubscribed_page($email) {
     </head>
     <body>
         <div class="container">
-            <div class="icon">ℹ️</div>
+            <div class="icon" role="img" aria-label="Information">ℹ️</div>
             <h1>Already Unsubscribed</h1>
             <p>The email address <span class="email"><?php echo $safe_email; ?></span> was already unsubscribed from our mailing list.</p>
             <p>You are not receiving emails from New Mexico Socialists.</p>
@@ -436,7 +434,7 @@ function render_error_page($error_en, $error_es) {
     </head>
     <body>
         <div class="container">
-            <div class="icon">⚠️</div>
+            <div class="icon" role="img" aria-label="Warning">⚠️</div>
             <h1>Error</h1>
             <p><?php echo $safe_error_en; ?></p>
             

@@ -71,7 +71,8 @@ function send_welcome_email($subscriber_data, $unsubscribe_token) {
     
     // Build unsubscribe URL
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? FROM_EMAIL_DOMAIN;
+    // Use configured domain instead of HTTP_HOST to prevent Host header injection
+    $host = FROM_EMAIL_DOMAIN;
     $unsubscribe_url = $protocol . '://' . $host . '/unsubscribe.php?token=' . urlencode($unsubscribe_token);
     
     // Email subject (bilingual)
@@ -105,7 +106,9 @@ function send_welcome_email($subscriber_data, $unsubscribe_token) {
     $message .= "Email: xava@newmexicosocialists.org\n";
     
     // Email headers (CAN-SPAM compliant)
-    $headers = "From: " . FROM_NAME . " <noreply@" . FROM_EMAIL_DOMAIN . ">\r\n";
+    // Sanitize FROM_NAME to prevent header injection
+    $safe_from_name = str_replace(["\r", "\n", "%0d", "%0a"], '', FROM_NAME);
+    $headers = "From: " . $safe_from_name . " <noreply@" . FROM_EMAIL_DOMAIN . ">\r\n";
     $headers .= "Reply-To: xava@newmexicosocialists.org\r\n";
     $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
     $headers .= "List-Unsubscribe: <" . $unsubscribe_url . ">\r\n";
@@ -133,7 +136,9 @@ function send_notification($data) {
     // Sanitize email for Reply-To header (prevent header injection)
     $reply_to_email = str_replace(["\r", "\n", "%0d", "%0a"], '', $data['email']);
     
-    $headers = "From: " . FROM_NAME . " <noreply@" . FROM_EMAIL_DOMAIN . ">\r\n";
+    // Sanitize FROM_NAME to prevent header injection
+    $safe_from_name = str_replace(["\r", "\n", "%0d", "%0a"], '', FROM_NAME);
+    $headers = "From: " . $safe_from_name . " <noreply@" . FROM_EMAIL_DOMAIN . ">\r\n";
     $headers .= "Reply-To: " . $reply_to_email . "\r\n";
     $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
     
