@@ -156,89 +156,96 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Member counter functionality
-  const memberCountEl = document.getElementById("memberCount");
-  const MEMBER_COUNT_URL = '/api/get-member-count.php';
-  const CACHE_KEY = 'memberCount';
-  const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
-
-  /**
-   * Animate count from 0 to target with easing
-   */
-  function animateCount(element, target) {
-    const duration = 1500; // 1.5 seconds
-    const start = 0;
-    const startTime = performance.now();
+  // Member Counter - Fetch and display member count
+  (function() {
+    const memberCountEl = document.getElementById('memberCount');
+    if (!memberCountEl) return;
     
-    function update(currentTime) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing function (ease-out cubic)
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
-      
-      const current = Math.floor(start + (target - start) * easeProgress);
-      element.textContent = current.toLocaleString();
-      
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      } else {
-        element.textContent = target.toLocaleString();
+    // Check localStorage cache (1 hour TTL)
+    const CACHE_KEY = 'nm_socialists_member_count';
+    const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
+    
+    function getCachedCount() {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (!cached) return null;
+        
+        const data = JSON.parse(cached);
+        const age = Date.now() - data.timestamp;
+        
+        if (age < CACHE_TTL) {
+          return data.count;
+        }
+      } catch (e) {
+        console.error('Cache read error:', e);
+      }
+      return null;
+    }
+    
+    function setCachedCount(count) {
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          count: count,
+          timestamp: Date.now()
+        }));
+      } catch (e) {
+        console.error('Cache write error:', e);
       }
     }
     
-    requestAnimationFrame(update);
-  }
-
-  /**
-   * Fetch member count from API or cache
-   */
-  async function fetchMemberCount() {
-    if (!memberCountEl) return;
-    
-    try {
-      // Check cache first
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        const data = JSON.parse(cached);
-        const now = Date.now();
+    function animateCount(target) {
+      const duration = 2000; // 2 seconds
+      const start = 0;
+      const startTime = performance.now();
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
         
-        // Use cached data if less than or equal to 1 hour old
-        if (now - data.timestamp <= CACHE_DURATION) {
-          animateCount(memberCountEl, data.count);
-          return;
+        // Easing function (ease-out)
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(start + (target - start) * easeOut);
+        
+        memberCountEl.textContent = current;
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          memberCountEl.textContent = target;
         }
       }
       
-      // Fetch from API
-      const response = await fetch(MEMBER_COUNT_URL);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch member count');
-      }
-      
-      const result = await response.json();
-      
-      if (result.success && typeof result.count === 'number') {
-        // Cache the result
-        localStorage.setItem(CACHE_KEY, JSON.stringify({
-          count: result.count,
-          timestamp: Date.now()
-        }));
-        
-        // Animate the count
-        animateCount(memberCountEl, result.count);
-      } else {
-        throw new Error('Invalid response format');
-      }
-    } catch (error) {
-      console.error('Error fetching member count:', error);
-      // Display fallback text
-      memberCountEl.textContent = '---';
-      memberCountEl.style.opacity = '0.5';
+      requestAnimationFrame(update);
     }
-  }
-
-  // Fetch member count on page load
-  fetchMemberCount();
+    
+    // Try cache first
+    const cachedCount = getCachedCount();
+    if (cachedCount !== null) {
+      animateCount(cachedCount);
+    }
+    
+    // Fetch fresh count
+    fetch('/api/get-member-count.php')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && typeof data.count === 'number') {
+          setCachedCount(data.count);
+          if (cachedCount === null) {
+            // Only animate if we didn't show cached version
+            animateCount(data.count);
+          } else if (data.count !== cachedCount) {
+            // Update if count changed
+            memberCountEl.textContent = data.count;
+          }
+        } else {
+          throw new Error('Invalid response');
+        }
+      })
+      .catch(error => {
+        console.error('Failed to fetch member count:', error);
+        if (cachedCount === null) {
+          memberCountEl.textContent = '--';
+        }
+      });
+  })();
 });
