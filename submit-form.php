@@ -6,7 +6,21 @@
  */
 
 // Load database configuration
+if (!file_exists('config.php')) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'Configuration file missing']);
+    exit;
+}
 require_once 'config.php';
+
+// Verify required constants are defined
+if (!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !defined('DB_PASS') || !defined('NOTIFICATION_EMAIL')) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'Configuration incomplete']);
+    exit;
+}
 
 // Prevent direct access
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
