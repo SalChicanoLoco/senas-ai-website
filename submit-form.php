@@ -5,6 +5,9 @@
  * Sends email notifications to admin
  */
 
+// Load database configuration
+require_once 'config.php';
+
 // Prevent direct access
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -13,18 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Database configuration - Reads from environment variables set by deployment
-// On IONOS, these are set via .htaccess or server config
-// Fallback values are for local development only
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: 'your_database_name');
-define('DB_USER', getenv('DB_USER') ?: 'your_database_user');
-define('DB_PASS', getenv('DB_PASS') ?: 'your_database_pass');
-
-// Email configuration - Also from environment
-define('ADMIN_EMAIL', getenv('ADMIN_EMAIL') ?: 'admin@example.com');
+// Email configuration
+define('ADMIN_EMAIL', NOTIFICATION_EMAIL);
 define('FROM_NAME', 'New Mexico Socialists Website');
-define('FROM_EMAIL_DOMAIN', getenv('FROM_EMAIL_DOMAIN') ?: 'newmexicosocialists.org');
+define('FROM_EMAIL_DOMAIN', 'newmexicosocialists.org');
 
 // Set JSON response header
 header('Content-Type: application/json');

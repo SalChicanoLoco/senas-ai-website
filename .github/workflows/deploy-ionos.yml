@@ -15,32 +15,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     
-    - name: Setup PHP environment file
+    - name: 📦 Prepare production files
       run: |
-        # Create .htaccess file from template with secrets
-        # This will be uploaded to server, not committed to git
-        cat scripts/.htaccess.template | \
-          sed "s|{{DB_HOST}}|${{ secrets.IONOS_DB_HOST }}|g" | \
-          sed "s|{{DB_NAME}}|${{ secrets.IONOS_DB_NAME }}|g" | \
-          sed "s|{{DB_USER}}|${{ secrets.IONOS_DB_USER }}|g" | \
-          sed "s|{{DB_PASS}}|${{ secrets.IONOS_DB_PASS }}|g" | \
-          sed "s|{{ADMIN_EMAIL}}|${{ secrets.ADMIN_EMAIL }}|g" | \
-          sed "s|{{FROM_EMAIL_DOMAIN}}|${{ secrets.DOMAIN_NAME }}|g" \
-          > .htaccess
-        
-        echo "✅ Created .htaccess with environment variables"
+        mkdir -p dist
+        cp index.html dist/
+        cp submit-form.php dist/
+        cp config.php dist/
+        cp -r assets dist/
+        cp -r scripts dist/
+        mkdir -p dist/logs
+        echo "✅ Production files prepared in dist/ folder"
     
-    - name: Deploy via SFTP
+    - name: 📤 Deploy via SFTP
       uses: wlixcc/SFTP-Deploy-Action@v1.2.4
       with:
         server: ${{ secrets.IONOS_FTP_HOST }}
         username: ${{ secrets.IONOS_FTP_USER }}
         password: ${{ secrets.IONOS_FTP_PASS }}
-        local_path: './'
+        port: 22
+        local_path: './dist/'
         remote_path: '/'
         sftp_only: true
-        delete_remote_files: false
-        args: '-o ConnectTimeout=5'
     
     - name: Verify deployment
       run: |

@@ -39,3 +39,6 @@ Thumbs.db
 
 # Generated .htaccess with real credentials
 .htaccess
+
+# Database configuration file
+config.php
