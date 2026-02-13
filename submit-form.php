@@ -53,7 +53,72 @@ function validate_email($email) {
 }
 
 /**
- * Send email notification
+ * Generate a cryptographically secure unsubscribe token
+ */
+function generate_unsubscribe_token() {
+    return bin2hex(random_bytes(32));
+}
+
+/**
+ * Send welcome email to new subscriber
+ */
+function send_welcome_email($subscriber_data, $unsubscribe_token) {
+    $name = $subscriber_data['name'];
+    $email = $subscriber_data['email'];
+    
+    // Sanitize email for headers (prevent header injection)
+    $safe_email = str_replace(["\r", "\n", "%0d", "%0a"], '', $email);
+    
+    // Build unsubscribe URL
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    // Use configured domain instead of HTTP_HOST to prevent Host header injection
+    $host = FROM_EMAIL_DOMAIN;
+    $unsubscribe_url = $protocol . '://' . $host . '/unsubscribe.php?token=' . urlencode($unsubscribe_token);
+    
+    // Email subject (bilingual)
+    $subject = 'Welcome to New Mexico Socialists / Bienvenido a New Mexico Socialists';
+    
+    // Email body (bilingual - English first, then Spanish)
+    $message = "Dear $name,\n\n";
+    $message .= "Thank you for joining New Mexico Socialists! We're excited to have you as part of our community.\n\n";
+    $message .= "You will receive updates about:\n";
+    $message .= "- Community events and meetings\n";
+    $message .= "- Educational resources and workshops\n";
+    $message .= "- Organizing opportunities\n";
+    $message .= "- Important announcements\n\n";
+    $message .= "We respect your privacy and will never share your information with third parties.\n\n";
+    $message .= "---\n\n";
+    $message .= "Estimado/a $name,\n\n";
+    $message .= "¡Gracias por unirte a New Mexico Socialists! Estamos emocionados de tenerte como parte de nuestra comunidad.\n\n";
+    $message .= "Recibirás actualizaciones sobre:\n";
+    $message .= "- Eventos y reuniones comunitarias\n";
+    $message .= "- Recursos educativos y talleres\n";
+    $message .= "- Oportunidades de organización\n";
+    $message .= "- Anuncios importantes\n\n";
+    $message .= "Respetamos tu privacidad y nunca compartiremos tu información con terceros.\n\n";
+    $message .= "---\n\n";
+    $message .= "If you wish to unsubscribe from our emails, click here:\n";
+    $message .= "$unsubscribe_url\n\n";
+    $message .= "Si deseas darte de baja de nuestros correos, haz clic aquí:\n";
+    $message .= "$unsubscribe_url\n\n";
+    $message .= "---\n";
+    $message .= "New Mexico Socialists\n";
+    $message .= "Email: xava@newmexicosocialists.org\n";
+    
+    // Email headers (CAN-SPAM compliant)
+    // Sanitize FROM_NAME to prevent header injection
+    $safe_from_name = str_replace(["\r", "\n", "%0d", "%0a"], '', FROM_NAME);
+    $headers = "From: " . $safe_from_name . " <noreply@" . FROM_EMAIL_DOMAIN . ">\r\n";
+    $headers .= "Reply-To: xava@newmexicosocialists.org\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $headers .= "List-Unsubscribe: <" . $unsubscribe_url . ">\r\n";
+    $headers .= "List-Unsubscribe-Post: List-Unsubscribe=One-Click\r\n";
+    
+    return mail($safe_email, $subject, $message, $headers);
+}
+
+/**
+ * Send email notification to admin
  */
 function send_notification($data) {
     $subject = 'New Join Form Submission - New Mexico Socialists';
@@ -71,7 +136,9 @@ function send_notification($data) {
     // Sanitize email for Reply-To header (prevent header injection)
     $reply_to_email = str_replace(["\r", "\n", "%0d", "%0a"], '', $data['email']);
     
-    $headers = "From: " . FROM_NAME . " <noreply@" . FROM_EMAIL_DOMAIN . ">\r\n";
+    // Sanitize FROM_NAME to prevent header injection
+    $safe_from_name = str_replace(["\r", "\n", "%0d", "%0a"], '', FROM_NAME);
+    $headers = "From: " . $safe_from_name . " <noreply@" . FROM_EMAIL_DOMAIN . ">\r\n";
     $headers .= "Reply-To: " . $reply_to_email . "\r\n";
     $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
     
@@ -140,18 +207,21 @@ try {
     // Set charset
     $conn->set_charset('utf8mb4');
     
-    // Prepare SQL statement
+    // Generate unique unsubscribe token
+    $unsubscribe_token = generate_unsubscribe_token();
+    
+    // Prepare SQL statement (now includes unsubscribe_token)
     $stmt = $conn->prepare(
-        "INSERT INTO form_submissions (name, email, country, state, city, zip_code, submitted_at, ip_address) 
-         VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)"
+        "INSERT INTO form_submissions (name, email, country, state, city, zip_code, submitted_at, ip_address, unsubscribe_token) 
+         VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)"
     );
     
     if (!$stmt) {
         throw new Exception('Database error. Please try again later.');
     }
     
-    // Bind parameters
-    $stmt->bind_param('sssssss', $name, $email, $country, $state, $city, $zip_code, $ip_address);
+    // Bind parameters (added unsubscribe_token)
+    $stmt->bind_param('ssssssss', $name, $email, $country, $state, $city, $zip_code, $ip_address, $unsubscribe_token);
     
     // Execute statement
     if (!$stmt->execute()) {
@@ -166,7 +236,7 @@ try {
     $stmt->close();
     $conn->close();
     
-    // Send email notification (log if it fails)
+    // Send email notifications
     $email_data = [
         'name' => $name,
         'email' => $email,
@@ -177,10 +247,20 @@ try {
         'ip_address' => $ip_address
     ];
     
-    $email_sent = send_notification($email_data);
-    if (!$email_sent) {
-        // Log email failure (submission is still saved to database)
-        error_log("Failed to send email notification for submission from: " . $email);
+    // Send admin notification email (log if it fails)
+    $admin_email_sent = send_notification($email_data);
+    if (!$admin_email_sent) {
+        error_log("Failed to send admin notification for submission from: " . $email);
+    }
+    
+    // Send welcome email to subscriber (log if it fails, but don't fail the request)
+    try {
+        $welcome_email_sent = send_welcome_email($email_data, $unsubscribe_token);
+        if (!$welcome_email_sent) {
+            error_log("Failed to send welcome email to: " . $email);
+        }
+    } catch (Exception $e) {
+        error_log("Error sending welcome email to " . $email . ": " . $e->getMessage());
     }
     
     // Return success response
