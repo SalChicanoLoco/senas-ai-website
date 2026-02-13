@@ -8,4 +8,8 @@ define('DB_CHARSET', 'utf8mb4');
 
 // Email Configuration
 define('NOTIFICATION_EMAIL', 'xava@newmexicosocialists.org');
+
+// Setup Key (for database initialization script)
+// Change this to a secure random string in production
+define('SETUP_KEY', 'nmsocialists-setup-2026');
 ?>
