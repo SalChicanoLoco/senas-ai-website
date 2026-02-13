@@ -203,8 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = JSON.parse(cached);
         const now = Date.now();
         
-        // Use cached data if less than 1 hour old
-        if (now - data.timestamp < CACHE_DURATION) {
+        // Use cached data if less than or equal to 1 hour old
+        if (now - data.timestamp <= CACHE_DURATION) {
           animateCount(memberCountEl, data.count);
           return;
         }
