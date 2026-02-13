@@ -57,7 +57,8 @@ try {
     
     // Check connection
     if ($conn->connect_error) {
-        throw new Exception('Database connection failed: ' . $conn->connect_error);
+        error_log('Database setup - connection failed: ' . $conn->connect_error);
+        throw new Exception('Database connection failed');
     }
     
     // Set charset
@@ -80,13 +81,15 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
     
     if (!$conn->query($sql)) {
-        throw new Exception('Failed to create table: ' . $conn->error);
+        error_log('Database setup - failed to create table: ' . $conn->error);
+        throw new Exception('Failed to create table');
     }
     
     // Check if table exists and get row count
     $result = $conn->query("SELECT COUNT(*) as total FROM form_submissions");
     if (!$result) {
-        throw new Exception('Failed to query table: ' . $conn->error);
+        error_log('Database setup - failed to query table: ' . $conn->error);
+        throw new Exception('Failed to query table');
     }
     
     $row = $result->fetch_assoc();
@@ -100,8 +103,7 @@ try {
         'success' => true,
         'message' => 'Database setup complete!',
         'table' => 'form_submissions',
-        'status' => 'ready',
-        'current_members' => $count
+        'status' => 'ready'
     ]);
     
 } catch (Exception $e) {

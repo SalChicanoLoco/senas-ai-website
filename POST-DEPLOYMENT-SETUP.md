@@ -13,25 +13,13 @@ After deploying the code to IONOS, you need to initialize the database for form 
      "success": true,
      "message": "Database setup complete!",
      "table": "form_submissions",
-     "status": "ready",
-     "current_members": 0
+     "status": "ready"
    }
    ```
 
-3. Verify the setup by visiting: `https://newmexicosocialists.org/api/health-check.php`
-
-You should see all checks passing:
-   ```json
-   {
-     "success": true,
-     "status": "healthy",
-     "checks": {
-       "config": { "status": "pass" },
-       "connection": { "status": "pass" },
-       "table": { "status": "pass", "rows": 0 }
-     }
-   }
-   ```
+4. Verify the setup by visiting: `https://newmexicosocialists.org/api/health-check.php`
+   
+   You should see all checks passing:
    ```json
    {
      "success": true,

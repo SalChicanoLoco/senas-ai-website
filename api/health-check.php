@@ -42,9 +42,7 @@ if (!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !define
     $health['success'] = false;
 } else {
     $health['checks']['config'] = [
-        'status' => 'pass',
-        'host' => DB_HOST,
-        'database' => DB_NAME
+        'status' => 'pass'
     ];
 }
 
