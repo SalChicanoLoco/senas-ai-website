@@ -73,4 +73,3 @@ try {
         'message' => 'Unable to fetch member count'
     ]);
 }
-?>
