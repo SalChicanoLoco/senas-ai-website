@@ -155,6 +155,10 @@ try {
     
     // Execute statement
     if (!$stmt->execute()) {
+        // Check if error is due to duplicate email
+        if ($conn->errno === 1062) {  // MySQL duplicate entry error code
+            throw new InvalidArgumentException('This email is already registered. If you need to update your information, please contact us at xava@newmexicosocialists.org / Este correo ya está registrado. Si necesitas actualizar tu información, contáctanos en xava@newmexicosocialists.org');
+        }
         throw new Exception('Failed to save submission. Please try again later.');
     }
     
