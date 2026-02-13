@@ -103,3 +103,5 @@ Submissions are:
 
 Content and code created for New Mexico Socialists organizing work.
 
+
+# Automated IONOS Deployment - Live!
