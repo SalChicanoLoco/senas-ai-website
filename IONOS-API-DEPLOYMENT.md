@@ -1,511 +1,522 @@
-# IONOS API Deployment Guide - Automated CI/CD
+# IONOS API Deployment Guide
 
-This guide covers setting up automated, secure deployment to IONOS hosting using GitHub Actions. This eliminates manual FTP uploads and keeps credentials secure.
+This guide covers automated deployment of the New Mexico Socialists website to IONOS hosting using GitHub Actions, IONOS API, and secure environment variables.
 
-## 🎯 Overview
+## Table of Contents
 
-This deployment system:
-- ✅ **Secure**: No credentials in code, all via GitHub Secrets
-- ✅ **Automated**: Deploy on every push to `main` or `netlify-working-backup`
-- ✅ **Manual trigger**: Can be triggered via GitHub Actions UI
-- ✅ **Verified**: Tests deployment success automatically
-- ✅ **Environment variables**: PHP reads config from `.htaccess` on IONOS
+1. [Overview](#overview)
+2. [Prerequisites](#prerequisites)
+3. [One-Time Setup](#one-time-setup)
+4. [GitHub Secrets Configuration](#github-secrets-configuration)
+5. [Automated Deployment](#automated-deployment)
+6. [Manual Deployment](#manual-deployment)
+7. [Verification](#verification)
+8. [Rollback Procedure](#rollback-procedure)
+9. [Local Development](#local-development)
+10. [Troubleshooting](#troubleshooting)
+11. [Security Best Practices](#security-best-practices)
 
-## 📋 Prerequisites
+## Overview
 
-Before starting, ensure you have:
+### How It Works
 
-1. **IONOS Hosting Account**
-   - Active hosting plan with PHP and MySQL support
-   - SSH/SFTP access enabled
-   - Database already created (see IONOS-DEPLOYMENT.md)
+The deployment system uses:
+- **GitHub Actions** - Automated CI/CD pipeline
+- **IONOS SFTP** - Secure file transfer to web server
+- **Environment Variables** - Secure credential management via `.htaccess`
+- **Automated Verification** - Post-deployment health checks
 
-2. **GitHub Repository Access**
-   - Admin or write access to the repository
-   - Ability to add/modify GitHub Secrets
+### Deployment Flow
 
-3. **IONOS Credentials**
-   - SFTP hostname (e.g., `access-5019605769.webspace-host.com`)
-   - SFTP username (e.g., `a2040943`)
-   - SSH private key or password for SFTP authentication
-   - Database credentials (host, name, user, password)
+```
+Push to netlify-working-backup branch
+    ↓
+GitHub Actions triggered
+    ↓
+Generate .htaccess from template + secrets
+    ↓
+Deploy files via SFTP to IONOS
+    ↓
+Verify deployment success
+    ↓
+Site live at newmexicosocialists.org
+```
 
-## 🔐 Step 1: Generate SSH Key for SFTP
+## Prerequisites
 
-IONOS supports both password and SSH key authentication. SSH keys are more secure for automated deployments.
+Before setting up automated deployment, you need:
 
-### Option A: Use SSH Key Authentication (Recommended)
+1. **IONOS Hosting Account** with:
+   - Web hosting package with PHP support
+   - MySQL database created
+   - FTP/SFTP access enabled
 
-1. **Generate SSH key pair** (on your local machine):
-   ```bash
-   ssh-keygen -t rsa -b 4096 -C "github-actions-deployment" -f ionos_deploy_key
-   ```
-   - This creates two files:
-     - `ionos_deploy_key` (private key - keep this secret!)
-     - `ionos_deploy_key.pub` (public key - upload to IONOS)
+2. **Database Setup**:
+   - Import `database-schema.sql` via IONOS phpMyAdmin
+   - Note down database credentials
 
-2. **Upload public key to IONOS**:
-   - Log in to IONOS Control Panel
-   - Navigate to **Hosting** → **SSH Access** or **SFTP**
-   - Find **Authorized Keys** or **SSH Keys** section
-   - Upload or paste content of `ionos_deploy_key.pub`
-   - Save changes
+3. **GitHub Repository Access**:
+   - Admin access to add secrets
+   - Push access to `netlify-working-backup` branch
 
-3. **Test SSH connection**:
-   ```bash
-   ssh -i ionos_deploy_key your_username@your_host.webspace-host.com
-   ```
-   - Replace `your_username` and `your_host` with your actual IONOS credentials
-   - If successful, you should see IONOS shell prompt
+## One-Time Setup
 
-4. **Save private key for GitHub Secrets** (see Step 2)
+### Step 1: Set Up IONOS Database
 
-### Option B: Use Password Authentication
+1. Log in to [IONOS Control Panel](https://my.ionos.com/)
+2. Navigate to **Web Hosting** → Your package
+3. Go to **MySQL Databases**
+4. Create a new database or note existing one:
+   - Database Name
+   - Database User
+   - Database Password
+   - Database Host (usually `localhost` or provided by IONOS)
 
-If SSH keys aren't supported or you prefer password authentication:
+5. Access phpMyAdmin
+6. Import `database-schema.sql`:
+   - Click **Import** tab
+   - Choose file: `database-schema.sql`
+   - Click **Go**
+   - Verify table `form_submissions` was created
 
-1. You'll use your IONOS SFTP password directly
-2. Store it in GitHub Secrets as `SFTP_PASS` (see Step 2)
-3. Modify workflow to use `sshpass` for authentication (less secure)
+### Step 2: Get IONOS FTP/SFTP Credentials
 
-## 🔑 Step 2: Configure GitHub Secrets
+1. In IONOS Control Panel, go to **Web Hosting**
+2. Click **FTP** or **Access & Security**
+3. Note down:
+   - FTP/SFTP Host (e.g., `access123456.webspace-data.io`)
+   - FTP Username
+   - FTP Password
 
-GitHub Secrets securely store sensitive credentials for GitHub Actions workflows.
+### Step 3: (Optional) Get IONOS API Credentials
 
-### Navigate to Secrets
+For advanced automation, you may get API credentials from IONOS:
 
-1. Open your repository on GitHub
-2. Click **Settings** tab
-3. In left sidebar, click **Secrets and variables** → **Actions**
-4. Click **New repository secret** button
+1. Log in to [IONOS Control Panel](https://my.ionos.com/)
+2. Navigate to **API** or **Developer Tools** section (location may vary)
+3. Create an API key if available:
+   - Click **Create New Key** or similar
+   - Save the API Key and API Secret securely
 
-### Add Required Secrets
+*Note: IONOS API credentials are optional for basic deployment. The workflow primarily uses SFTP for deployment. API features are for advanced automation and may not be available on all IONOS hosting plans.*
 
-Add the following secrets one by one:
+## GitHub Secrets Configuration
 
-#### SFTP/SSH Configuration
+### Add Secrets to GitHub
+
+1. Go to your GitHub repository
+2. Click **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret**
+4. Add each of the following secrets:
+
+### Required Secrets
 
 | Secret Name | Description | Example Value |
-|------------|-------------|---------------|
-| `SFTP_HOST` | IONOS SFTP hostname | `your_host.webspace-host.com` |
-| `SFTP_USER` | IONOS SFTP username | `your_username` |
-| `SFTP_PORT` | SFTP port (usually 22) | `22` |
-| `SFTP_PRIVATE_KEY` | SSH private key content (from Step 1) | *entire content of `ionos_deploy_key` file* |
-| `WEB_ROOT` | Web root directory path | `/` (or `/html`, `/httpdocs` depending on your IONOS setup) |
+|-------------|-------------|---------------|
+| `IONOS_DB_HOST` | MySQL database host | `localhost` or `dbXXXX.ionos.com` |
+| `IONOS_DB_NAME` | MySQL database name | `db123456_nmsocdst` |
+| `IONOS_DB_USER` | MySQL database user | `u123456` |
+| `IONOS_DB_PASS` | MySQL database password | `SecurePassword123!` |
+| `IONOS_FTP_HOST` | SFTP host for file upload | `access123456.webspace-data.io` |
+| `IONOS_FTP_USER` | SFTP username | `u123456` |
+| `IONOS_FTP_PASS` | SFTP password | `FtpPassword123!` |
+| `ADMIN_EMAIL` | Admin notification email | `xava@newmexicosocialists.org` |
+| `DOMAIN_NAME` | Your domain name | `newmexicosocialists.org` |
 
-**For `SFTP_PRIVATE_KEY`**:
+### Optional Secrets (for API features)
+
+| Secret Name | Description |
+|-------------|-------------|
+| `IONOS_API_KEY` | IONOS API key for advanced features |
+| `IONOS_API_SECRET` | IONOS API secret |
+
+### How to Add a Secret
+
+For each secret:
+
+1. Click **New repository secret**
+2. Enter **Name** (e.g., `IONOS_DB_HOST`)
+3. Enter **Value** (e.g., `localhost`)
+4. Click **Add secret**
+
+**Important:** Double-check all values for typos. Incorrect credentials will cause deployment to fail.
+
+## Automated Deployment
+
+### Trigger on Push
+
+The workflow automatically deploys when you push to the `netlify-working-backup` branch:
+
 ```bash
-# Copy entire private key content including headers
-cat ionos_deploy_key
+# Make changes to your code
+git add .
+git commit -m "Update website content"
+git push origin netlify-working-backup
 ```
-Copy everything from `-----BEGIN OPENSSH PRIVATE KEY-----` to `-----END OPENSSH PRIVATE KEY-----` and paste into the secret value.
 
-#### Database Configuration
+This will:
+1. Trigger the GitHub Actions workflow
+2. Deploy files to IONOS
+3. Verify deployment success
 
-| Secret Name | Description | Example Value |
-|------------|-------------|---------------|
-| `DB_HOST` | Database hostname | `db12345.hosting-data.io` |
-| `DB_NAME` | Database name | `dbs12345` |
-| `DB_USER` | Database username | `dbu12345` |
-| `DB_PASS` | Database password | *your database password* |
+### Monitor Deployment
 
-#### Email Configuration
-
-| Secret Name | Description | Example Value |
-|------------|-------------|---------------|
-| `ADMIN_EMAIL` | Email for form notifications | `xava@newmexicosocialists.org` |
-| `FROM_EMAIL_DOMAIN` | Domain for outgoing emails | `newmexicosocialists.org` |
-
-#### Optional Secrets
-
-| Secret Name | Description | Example Value |
-|------------|-------------|---------------|
-| `DEPLOYMENT_URL` | Your website URL | `https://newmexicosocialists.org` |
-
-### Verify Secrets Configuration
-
-1. After adding all secrets, you should see them listed
-2. Click on a secret name to verify it exists (values are hidden)
-3. Secrets are encrypted and never displayed after creation
-
-## 🚀 Step 3: First Deployment
-
-### Automatic Deployment (Push to Branch)
-
-The workflow automatically runs when you push to `main` or `netlify-working-backup`:
-
-1. Make any change to your repository
-2. Commit and push to `main` or `netlify-working-backup`:
-   ```bash
-   git add .
-   git commit -m "Trigger deployment"
-   git push origin main
-   ```
-3. GitHub Actions automatically starts deployment
-
-### Manual Deployment (Workflow Dispatch)
-
-You can manually trigger deployment without pushing code:
-
-1. Go to your repository on GitHub
+1. Go to your GitHub repository
 2. Click **Actions** tab
-3. Click **Deploy to IONOS** workflow in left sidebar
-4. Click **Run workflow** button (on the right)
-5. Select branch (usually `main`)
-6. Click green **Run workflow** button
+3. Click on the running workflow
+4. View real-time logs of deployment progress
 
-## 📊 Step 4: Monitor Deployment
-
-### View Workflow Progress
-
-1. Go to **Actions** tab in GitHub repository
-2. Click on the running workflow (you'll see a yellow dot 🟡)
-3. Click on the **deploy** job to see detailed logs
-4. Watch each step execute:
-   - ✅ Checkout code
-   - ✅ Setup SSH key
-   - ✅ Generate .htaccess
-   - ✅ Deploy files via SFTP
-   - ✅ Set file permissions
-   - ✅ Verify deployment
-
-### Understanding the Output
-
-Each step shows detailed logs:
-
+Expected output:
 ```
-🔧 Generating .htaccess file with environment variables...
-✅ All environment variables validated
-✅ .htaccess file generated successfully!
-
-📤 Uploading files to IONOS...
-index.html                 100%   21KB   1.2MB/s   00:00
-submit-form.php           100%    6KB   800KB/s   00:00
-.htaccess                 100%    1KB   150KB/s   00:00
-✅ Files uploaded successfully
-
-🧪 Verifying deployment...
-✅ Website is accessible (HTTP 200)
-✅ submit-form.php is accessible (405 = POST required)
-🎉 Deployment complete!
+✅ Created .htaccess with environment variables
+✅ Files deployed via SFTP
+✅ Homepage accessible (HTTP 200)
+✅ Form endpoint accessible (HTTP 400)
+✅ Deployment completed!
 ```
 
-### Deployment Success
+## Manual Deployment
 
-- Green checkmark ✅ means deployment succeeded
-- Red X ❌ means deployment failed (see Troubleshooting below)
+You can manually trigger a deployment without pushing code:
 
-## 🔧 Step 5: Environment Variable Management
+### Via GitHub UI
 
-### How Environment Variables Work on IONOS
+1. Go to **Actions** tab
+2. Select **Deploy NM Socialists to IONOS** workflow
+3. Click **Run workflow** button
+4. Select branch: `netlify-working-backup`
+5. Click **Run workflow**
 
-IONOS shared hosting doesn't support direct environment variables. Instead:
+### Via GitHub CLI (Optional)
 
-1. **GitHub Actions generates `.htaccess`** with `SetEnv` directives
-2. **`.htaccess` is uploaded** to IONOS root directory
-3. **PHP reads environment variables** via `getenv()` function
-4. **`.htaccess` is NOT committed** to version control (contains secrets)
-
-### Example .htaccess (Generated Automatically)
-
-```apache
-# Environment Variables for New Mexico Socialists
-SetEnv DB_HOST "db5019682681.hosting-data.io"
-SetEnv DB_NAME "dbs5019682681"
-SetEnv DB_USER "dbu924798"
-SetEnv DB_PASS "your_secure_password"
-SetEnv ADMIN_EMAIL "xava@newmexicosocialists.org"
-SetEnv FROM_EMAIL_DOMAIN "newmexicosocialists.org"
-
-# Security headers
-<IfModule mod_headers.c>
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set X-XSS-Protection "1; mode=block"
-</IfModule>
-
-# PHP settings
-php_flag display_errors Off
-php_flag log_errors On
+```bash
+gh workflow run deploy-ionos.yml --ref netlify-working-backup
 ```
 
-### Updating Environment Variables
+## Verification
 
-To update environment variables:
-
-1. Go to GitHub repository **Settings** → **Secrets**
-2. Click on the secret you want to update
-3. Click **Update secret**
-4. Enter new value and click **Update secret**
-5. Trigger a new deployment (push code or manual trigger)
-6. New `.htaccess` with updated values is deployed
-
-## 🗄️ Step 6: Database Setup
-
-The database must be created manually via IONOS Control Panel (one-time setup):
-
-### Create Database (If Not Already Done)
-
-1. Log in to IONOS Control Panel
-2. Navigate to **Databases** → **MySQL Databases**
-3. Click **Create New Database**
-4. Note credentials (host, name, user, password)
-5. Add these credentials to GitHub Secrets (Step 2)
-
-### Import Database Schema
-
-1. Open **phpMyAdmin** from IONOS Control Panel
-2. Select your database
-3. Click **Import** tab
-4. Upload `database-schema.sql` from repository
-5. Click **Go** to import
-6. Verify `form_submissions` table exists
-
-### Test Database Connection
-
-After deployment, test form submission:
-
-1. Visit your website
-2. Fill out the join form
-3. Submit form
-4. Check phpMyAdmin for new entry in `form_submissions` table
-5. Check email for notification
-
-## 🔒 Step 7: SSL Certificate Configuration
-
-IONOS provides free SSL certificates:
-
-### Enable SSL (One-Time Setup)
-
-1. Log in to IONOS Control Panel
-2. Navigate to **Domains** → **SSL Certificates**
-3. Click **Activate SSL** for your domain
-4. Choose **Let's Encrypt** (free) or upload custom certificate
-5. Wait 10-30 minutes for certificate activation
-6. IONOS automatically configures HTTPS
-
-### Force HTTPS (Optional)
-
-Add to `.htaccess` (modify `scripts/setup-htaccess.sh`):
-
-```apache
-# Force HTTPS
-RewriteEngine On
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-```
-
-## 🧪 Step 8: Deployment Verification
-
-### Automated Checks (Included in Workflow)
+### Automated Verification
 
 The workflow automatically verifies:
-- ✅ Website is accessible (HTTP 200)
-- ✅ PHP file responds correctly (HTTP 405 for GET)
-- ✅ Files uploaded successfully
+- Homepage is accessible
+- Form endpoint responds correctly
+- Deployment completed successfully
 
-### Manual Verification Checklist
+### Manual Verification
 
-After deployment, manually verify:
+After deployment, test the site:
 
-- [ ] Website loads at `https://newmexicosocialists.org`
-- [ ] All 19 memes display correctly
-- [ ] CSS and JavaScript load correctly
-- [ ] Form submission works
-- [ ] Form data saves to database
-- [ ] Email notification is sent
-- [ ] No PHP errors in logs
+1. **Homepage**: Visit https://newmexicosocialists.org
+   - Should load without errors
+   - Check that images load
+   - Verify styles are applied
 
-### Check PHP Error Logs
+2. **Form Submission**: Test the join form
+   - Fill out the form with test data
+   - Submit and verify success message
+   - Check admin email received notification
+   - Verify entry in database (via phpMyAdmin)
 
-If issues occur:
+3. **Database Connection**: Via phpMyAdmin
+   - Log in to phpMyAdmin
+   - Select your database
+   - Check `form_submissions` table
+   - Verify test entry appears
 
-1. Log in to IONOS Control Panel
-2. Navigate to **Hosting** → **Logs** → **Error Logs**
-3. Look for PHP errors related to `submit-form.php`
-4. Common issues:
-   - Database connection failed → Check DB credentials
-   - Undefined function → Check PHP version (needs 7.0+)
-   - Permission denied → Check file permissions
+### Using the Verification Script
 
-## 🐛 Troubleshooting Common Issues
+Run the included verification script locally:
 
-### Deployment Fails: "Permission denied (publickey)"
+```bash
+chmod +x scripts/deploy-check.sh
+./scripts/deploy-check.sh newmexicosocialists.org
+```
 
-**Cause**: SSH key not properly configured
+Expected output:
+```
+🔍 Checking deployment at newmexicosocialists.org...
+✅ Homepage accessible (HTTP 200)
+✅ Form endpoint accessible (HTTP 400)
+✅ Assets accessible (HTTP 200)
+✅ Deployment verified!
+```
 
-**Solutions**:
-1. Verify `SFTP_PRIVATE_KEY` secret contains entire private key
-2. Check key includes `-----BEGIN` and `-----END` headers
-3. Verify public key is uploaded to IONOS
-4. Test SSH connection locally first
+## Rollback Procedure
 
-### Deployment Fails: "Connection refused"
+If a deployment causes issues, you can quickly roll back:
 
-**Cause**: Wrong SFTP hostname or port
+### Option 1: Revert via Git
 
-**Solutions**:
-1. Verify `SFTP_HOST` matches IONOS provided hostname
-2. Verify `SFTP_PORT` is 22 (default for SFTP)
-3. Check IONOS Control Panel for correct connection details
+```bash
+# Find the commit to revert to
+git log --oneline
 
-### Deployment Succeeds but Site Shows Errors
+# Revert to previous commit
+git revert <commit-hash>
+git push origin netlify-working-backup
 
-**Cause**: Environment variables not loading
+# This automatically triggers a new deployment
+```
 
-**Solutions**:
-1. Check `.htaccess` was uploaded (not in `.gitignore` during upload)
-2. Verify IONOS supports `SetEnv` directives
-3. Check PHP version is 7.0+ (older versions may not support `getenv()`)
-4. Test by adding debug to `submit-form.php`:
-   ```php
-   var_dump(getenv('DB_HOST')); exit;
-   ```
+### Option 2: Revert in GitHub UI
 
-### Form Submission Returns Database Error
+1. Go to **Commits** in your repository
+2. Find the problematic commit
+3. Click **...** → **Revert**
+4. Create revert commit
+5. This automatically triggers redeployment
 
-**Cause**: Database credentials incorrect
+### Option 3: Manual SFTP Restore
 
-**Solutions**:
-1. Verify `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS` in GitHub Secrets
-2. Test credentials in phpMyAdmin
-3. Check database user has proper permissions
-4. Verify database exists and schema is imported
+If automated rollback fails:
 
-### No Email Notifications
+1. Connect via SFTP client (FileZilla, WinSCP, etc.)
+2. Use stored backup files
+3. Manually restore previous version
 
-**Cause**: Email configuration issue
+## Local Development
 
-**Solutions**:
-1. Check spam/junk folder
-2. Verify `ADMIN_EMAIL` is correct in GitHub Secrets
-3. Verify `FROM_EMAIL_DOMAIN` matches your IONOS domain
-4. Contact IONOS to ensure PHP `mail()` is enabled
-5. Consider using transactional email service (SendGrid, Mailgun)
+### Setup Local Environment
 
-### Files Not Uploading via SFTP
-
-**Cause**: Directory structure or permissions
-
-**Solutions**:
-1. Verify files exist in repository before deployment
-2. Check SFTP batch commands in workflow logs
-3. Verify `assets/` directory structure matches expected
-4. Check IONOS disk quota (may be full)
-
-### Workflow Shows "Warning: Website not accessible"
-
-**Cause**: DNS propagation delay or IONOS downtime
-
-**Solutions**:
-1. Wait 5-10 minutes and check again
-2. Verify domain is correctly pointed to IONOS
-3. Check IONOS status page for outages
-4. Test with direct IP address instead of domain
-
-## 🔄 Step 9: Rollback Procedures
-
-If a deployment breaks the site:
-
-### Quick Rollback via FTP
-
-1. Connect to IONOS via FTP/SFTP
-2. Download current files as backup
-3. Upload previous working version
-4. Test site functionality
-
-### Rollback via GitHub
-
-1. Identify last working commit:
+1. **Copy environment template**:
    ```bash
-   git log --oneline
+   cp .env.example .env
    ```
-2. Revert to that commit:
+
+2. **Update `.env` with your local credentials**:
+   ```
+   DB_HOST=localhost
+   DB_NAME=nm_socialists_local
+   DB_USER=root
+   DB_PASS=your_local_password
+   ADMIN_EMAIL=you@example.com
+   FROM_EMAIL_DOMAIN=localhost
+   ```
+
+3. **Set up local database**:
    ```bash
-   git revert HEAD
-   git push origin main
+   # Import schema to local MySQL
+   mysql -u root -p nm_socialists_local < database-schema.sql
    ```
-3. Deployment automatically runs with reverted code
 
-### Emergency Manual Upload
+4. **Start local PHP server**:
+   ```bash
+   php -S localhost:8000
+   ```
 
-If automated deployment is broken:
+5. **Test locally**:
+   - Open http://localhost:8000
+   - Test form submission
 
-1. Use FileZilla or similar FTP client
-2. Connect with IONOS FTP credentials
-3. Upload files manually:
-   - `index.html`
-   - `submit-form.php`
-   - `assets/` directory
-4. Create `.htaccess` manually with environment variables
-5. Fix automated deployment before next push
+**Important:** Never commit your `.env` file! It's in `.gitignore` to prevent this.
 
-## 📝 Step 10: Best Practices
+### Local PHP Configuration
 
-### Security
+For local development, PHP's `getenv()` won't work the same as on IONOS. Options:
 
-- ✅ Never commit `.htaccess` with real credentials
-- ✅ Never commit `.env` files with real credentials
-- ✅ Rotate SSH keys every 6-12 months
-- ✅ Use strong database passwords (20+ characters)
-- ✅ Regularly audit GitHub Secrets access
-- ✅ Enable 2FA on GitHub and IONOS accounts
+1. **Use fallback values** (already in `submit-form.php`)
+2. **Use PHP's built-in `.env` loader** (requires `vlucas/phpdotenv` package)
+3. **Manually set environment variables** before starting PHP server:
+   ```bash
+   export DB_HOST=localhost
+   export DB_NAME=nm_socialists_local
+   php -S localhost:8000
+   ```
 
-### Development Workflow
+## Troubleshooting
 
-- ✅ Test changes locally before pushing
-- ✅ Use feature branches for major changes
-- ✅ Review deployment logs after each push
-- ✅ Keep `main` branch always deployable
-- ✅ Use `workflow_dispatch` for manual deploys during testing
+### Deployment Fails
 
-### Monitoring
+**Symptom**: GitHub Actions workflow fails
 
-- ✅ Check deployment status after every push
-- ✅ Monitor form submissions in phpMyAdmin weekly
-- ✅ Review PHP error logs monthly
-- ✅ Test form submission functionality monthly
-- ✅ Verify email notifications are working
+**Common Causes**:
 
-### Backups
+1. **Incorrect SFTP credentials**
+   - Verify `IONOS_FTP_HOST`, `IONOS_FTP_USER`, `IONOS_FTP_PASS`
+   - Test credentials with FTP client
 
-- ✅ Export database monthly via phpMyAdmin
-- ✅ Keep local copy of all website files
-- ✅ Store SSH keys securely (password manager or vault)
-- ✅ Document all IONOS credentials in secure location
+2. **Wrong remote path**
+   - IONOS usually uses `/httpdocs/`
+   - Some accounts may use `/`
+   - Check IONOS documentation
 
-## 🆘 Getting Help
+3. **File permission issues**
+   - Ensure SFTP user has write permissions
+   - Check IONOS file manager permissions
+
+**Solution**: 
+- Review workflow logs in GitHub Actions
+- Verify all secrets are set correctly
+- Test SFTP connection manually
+
+### Form Submission Fails
+
+**Symptom**: Form returns error when submitting
+
+**Common Causes**:
+
+1. **Database connection fails**
+   - Verify `IONOS_DB_HOST`, `IONOS_DB_NAME`, `IONOS_DB_USER`, `IONOS_DB_PASS`
+   - Check database exists in IONOS panel
+   - Verify table `form_submissions` exists
+
+2. **Environment variables not set**
+   - Check `.htaccess` file uploaded to server
+   - Verify Apache `mod_env` enabled (usually is on IONOS)
+   - Check PHP `getenv()` works on server
+
+3. **PHP errors**
+   - Check IONOS error logs
+   - Enable temporary error display for debugging
+
+**Solution**:
+- Test database connection via phpMyAdmin
+- Add debug logging to `submit-form.php`:
+  ```php
+  error_log("DB_HOST: " . getenv('DB_HOST'));
+  ```
+
+### Email Not Received
+
+**Symptom**: Form submits successfully but no email
+
+**Common Causes**:
+
+1. **IONOS mail() function restrictions**
+   - Some hosting packages restrict `mail()`
+   - May require authenticated SMTP
+
+2. **Email marked as spam**
+   - Check spam folder
+   - Verify `FROM_EMAIL_DOMAIN` matches your domain
+
+3. **Incorrect admin email**
+   - Verify `ADMIN_EMAIL` secret
+   - Check for typos
+
+**Solution**:
+- Check database - if entry exists, form works but email failed
+- Contact IONOS support about mail() function
+- Consider using SMTP library (PHPMailer)
+
+### Site Shows 500 Error
+
+**Symptom**: Site returns HTTP 500 Internal Server Error
+
+**Common Causes**:
+
+1. **PHP syntax error**
+   - Check PHP version compatibility
+   - Review error logs
+
+2. **`.htaccess` misconfiguration**
+   - Syntax error in `.htaccess`
+   - Unsupported directives
+
+3. **File permissions**
+   - Scripts need 644 permissions
+   - Directories need 755 permissions
+
+**Solution**:
+- Check IONOS error logs
+- Temporarily rename `.htaccess` to test
+- Verify PHP version (IONOS usually supports 7.4+)
+
+### Workflow Secrets Not Found
+
+**Symptom**: Workflow fails with "secret not found" error
+
+**Solution**:
+1. Go to Settings → Secrets → Actions
+2. Verify all required secrets are added
+3. Check secret names match exactly (case-sensitive)
+4. Re-run workflow
+
+### SFTP Connection Times Out
+
+**Symptom**: "Connection timeout" in workflow logs
+
+**Solution**:
+1. Verify `IONOS_FTP_HOST` is correct
+2. Check IONOS firewall settings
+3. Try increasing timeout in workflow:
+   ```yaml
+   args: '-o ConnectTimeout=30'
+   ```
+
+## Security Best Practices
+
+### ✅ Do's
+
+- ✅ **Use GitHub Secrets** for all credentials
+- ✅ **Never commit `.env` files** with real credentials
+- ✅ **Regularly rotate passwords** (database, FTP)
+- ✅ **Use strong passwords** (16+ characters, mixed case, symbols)
+- ✅ **Review deployment logs** for security issues
+- ✅ **Keep PHP and dependencies updated**
+- ✅ **Monitor form submissions** for suspicious activity
+- ✅ **Use HTTPS only** (IONOS provides free SSL)
+- ✅ **Backup database regularly** via IONOS panel
+
+### ❌ Don'ts
+
+- ❌ **Never commit credentials to Git**
+- ❌ **Don't share secrets** via insecure channels
+- ❌ **Don't use simple passwords** like "password123"
+- ❌ **Don't disable security headers** in `.htaccess`
+- ❌ **Don't expose database schema** publicly
+- ❌ **Don't use FTP** (use SFTP only)
+- ❌ **Don't commit `.htaccess`** with real values
+
+### Regular Security Checklist
+
+Weekly:
+- [ ] Review form submissions for spam
+- [ ] Check email notifications are working
+- [ ] Verify site is accessible and fast
+
+Monthly:
+- [ ] Review GitHub Actions logs
+- [ ] Check for failed login attempts in IONOS
+- [ ] Verify database backups are current
+- [ ] Update dependencies if needed
+
+Quarterly:
+- [ ] Rotate FTP password
+- [ ] Rotate database password
+- [ ] Review and update secrets in GitHub
+- [ ] Test rollback procedure
+
+## Support
 
 ### Resources
 
-- **IONOS Support**: https://www.ionos.com/help/
-- **IONOS Control Panel**: https://my.ionos.com/
-- **GitHub Actions Documentation**: https://docs.github.com/en/actions
-- **Repository Issues**: Use GitHub Issues for code-related problems
+- [IONOS Web Hosting Documentation](https://www.ionos.com/help/web-hosting/)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [PHP getenv() Documentation](https://www.php.net/manual/en/function.getenv.php)
 
-### Support Contacts
+### Getting Help
 
-- **Technical Issues**: xava@newmexicosocialists.org
-- **IONOS Hosting Support**: Contact via IONOS Control Panel
-- **GitHub Repository**: Open an issue with detailed error logs
+1. **Check GitHub Actions logs** - Most errors show here
+2. **Check IONOS error logs** - Available in hosting panel
+3. **Review this guide** - Covers common issues
+4. **Contact IONOS support** - For hosting-specific issues
+5. **Create GitHub issue** - For code/workflow issues
 
-## 📚 Additional Documentation
+## Summary
 
-- **Manual Deployment**: See `IONOS-DEPLOYMENT.md` for FTP-based deployment
-- **Database Schema**: See `database-schema.sql` for table structure
-- **Local Development**: See `.env.example` for environment variable template
-- **Scripts**:
-  - `scripts/setup-htaccess.sh`: Generate .htaccess file
-  - `scripts/deploy.sh`: Complete deployment script
+This deployment system provides:
 
-## 🎉 Success!
+- **Security**: Zero credentials in code, all via encrypted GitHub Secrets
+- **Automation**: Push to deploy, no manual FTP needed
+- **Reliability**: Automated verification catches issues immediately  
+- **Simplicity**: One-time setup, then push-to-deploy
+- **Rollback**: Easy revert via Git if issues occur
 
-You've successfully set up automated, secure deployment to IONOS! 
+After initial setup with GitHub Secrets, deployment is as simple as:
 
-Every push to `main` or `netlify-working-backup` now automatically:
-1. ✅ Generates secure `.htaccess` with environment variables
-2. ✅ Uploads files via SFTP
-3. ✅ Sets correct permissions
-4. ✅ Verifies deployment success
+```bash
+git push origin netlify-working-backup
+```
 
-No more manual FTP uploads! 🚀
+The site automatically updates at https://newmexicosocialists.org with zero manual steps!

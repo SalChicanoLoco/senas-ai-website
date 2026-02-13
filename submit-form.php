@@ -13,26 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Database configuration - reads from environment variables
+// Database configuration - Reads from environment variables set by deployment
+// On IONOS, these are set via .htaccess or server config
+// Fallback values are for local development only
 define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: null);
-define('DB_USER', getenv('DB_USER') ?: null);
-define('DB_PASS', getenv('DB_PASS') ?: null);
+define('DB_NAME', getenv('DB_NAME') ?: 'your_database_name');
+define('DB_USER', getenv('DB_USER') ?: 'your_database_user');
+define('DB_PASS', getenv('DB_PASS') ?: 'your_database_pass');
 
-// Validate critical database configuration
-if (!DB_NAME || !DB_USER || !DB_PASS) {
-    error_log('Database configuration error: DB_NAME, DB_USER, and DB_PASS must be set');
-    http_response_code(500);
-    header('Content-Type: application/json');
-    echo json_encode([
-        'success' => false,
-        'message' => 'Server configuration error. Please contact the administrator.'
-    ]);
-    exit;
-}
-
-// Email configuration - reads from environment variables
-define('ADMIN_EMAIL', getenv('ADMIN_EMAIL') ?: 'xava@newmexicosocialists.org');
+// Email configuration - Also from environment
+define('ADMIN_EMAIL', getenv('ADMIN_EMAIL') ?: 'admin@example.com');
 define('FROM_NAME', 'New Mexico Socialists Website');
 define('FROM_EMAIL_DOMAIN', getenv('FROM_EMAIL_DOMAIN') ?: 'newmexicosocialists.org');
 
