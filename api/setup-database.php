@@ -23,7 +23,16 @@ if (!file_exists('../config.php')) {
 require_once '../config.php';
 
 // Security: Require a setup key
-$required_key = defined('SETUP_KEY') ? SETUP_KEY : 'change-me-in-production';
+if (!defined('SETUP_KEY')) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'SETUP_KEY not configured. Define SETUP_KEY in config.php.'
+    ]);
+    exit;
+}
+
+$required_key = SETUP_KEY;
 $provided_key = $_GET['key'] ?? '';
 
 if ($provided_key !== $required_key) {

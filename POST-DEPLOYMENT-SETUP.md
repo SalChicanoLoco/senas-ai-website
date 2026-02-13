@@ -4,8 +4,10 @@ After deploying the code to IONOS, you need to initialize the database for form 
 
 ## Method 1: Automated Setup (Recommended)
 
-1. Visit: `https://newmexicosocialists.org/api/setup-database.php?key=nmsocialists-setup-2026`
-2. You should see a success message like:
+1. Find your SETUP_KEY in the `config.php` file (or set it via environment variables)
+2. Visit: `https://newmexicosocialists.org/api/setup-database.php?key=YOUR_SETUP_KEY_HERE`
+   (Replace YOUR_SETUP_KEY_HERE with the actual value from config.php)
+3. You should see a success message like:
    ```json
    {
      "success": true,
@@ -17,7 +19,19 @@ After deploying the code to IONOS, you need to initialize the database for form 
    ```
 
 3. Verify the setup by visiting: `https://newmexicosocialists.org/api/health-check.php`
-4. You should see all checks passing:
+
+You should see all checks passing:
+   ```json
+   {
+     "success": true,
+     "status": "healthy",
+     "checks": {
+       "config": { "status": "pass" },
+       "connection": { "status": "pass" },
+       "table": { "status": "pass", "rows": 0 }
+     }
+   }
+   ```
    ```json
    {
      "success": true,
