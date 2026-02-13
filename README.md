@@ -106,3 +106,4 @@ Content and code created for New Mexico Socialists organizing work.
 
 # Automated IONOS Deployment - Live!
 # Fixed SFTP credentials - deploying now!
+# SFTP credentials fixed - deploying to IONOS
