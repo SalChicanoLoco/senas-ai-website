@@ -49,21 +49,35 @@ jobs:
         echo "🔍 Checking deployment at https://$DOMAIN..."
         
         # Check homepage loads (allow 200 or 301/302 redirects)
-        HTTP_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" "https://$DOMAIN" || echo "failed")
+        set +e
+        HTTP_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" "https://$DOMAIN" 2>/dev/null)
+        CURL_EXIT=$?
+        set -e
         
-        if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
-          echo "✅ Homepage accessible (HTTP $HTTP_CODE)"
+        if [ $CURL_EXIT -eq 0 ]; then
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+            echo "✅ Homepage accessible (HTTP $HTTP_CODE)"
+          else
+            echo "⚠️  Homepage returned HTTP $HTTP_CODE (may need manual verification)"
+          fi
         else
-          echo "⚠️  Homepage returned HTTP $HTTP_CODE (may need manual verification)"
+          echo "⚠️  Homepage check failed: unable to connect (may need manual verification)"
         fi
         
         # Check form endpoint exists (POST without data will return 400, which is expected)
-        FORM_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" -X POST "https://$DOMAIN/submit-form.php" || echo "failed")
+        set +e
+        FORM_CODE=$(curl -L -s -o /dev/null -w "%{http_code}" -X POST "https://$DOMAIN/submit-form.php" 2>/dev/null)
+        CURL_EXIT=$?
+        set -e
         
-        if [ "$FORM_CODE" = "400" ] || [ "$FORM_CODE" = "200" ]; then
-          echo "✅ Form endpoint accessible (HTTP $FORM_CODE)"
+        if [ $CURL_EXIT -eq 0 ]; then
+          if [ "$FORM_CODE" = "400" ] || [ "$FORM_CODE" = "200" ]; then
+            echo "✅ Form endpoint accessible (HTTP $FORM_CODE)"
+          else
+            echo "⚠️  Form endpoint returned HTTP $FORM_CODE (may need manual verification)"
+          fi
         else
-          echo "⚠️  Form endpoint returned HTTP $FORM_CODE (may need manual verification)"
+          echo "⚠️  Form endpoint check failed: unable to connect (may need manual verification)"
         fi
         
         echo ""
