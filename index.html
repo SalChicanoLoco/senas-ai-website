@@ -69,6 +69,14 @@
       </div>
     </section>
 
+    <section class="member-counter">
+      <div class="counter-display">
+        <span class="count" id="memberCount">...</span>
+        <p class="label">comrades organizing for socialism in New Mexico</p>
+        <p class="label-es">camaradas organizando por el socialismo en Nuevo México</p>
+      </div>
+    </section>
+
     <section id="about" class="section two-col">
       <div>
         <h3>About New Mexico Socialists</h3>
@@ -104,31 +112,62 @@
       <form id="join-form" class="card" method="post" action="submit-form.php">
 
         <div class="field">
-          <label for="name">Name / Nombre</label>
-          <input type="text" id="name" name="name" required />
+          <label for="name">Name (optional) / Nombre (opcional)</label>
+          <input type="text" id="name" name="name" 
+            placeholder="Name (optional, defaults to Anonymous) / Nombre (opcional)" />
         </div>
         <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required />
+          <label for="email">Email (required) / Correo electrónico (requerido) <span class="required">*</span></label>
+          <input type="email" id="email" name="email" required 
+            placeholder="Email (required) / Correo electrónico (requerido)" />
         </div>
         <div class="field">
-          <label for="city">City / Pueblo</label>
-          <input type="text" id="city" name="city" />
-        </div>
-        <div class="field">
-          <label for="language">Preferred language / Idioma preferido</label>
-          <select id="language" name="language">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="both">Both / Ambos</option>
+          <label for="country">Country / País <span class="required">*</span></label>
+          <select id="country" name="country" required>
+            <option value="">Select / Seleccionar...</option>
+            <option value="United States">United States / Estados Unidos</option>
+            <option value="Mexico">Mexico / México</option>
+            <option value="Canada">Canada / Canadá</option>
+            <option disabled>──────────</option>
+            <option value="Argentina">Argentina</option>
+            <option value="Bolivia">Bolivia</option>
+            <option value="Brazil">Brazil / Brasil</option>
+            <option value="Chile">Chile</option>
+            <option value="Colombia">Colombia</option>
+            <option value="Costa Rica">Costa Rica</option>
+            <option value="Cuba">Cuba</option>
+            <option value="Dominican Republic">Dominican Republic / República Dominicana</option>
+            <option value="Ecuador">Ecuador</option>
+            <option value="El Salvador">El Salvador</option>
+            <option value="Guatemala">Guatemala</option>
+            <option value="Honduras">Honduras</option>
+            <option value="Nicaragua">Nicaragua</option>
+            <option value="Panama">Panama / Panamá</option>
+            <option value="Paraguay">Paraguay</option>
+            <option value="Peru">Peru / Perú</option>
+            <option value="Puerto Rico">Puerto Rico</option>
+            <option value="Spain">Spain / España</option>
+            <option value="Uruguay">Uruguay</option>
+            <option value="Venezuela">Venezuela</option>
+            <option value="Other">Other / Otro</option>
           </select>
         </div>
         <div class="field">
-          <label for="interests">How do you want to plug in? / ¿Cómo quieres participar?</label>
-          <textarea id="interests" name="interests" rows="3"
-            placeholder="Events, memes & design, political education, mutual aid, etc."></textarea>
+          <label for="state">State/Province / Estado/Provincia <span class="required">*</span></label>
+          <input type="text" id="state" name="state" required 
+            placeholder="e.g., New Mexico, Nuevo México, etc." />
         </div>
-        <button type="submit" class="btn primary full-width">Submit / Enviar</button>
+        <div class="field">
+          <label for="city">City / Ciudad <span class="required">*</span></label>
+          <input type="text" id="city" name="city" required 
+            placeholder="e.g., Santa Fe, Albuquerque, etc." />
+        </div>
+        <div class="field">
+          <label for="zip_code">Zip/Postal Code / Código Postal <span class="required">*</span></label>
+          <input type="text" id="zip_code" name="zip_code" required 
+            placeholder="e.g., 87501" />
+        </div>
+        <button type="submit" class="btn primary full-width">¡Únete! / Join Us!</button>
         <p id="join-status" class="status-msg"></p>
       </form>
 

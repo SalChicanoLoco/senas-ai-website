@@ -61,9 +61,10 @@ function send_notification($data) {
     $message = "New member signup received:\n\n";
     $message .= "Name: " . $data['name'] . "\n";
     $message .= "Email: " . $data['email'] . "\n";
-    $message .= "City: " . ($data['city'] ?: 'Not provided') . "\n";
-    $message .= "Preferred Language: " . $data['language'] . "\n";
-    $message .= "Interests: " . ($data['interests'] ?: 'Not provided') . "\n";
+    $message .= "Country: " . $data['country'] . "\n";
+    $message .= "State/Province: " . $data['state'] . "\n";
+    $message .= "City: " . $data['city'] . "\n";
+    $message .= "Zip/Postal Code: " . $data['zip_code'] . "\n";
     $message .= "\nSubmitted: " . date('Y-m-d H:i:s') . "\n";
     $message .= "IP Address: " . $data['ip_address'] . "\n";
     
@@ -79,17 +80,19 @@ function send_notification($data) {
 
 try {
     // Get form data
-    $name = isset($_POST['name']) ? sanitize_input($_POST['name']) : '';
+    $name = isset($_POST['name']) ? sanitize_input($_POST['name']) : 'Anonymous';
     $email = isset($_POST['email']) ? sanitize_input($_POST['email']) : '';
+    $country = isset($_POST['country']) ? sanitize_input($_POST['country']) : '';
+    $state = isset($_POST['state']) ? sanitize_input($_POST['state']) : '';
     $city = isset($_POST['city']) ? sanitize_input($_POST['city']) : '';
-    $language = isset($_POST['language']) ? sanitize_input($_POST['language']) : 'both';
-    $interests = isset($_POST['interests']) ? sanitize_input($_POST['interests']) : '';
+    $zip_code = isset($_POST['zip_code']) ? sanitize_input($_POST['zip_code']) : '';
     
-    // Validate required fields
+    // Default to Anonymous if name is empty
     if (empty($name)) {
-        throw new InvalidArgumentException('Name is required / El nombre es requerido');
+        $name = 'Anonymous';
     }
     
+    // Validate required fields
     if (empty($email)) {
         throw new InvalidArgumentException('Email is required / El correo electrónico es requerido');
     }
@@ -98,10 +101,20 @@ try {
         throw new InvalidArgumentException('Invalid email address / Dirección de correo electrónico no válida');
     }
     
-    // Validate language field
-    $valid_languages = ['en', 'es', 'both'];
-    if (!in_array($language, $valid_languages)) {
-        $language = 'both';
+    if (empty($country)) {
+        throw new InvalidArgumentException('Country is required / El país es requerido');
+    }
+    
+    if (empty($state)) {
+        throw new InvalidArgumentException('State/Province is required / El estado/provincia es requerido');
+    }
+    
+    if (empty($city)) {
+        throw new InvalidArgumentException('City is required / La ciudad es requerida');
+    }
+    
+    if (empty($zip_code)) {
+        throw new InvalidArgumentException('Zip/Postal code is required / El código postal es requerido');
     }
     
     // Get IP address (use first IP from X-Forwarded-For if present)
@@ -129,8 +142,8 @@ try {
     
     // Prepare SQL statement
     $stmt = $conn->prepare(
-        "INSERT INTO form_submissions (name, email, city, language, interests, submitted_at, ip_address) 
-         VALUES (?, ?, ?, ?, ?, NOW(), ?)"
+        "INSERT INTO form_submissions (name, email, country, state, city, zip_code, submitted_at, ip_address) 
+         VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)"
     );
     
     if (!$stmt) {
@@ -138,7 +151,7 @@ try {
     }
     
     // Bind parameters
-    $stmt->bind_param('ssssss', $name, $email, $city, $language, $interests, $ip_address);
+    $stmt->bind_param('sssssss', $name, $email, $country, $state, $city, $zip_code, $ip_address);
     
     // Execute statement
     if (!$stmt->execute()) {
@@ -153,9 +166,10 @@ try {
     $email_data = [
         'name' => $name,
         'email' => $email,
+        'country' => $country,
+        'state' => $state,
         'city' => $city,
-        'language' => $language,
-        'interests' => $interests,
+        'zip_code' => $zip_code,
         'ip_address' => $ip_address
     ];
     

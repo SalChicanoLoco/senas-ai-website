@@ -6,14 +6,15 @@
 -- Using BIGINT for id to support large numbers of submissions over time
 CREATE TABLE IF NOT EXISTS `form_submissions` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NOT NULL DEFAULT 'Anonymous',
   `email` VARCHAR(255) NOT NULL,
-  `city` VARCHAR(255) DEFAULT NULL,
-  `language` VARCHAR(10) DEFAULT 'both',
-  `interests` TEXT DEFAULT NULL,
+  `country` VARCHAR(100) NOT NULL,
+  `state` VARCHAR(100) NOT NULL,
+  `city` VARCHAR(100) NOT NULL,
+  `zip_code` VARCHAR(20) NOT NULL,
   `submitted_at` DATETIME NOT NULL,
   `ip_address` VARCHAR(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_email` (`email`),
+  UNIQUE KEY `idx_email` (`email`),
   KEY `idx_submitted_at` (`submitted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -155,4 +155,90 @@ document.addEventListener("DOMContentLoaded", () => {
       openMemeModal(src);
     });
   });
+
+  // Member counter functionality
+  const memberCountEl = document.getElementById("memberCount");
+  const MEMBER_COUNT_URL = '/api/get-member-count.php';
+  const CACHE_KEY = 'memberCount';
+  const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+
+  /**
+   * Animate count from 0 to target with easing
+   */
+  function animateCount(element, target) {
+    const duration = 1500; // 1.5 seconds
+    const start = 0;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Easing function (ease-out cubic)
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      
+      const current = Math.floor(start + (target - start) * easeProgress);
+      element.textContent = current.toLocaleString();
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        element.textContent = target.toLocaleString();
+      }
+    }
+    
+    requestAnimationFrame(update);
+  }
+
+  /**
+   * Fetch member count from API or cache
+   */
+  async function fetchMemberCount() {
+    if (!memberCountEl) return;
+    
+    try {
+      // Check cache first
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const data = JSON.parse(cached);
+        const now = Date.now();
+        
+        // Use cached data if less than or equal to 1 hour old
+        if (now - data.timestamp <= CACHE_DURATION) {
+          animateCount(memberCountEl, data.count);
+          return;
+        }
+      }
+      
+      // Fetch from API
+      const response = await fetch(MEMBER_COUNT_URL);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch member count');
+      }
+      
+      const result = await response.json();
+      
+      if (result.success && typeof result.count === 'number') {
+        // Cache the result
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          count: result.count,
+          timestamp: Date.now()
+        }));
+        
+        // Animate the count
+        animateCount(memberCountEl, result.count);
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (error) {
+      console.error('Error fetching member count:', error);
+      // Display fallback text
+      memberCountEl.textContent = '---';
+      memberCountEl.style.opacity = '0.5';
+    }
+  }
+
+  // Fetch member count on page load
+  fetchMemberCount();
 });
