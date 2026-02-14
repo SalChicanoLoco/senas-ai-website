@@ -1,4 +1,4 @@
-# Señas AI Website
+# Sena's AI Tech Website
 
 Welcome to Señas AI - an AI-powered sign language recognition platform designed to bridge communication gaps and make the world more accessible.
 
