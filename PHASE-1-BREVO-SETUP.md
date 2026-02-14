@@ -9,7 +9,7 @@
 ### Why Brevo?
 
 **FREE Tier Benefits:**
-- ✅ **300 emails per day** on Free Plan (9,000/month)
+- ✅ **300 emails per day** on Free Plan (~9,000/month depending on month length)
 - ✅ **Unlimited contacts** - no contact limit restrictions
 - ✅ **No server needed** - cloud-based platform
 - ✅ **Professional email infrastructure** - SPF, DKIM, DMARC included
@@ -316,29 +316,35 @@ Add Brevo configuration to your existing `config.php`:
 
 ```php
 <?php
-// IONOS Database Configuration
-define('DB_HOST', 'db5019682681.hosting-data.io');
-define('DB_NAME', 'dbs5019682681');
-define('DB_USER', 'dbu5019682681');
-define('DB_PASS', 'yXSXxlB2!nvjz0o');
+// IONOS Database Configuration (EXISTING - DO NOT CHANGE)
+define('DB_HOST', 'your-database-host.hosting-data.io');
+define('DB_NAME', 'your-database-name');
+define('DB_USER', 'your-database-user');
+define('DB_PASS', 'your-database-password');
 define('DB_CHARSET', 'utf8mb4');
 
-// Email Configuration
+// Email Configuration (EXISTING - DO NOT CHANGE)
 define('NOTIFICATION_EMAIL', 'xava@newmexicosocialists.org');
 
-// Setup Key (for database initialization script)
-define('SETUP_KEY', 'nmsocialists-setup-2026');
+// Setup Key (EXISTING - DO NOT CHANGE)
+define('SETUP_KEY', 'your-setup-key');
 
-// === BREVO API CONFIGURATION ===
+// === BREVO API CONFIGURATION (ADD THESE NEW LINES) ===
 // Get API key from: Settings → SMTP & API → API Keys
-define('BREVO_API_KEY', 'xkeysib-YOUR-API-KEY-HERE');
+// ⚠️ SECURITY: Replace with your actual API key - NEVER commit real credentials to git!
+define('BREVO_API_KEY', 'xkeysib-YOUR-ACTUAL-API-KEY-HERE');
 
-// Get List ID from: Contacts → Lists (look at URL)
-define('BREVO_LIST_ID', 12345); // Replace with your actual List ID
+// Get List ID from: Contacts → Lists (look at URL - it's the number at the end)
+define('BREVO_LIST_ID', 12345); // Replace with your actual List ID (numeric)
 ?>
 ```
 
-**⚠️ Security:** Make sure `config.php` is protected by `.htaccess` and NOT in git repository!
+**⚠️ CRITICAL SECURITY NOTES:**
+- **NEVER commit real credentials** to version control (git)
+- Keep `config.php` protected by `.htaccess` (should already be configured)
+- Store `config.php` outside the web root if possible
+- Use environment variables for production deployments
+- Only add the BREVO lines shown above - keep all existing database credentials unchanged!
 
 ### Step 4: Add Brevo Integration Function
 
