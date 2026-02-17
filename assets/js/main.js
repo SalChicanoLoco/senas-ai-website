@@ -34,9 +34,18 @@ document.addEventListener("DOMContentLoaded", () => {
       // Validate phone format if provided
       const phone = form.querySelector('#phone').value.trim();
       if (phone) {
+        // Check for valid characters
         const phoneRegex = /^[\d\s\-\(\)\+]+$/;
         if (!phoneRegex.test(phone)) {
           statusEl.textContent = 'Please enter a valid phone number.\nPor favor ingresa un número de teléfono válido.';
+          statusEl.style.color = "#ffb3b3";
+          return false;
+        }
+        
+        // Check minimum digit count (must have at least 10 digits)
+        const phoneDigits = phone.replace(/\D/g, '');
+        if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+          statusEl.textContent = 'Phone number must contain 10-15 digits.\nEl número de teléfono debe tener 10-15 dígitos.';
           statusEl.style.color = "#ffb3b3";
           return false;
         }

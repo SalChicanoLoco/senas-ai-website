@@ -35,6 +35,10 @@ define('ADMIN_EMAIL', NOTIFICATION_EMAIL);
 define('FROM_NAME', 'New Mexico Socialists Website');
 define('FROM_EMAIL_DOMAIN', 'newmexicosocialists.org');
 
+// Phone validation constants
+define('MIN_PHONE_DIGITS', 10);
+define('MAX_PHONE_DIGITS', 15);
+
 // Set JSON response header
 header('Content-Type: application/json');
 
@@ -55,7 +59,7 @@ function validate_email($email) {
 /**
  * Add contact to Brevo mailing list
  */
-function add_to_brevo($email, $name, $city, $state, $country, $zip_code) {
+function add_to_brevo($email, $display_name, $city, $state, $country, $zip_code) {
     if (!defined('BREVO_API_KEY')) {
         error_log('Brevo API key not configured');
         return false;
@@ -64,7 +68,7 @@ function add_to_brevo($email, $name, $city, $state, $country, $zip_code) {
     $data = [
         'email' => $email,
         'attributes' => [
-            'FIRSTNAME' => $name ?: 'Anonymous',
+            'FIRSTNAME' => $display_name ?: 'Anonymous',
             'CITY' => $city,
             'STATE' => $state,
             'COUNTRY' => $country,
@@ -89,6 +93,15 @@ function add_to_brevo($email, $name, $city, $state, $country, $zip_code) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     
     $response = curl_exec($ch);
+    
+    // Check for cURL errors
+    if ($response === false) {
+        $curl_error = curl_error($ch);
+        curl_close($ch);
+        error_log('Brevo API cURL error: ' . $curl_error);
+        return false;
+    }
+    
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     
@@ -238,7 +251,7 @@ try {
     if (!empty($phone)) {
         // Remove all non-numeric characters for validation
         $phone_clean = preg_replace('/[^\d]/', '', $phone);
-        if (strlen($phone_clean) < 10 || strlen($phone_clean) > 15) {
+        if (strlen($phone_clean) < MIN_PHONE_DIGITS || strlen($phone_clean) > MAX_PHONE_DIGITS) {
             throw new InvalidArgumentException('Please enter a valid phone number / Por favor ingresa un número de teléfono válido');
         }
     }
