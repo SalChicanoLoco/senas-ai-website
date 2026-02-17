@@ -53,6 +53,55 @@ function validate_email($email) {
 }
 
 /**
+ * Add contact to Brevo mailing list
+ */
+function add_to_brevo($email, $name, $city, $state, $country, $zip_code) {
+    if (!defined('BREVO_API_KEY')) {
+        error_log('Brevo API key not configured');
+        return false;
+    }
+    
+    $data = [
+        'email' => $email,
+        'attributes' => [
+            'FIRSTNAME' => $name ?: 'Anonymous',
+            'CITY' => $city,
+            'STATE' => $state,
+            'COUNTRY' => $country,
+            'ZIP_CODE' => $zip_code
+        ],
+        'updateEnabled' => true // Update if contact already exists
+    ];
+    
+    // Add to list if LIST_ID is defined
+    if (defined('BREVO_LIST_ID') && BREVO_LIST_ID > 0) {
+        $data['listIds'] = [BREVO_LIST_ID];
+    }
+    
+    $ch = curl_init('https://api.brevo.com/v3/contacts');
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'api-key: ' . BREVO_API_KEY,
+        'accept: application/json',
+        'content-type: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    // Success: 201 (created) or 204 (updated)
+    if ($http_code === 201 || $http_code === 204) {
+        return true;
+    } else {
+        error_log('Brevo API error (HTTP ' . $http_code . '): ' . $response);
+        return false;
+    }
+}
+
+/**
  * Generate a cryptographically secure unsubscribe token
  */
 function generate_unsubscribe_token() {
@@ -125,7 +174,19 @@ function send_notification($data) {
     
     $message = "New member signup received:\n\n";
     $message .= "Name: " . $data['name'] . "\n";
+    
+    // Add alias if provided
+    if (!empty($data['alias'])) {
+        $message .= "Alias: " . $data['alias'] . "\n";
+    }
+    
     $message .= "Email: " . $data['email'] . "\n";
+    
+    // Add phone if provided
+    if (!empty($data['phone'])) {
+        $message .= "Phone: " . $data['phone'] . "\n";
+    }
+    
     $message .= "Country: " . $data['country'] . "\n";
     $message .= "State/Province: " . $data['state'] . "\n";
     $message .= "City: " . $data['city'] . "\n";
@@ -147,17 +208,22 @@ function send_notification($data) {
 
 try {
     // Get form data
-    $name = isset($_POST['name']) ? sanitize_input($_POST['name']) : 'Anonymous';
+    $name = isset($_POST['name']) ? sanitize_input($_POST['name']) : '';
+    $alias = isset($_POST['alias']) ? sanitize_input($_POST['alias']) : '';
     $email = isset($_POST['email']) ? sanitize_input($_POST['email']) : '';
+    $phone = isset($_POST['phone']) ? sanitize_input($_POST['phone']) : '';
     $country = isset($_POST['country']) ? sanitize_input($_POST['country']) : '';
     $state = isset($_POST['state']) ? sanitize_input($_POST['state']) : '';
     $city = isset($_POST['city']) ? sanitize_input($_POST['city']) : '';
     $zip_code = isset($_POST['zip_code']) ? sanitize_input($_POST['zip_code']) : '';
     
-    // Default to Anonymous if name is empty
-    if (empty($name)) {
-        $name = 'Anonymous';
+    // At least one must be provided: name OR alias
+    if (empty($name) && empty($alias)) {
+        throw new InvalidArgumentException('Please provide either your name or an alias / Por favor proporciona tu nombre o un alias');
     }
+
+    // Use alias as display name if no name provided
+    $display_name = !empty($name) ? $name : $alias;
     
     // Validate required fields
     if (empty($email)) {
@@ -166,6 +232,15 @@ try {
     
     if (!validate_email($email)) {
         throw new InvalidArgumentException('Invalid email address / Dirección de correo electrónico no válida');
+    }
+
+    // Phone is optional, but validate format if provided
+    if (!empty($phone)) {
+        // Remove all non-numeric characters for validation
+        $phone_clean = preg_replace('/[^\d]/', '', $phone);
+        if (strlen($phone_clean) < 10 || strlen($phone_clean) > 15) {
+            throw new InvalidArgumentException('Please enter a valid phone number / Por favor ingresa un número de teléfono válido');
+        }
     }
     
     if (empty($country)) {
@@ -210,18 +285,18 @@ try {
     // Generate unique unsubscribe token
     $unsubscribe_token = generate_unsubscribe_token();
     
-    // Prepare SQL statement (now includes unsubscribe_token)
+    // Prepare SQL statement (now includes alias and phone)
     $stmt = $conn->prepare(
-        "INSERT INTO form_submissions (name, email, country, state, city, zip_code, submitted_at, ip_address, unsubscribe_token) 
-         VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)"
+        "INSERT INTO form_submissions (name, alias, email, phone, country, state, city, zip_code, submitted_at, ip_address, unsubscribe_token) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)"
     );
     
     if (!$stmt) {
         throw new Exception('Database error. Please try again later.');
     }
     
-    // Bind parameters (added unsubscribe_token)
-    $stmt->bind_param('ssssssss', $name, $email, $country, $state, $city, $zip_code, $ip_address, $unsubscribe_token);
+    // Bind parameters (added alias and phone)
+    $stmt->bind_param('ssssssssss', $name, $alias, $email, $phone, $country, $state, $city, $zip_code, $ip_address, $unsubscribe_token);
     
     // Execute statement
     if (!$stmt->execute()) {
@@ -236,10 +311,19 @@ try {
     $stmt->close();
     $conn->close();
     
+    // Add to Brevo mailing list
+    $brevo_success = add_to_brevo($email, $display_name, $city, $state, $country, $zip_code);
+    if (!$brevo_success) {
+        error_log('Failed to add contact to Brevo: ' . $email);
+        // Don't fail the form submission, just log it
+    }
+    
     // Send email notifications
     $email_data = [
-        'name' => $name,
+        'name' => $display_name,
+        'alias' => $alias,
         'email' => $email,
+        'phone' => $phone,
         'country' => $country,
         'state' => $state,
         'city' => $city,

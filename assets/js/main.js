@@ -21,6 +21,27 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       
+      // Validate name OR alias is provided
+      const name = form.querySelector('#name').value.trim();
+      const alias = form.querySelector('#alias').value.trim();
+
+      if (!name && !alias) {
+        statusEl.textContent = 'Please provide either your name or an alias.\nPor favor proporciona tu nombre o un alias.';
+        statusEl.style.color = "#ffb3b3";
+        return false;
+      }
+
+      // Validate phone format if provided
+      const phone = form.querySelector('#phone').value.trim();
+      if (phone) {
+        const phoneRegex = /^[\d\s\-\(\)\+]+$/;
+        if (!phoneRegex.test(phone)) {
+          statusEl.textContent = 'Please enter a valid phone number.\nPor favor ingresa un número de teléfono válido.';
+          statusEl.style.color = "#ffb3b3";
+          return false;
+        }
+      }
+      
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
       
