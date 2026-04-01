@@ -1,0 +1,2 @@
+CREATE TABLE engagement_contacts (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), email VARCHAR(255), organization VARCHAR(255), interest VARCHAR(255), message TEXT, preferred_time VARCHAR(255), created_at DATETIME);
+CREATE TABLE newsletter_subscribers (id INT PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255), list_name VARCHAR(50), created_at DATETIME);
