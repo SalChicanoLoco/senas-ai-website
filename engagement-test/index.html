@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sena's AI Collective engagement test site with lead capture, booking intake, and newsletter subscriptions.">
+    <title>Sena's AI Collective | Engagement Test</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav-shell">
+            <div>
+                <div class="eyebrow">Sena's AI Collective</div>
+                <a class="brand" href="#top">Engagement Layer Test</a>
+            </div>
+            <nav class="nav-links">
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+                <a href="#publications">Publications</a>
+                <a href="#newsletter">Newsletter</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="top">
+        <section class="hero-section">
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <div class="eyebrow">Research · Strategy · Applied AI</div>
+                    <h1>Your grant writer costs too much. We fix that.</h1>
+                    <p class="lead">This test build adds a real engagement layer to Sena Colectivo: contact capture, booking intake, and split newsletter subscriptions for La Biblioteca and El Dispensario.</p>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary" href="#contact">Start a Conversation</a>
+                        <a class="btn btn-secondary" href="../RandomHTTPS/deck.html">View Deck</a>
+                    </div>
+                    <div class="metric-grid">
+                        <article class="metric-card">
+                            <strong>Lead Capture</strong>
+                            <span>Structured intake for strategy, grants, and AI work.</span>
+                        </article>
+                        <article class="metric-card">
+                            <strong>Two Publications</strong>
+                            <span>Separate subscriber paths for Biblioteca and Dispensario.</span>
+                        </article>
+                        <article class="metric-card">
+                            <strong>IONOS Ready</strong>
+                            <span>PHP + MySQL flow aligned to your current hosting stack.</span>
+                        </article>
+                    </div>
+                </div>
+                <aside class="panel form-panel">
+                    <h2>Quick Intake</h2>
+                    <p class="panel-copy">Use this to capture direct client interest without friction.</p>
+                    <form id="contact-form" class="stack-form" action="contact.php" method="post">
+                        <input type="hidden" name="form_type" value="contact">
+                        <label>
+                            <span>Name</span>
+                            <input type="text" name="name" required>
+                        </label>
+                        <label>
+                            <span>Email</span>
+                            <input type="email" name="email" required>
+                        </label>
+                        <label>
+                            <span>Organization</span>
+                            <input type="text" name="organization">
+                        </label>
+                        <label>
+                            <span>Interest</span>
+                            <select name="interest" required>
+                                <option value="">Select one</option>
+                                <option value="grant_support">Grant Support</option>
+                                <option value="ai_integration">AI Integration</option>
+                                <option value="research_collaboration">Research Collaboration</option>
+                                <option value="speaking_or_training">Speaking or Training</option>
+                                <option value="general_inquiry">General Inquiry</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span>Preferred Time</span>
+                            <input type="text" name="preferred_time" placeholder="Example: Thursday morning or next week">
+                        </label>
+                        <label>
+                            <span>What do you need?</span>
+                            <textarea name="message" rows="4" required></textarea>
+                        </label>
+                        <button type="submit" class="btn btn-primary btn-block">Send Request</button>
+                        <p class="status-message" data-form-status="contact"></p>
+                    </form>
+                </aside>
+            </div>
+        </section>
+
+        <section id="services" class="section-block muted-block">
+            <div class="container">
+                <div class="section-head">
+                    <div class="eyebrow">What this test adds</div>
+                    <h2>Customer engagement without platform sprawl</h2>
+                    <p>This build creates a durable intake layer before you move into full scheduling or CRM automation.</p>
+                </div>
+                <div class="card-grid three-up">
+                    <article class="panel">
+                        <h3>Lead Intake</h3>
+                        <p>Capture contact data, inquiry type, preferred time, and message in one structured flow.</p>
+                    </article>
+                    <article class="panel">
+                        <h3>Booking Request</h3>
+                        <p>Let people request time now, then layer calendar automation later when you are ready.</p>
+                    </article>
+                    <article class="panel">
+                        <h3>Publication Segmentation</h3>
+                        <p>Keep La Biblioteca and El Dispensario audiences separate so messaging stays sharp.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="publications" class="section-block">
+            <div class="container">
+                <div class="section-head">
+                    <div class="eyebrow">Publishing system</div>
+                    <h2>Two fronts: research and application</h2>
+                    <p>La Biblioteca is the research publication. El Dispensario is the applied layer for practical tools, field notes, and deployments.</p>
+                </div>
+                <div class="card-grid two-up">
+                    <article class="panel publication-panel">
+                        <div class="eyebrow">La Biblioteca</div>
+                        <h3>Water, land, treaty rights, and structural research</h3>
+                        <p>The inaugural La Biblioteca issue frames the publication as a free, open-access weekly research series focused on water sovereignty, land rights, and community self-determination in New Mexico. It positions the work as evidence-based and explicitly separates research from dogma.</p>
+                        <a class="text-link" href="biblioteca/index.html">Open Biblioteca section</a>
+                    </article>
+                    <article class="panel publication-panel">
+                        <div class="eyebrow">El Dispensario</div>
+                        <h3>Practical drops, tools, experiments, and customer-facing outputs</h3>
+                        <p>Use El Dispensario as the applied channel: implementation notes, AI field experiments, product drops, and rapid-response briefs that complement the research stream.</p>
+                        <a class="text-link" href="dispensario/index.html">Open Dispensario section</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="newsletter" class="section-block accent-block">
+            <div class="container">
+                <div class="section-head">
+                    <div class="eyebrow">Newsletter capture</div>
+                    <h2>Subscribe by lane</h2>
+                    <p>These forms write subscribers to separate lists so future outreach stays clean.</p>
+                </div>
+                <div class="card-grid two-up">
+                    <article class="panel inverse-panel">
+                        <h3>Subscribe to La Biblioteca</h3>
+                        <p>Weekly research publication for organizers, educators, legal advocates, and community members.</p>
+                        <form class="stack-form subscribe-form" action="subscribe.php" method="post">
+                            <input type="hidden" name="list_name" value="biblioteca">
+                            <label>
+                                <span>Email</span>
+                                <input type="email" name="email" required>
+                            </label>
+                            <label>
+                                <span>Name</span>
+                                <input type="text" name="name">
+                            </label>
+                            <button type="submit" class="btn btn-light btn-block">Subscribe to Biblioteca</button>
+                            <p class="status-message" data-form-status="biblioteca"></p>
+                        </form>
+                    </article>
+                    <article class="panel inverse-panel">
+                        <h3>Subscribe to El Dispensario</h3>
+                        <p>Applied AI updates, field notes, experiments, and product or service drops.</p>
+                        <form class="stack-form subscribe-form" action="subscribe.php" method="post">
+                            <input type="hidden" name="list_name" value="dispensario">
+                            <label>
+                                <span>Email</span>
+                                <input type="email" name="email" required>
+                            </label>
+                            <label>
+                                <span>Name</span>
+                                <input type="text" name="name">
+                            </label>
+                            <button type="submit" class="btn btn-light btn-block">Subscribe to Dispensario</button>
+                            <p class="status-message" data-form-status="dispensario"></p>
+                        </form>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section-block muted-block">
+            <div class="container">
+                <div class="section-head">
+                    <div class="eyebrow">Contact system</div>
+                    <h2>Customer engagement path</h2>
+                    <p>Inbound interest routes to your Zoho-backed mailbox and stores in MySQL for follow-up and later CRM sync.</p>
+                </div>
+                <div class="card-grid two-up">
+                    <article class="panel">
+                        <h3>Direct channels</h3>
+                        <ul class="info-list">
+                            <li><strong>Email:</strong> salvadorsena@senacolectivo.com</li>
+                            <li><strong>Primary site:</strong> senacolectivo.com</li>
+                            <li><strong>Pitch deck:</strong> pitch.senacolectivo.com</li>
+                        </ul>
+                    </article>
+                    <article class="panel">
+                        <h3>Suggested aliases</h3>
+                        <ul class="info-list">
+                            <li><strong>hello@</strong> public website contact</li>
+                            <li><strong>bookings@</strong> appointment intake</li>
+                            <li><strong>info@</strong> general fallback and newsletters</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-shell">
+            <div>
+                <strong>Sena's AI Collective</strong>
+                <p>Engagement test build for IONOS hosting and Zoho mail delivery.</p>
+            </div>
+            <div>
+                <a href="biblioteca/index.html">La Biblioteca</a>
+                <a href="dispensario/index.html">El Dispensario</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
