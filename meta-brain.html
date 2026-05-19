@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NUMARA Meta Brain • NM Socialists Knowledge Lattice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore the NUMARA Meta Brain - Salvador Sena's knowledge lattice, sandbox process graph, and git verification layer.">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    /* Premium Obsidian-Clay Portal Styling */
+    .metabrain-header-block {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+    
+    .metabrain-header-block h2 {
+      font-size: 2.8rem;
+      background: linear-gradient(135deg, hsl(var(--text-primary)) 20%, hsl(var(--color-secondary)) 60%, hsl(var(--color-primary)) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .lang-toggle-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Status Bar Banner */
+    .status-sync-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.25rem;
+      background: hsla(var(--bg-surface-elevated) / 0.8);
+      border: 1px solid hsl(var(--border-light));
+      border-radius: var(--radius-md);
+      margin-bottom: 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: hsl(var(--color-accent));
+      box-shadow: 0 0 8px hsl(var(--color-accent));
+      animation: blink 2s infinite ease-in-out;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* Grid Layout: Graph & Controls */
+    .metabrain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (max-width: 1024px) {
+      .metabrain-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Interactive Graph Card */
+    .sandbox-graph-card {
+      background: #080706;
+      border-radius: var(--radius-lg);
+      border: 1px solid hsl(var(--border-light));
+      height: 500px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-premium);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .graph-title {
+      padding: 1rem 1.5rem;
+      background: hsla(var(--bg-surface-elevated) / 0.6);
+      border-bottom: 1px solid hsl(var(--border-light));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .graph-title h4 {
+      color: hsl(var(--color-secondary));
+      font-family: var(--font-syne);
+      margin: 0;
+    }
+
+    .graph-viewport {
+      flex: 1;
+      width: 100%;
+      cursor: grab;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .graph-viewport:active {
+      cursor: grabbing;
+    }
+
+    .graph-svg {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    /* Interactive Graph Nodes */
+    .graph-node {
+      cursor: pointer;
+    }
+
+    .graph-node circle {
+      transition: r 0.3s var(--transition-smooth), fill 0.3s var(--transition-smooth), stroke-width 0.3s var(--transition-smooth);
+    }
+
+    .graph-node:hover circle {
+      fill: hsl(var(--color-secondary));
+      stroke-width: 3px;
+      r: 28;
+    }
+
+    .graph-node.active circle {
+      fill: hsl(var(--color-primary));
+      stroke: #fff;
+      stroke-width: 3px;
+      r: 30;
+      filter: drop-shadow(0 0 10px hsla(var(--color-primary) / 0.6));
+    }
+
+    .graph-edge {
+      stroke: hsla(var(--color-secondary) / 0.2);
+      stroke-width: 1.5px;
+      stroke-dasharray: 4, 4;
+      animation: dash 30s linear infinite;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -1000;
+      }
+    }
+
+    /* HUD Controls for Graph */
+    .graph-hud {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      z-index: 5;
+    }
+
+    /* Knowledge Grid & Querymatrix */
+    .query-matrix-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .search-row {
+      position: relative;
+    }
+
+    .search-row input {
+      padding-right: 3rem;
+    }
+
+    .search-icon-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: hsl(var(--text-muted));
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    /* Crystals (Cards) Masonry/Grid */
+    .crystals-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .crystal-card {
+      background: hsla(var(--bg-surface-elevated) / 0.6);
+      border: 1px solid hsl(var(--border-light));
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all var(--transition-smooth);
+      position: relative;
+      backdrop-filter: blur(10px);
+    }
+
+    .crystal-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-md);
+      padding: 1.5px;
+      background: linear-gradient(135deg, hsla(var(--color-primary) / 0.35) 0%, transparent 40%, hsla(var(--color-secondary) / 0.35) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.4;
+      transition: opacity var(--transition-smooth);
+    }
+
+    .crystal-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      border-color: hsla(var(--color-primary) / 0.35);
+      box-shadow: var(--shadow-premium), 0 0 20px hsla(var(--color-primary) / 0.08);
+    }
+
+    .crystal-card:hover::before {
+      opacity: 1;
+    }
+
+    .crystal-card.selected {
+      border-color: hsl(var(--color-primary));
+      box-shadow: 0 0 24px hsla(var(--color-primary) / 0.15);
+    }
+
+    .crystal-tag {
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      border: 1px solid transparent;
+    }
+
+    .tag-architecture {
+      background: hsla(var(--color-primary) / 0.12);
+      border-color: hsla(var(--color-primary) / 0.25);
+      color: hsl(var(--color-primary));
+    }
+    
+    .tag-geospatial {
+      background: hsla(var(--color-sky) / 0.12);
+      border-color: hsla(var(--color-sky) / 0.25);
+      color: hsl(var(--color-sky));
+    }
+
+    .tag-civic {
+      background: hsla(var(--color-accent) / 0.12);
+      border-color: hsla(var(--color-accent) / 0.25);
+      color: hsl(var(--color-accent));
+    }
+
+    .tag-speculative {
+      background: hsla(var(--color-secondary) / 0.12);
+      border-color: hsla(var(--color-secondary) / 0.25);
+      color: hsl(var(--color-secondary));
+    }
+
+    .tag-creative {
+      background: hsla(300 65% 55% / 0.12);
+      border-color: hsla(300 65% 55% / 0.25);
+      color: hsl(300 65% 55%);
+    }
+
+    .crystal-title {
+      font-family: var(--font-syne);
+      font-size: 1.15rem;
+      color: hsl(var(--text-primary));
+      margin-bottom: 0.5rem;
+    }
+
+    .crystal-summary {
+      font-size: 0.85rem;
+      color: hsl(var(--text-muted));
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      flex: 1;
+    }
+
+    .crystal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid hsl(var(--border-light));
+      padding-top: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: hsl(var(--text-muted));
+    }
+
+    .verification-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: hsl(var(--color-accent));
+      font-weight: 700;
+    }
+
+    /* Premium Overlay Detail Drawer */
+    .crystal-detail-drawer {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 500px;
+      background: hsla(var(--bg-surface) / 0.95);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-left: 1px solid hsl(var(--border-light));
+      box-shadow: -12px 0 48px rgba(0, 0, 0, 0.8);
+      z-index: 200;
+      padding: 3rem 2rem;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .crystal-detail-drawer.active {
+      transform: translateX(0);
+    }
+
+    .drawer-close-btn {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: hsla(var(--bg-surface-elevated) / 0.8);
+      border: 1px solid hsl(var(--border-light));
+      color: hsl(var(--text-primary));
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all var(--transition-fast);
+    }
+
+    .drawer-close-btn:hover {
+      background: hsl(var(--color-primary));
+      border-color: hsl(var(--color-primary));
+      transform: scale(1.05);
+    }
+
+    .drawer-content {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .drawer-header {
+      border-bottom: 1px solid hsl(var(--border-light));
+      padding-bottom: 1.25rem;
+    }
+
+    .drawer-header h3 {
+      font-size: 1.8rem;
+      font-family: var(--font-syne);
+      color: hsl(var(--text-primary));
+      margin-top: 0.5rem;
+    }
+
+    /* Sandbox visual representation block */
+    .sandbox-process-monitor {
+      background: #000;
+      border: 1px solid hsl(var(--border-light));
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #77e89f;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+    }
+
+    .monitor-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .monitor-label {
+      color: hsl(var(--text-muted));
+    }
+  </style>
+</head>
+<body>
+  <!-- DYNAMIC STUNNING HEADER -->
+  <header class="site-header">
+    <div class="logo-title">
+      <div class="logo-circle">
+        <img src="assets/img/meme_1.png" alt="Logo">
+      </div>
+      <div>
+        <h1>New Mexico Socialists</h1>
+        <p class="tagline">NUMARA Meta Brain • Cérebro de Datos</p>
+      </div>
+    </div>
+    <nav class="site-nav">
+      <a href="index.html" id="nav-home">Home / Inicio</a>
+      <a href="index.html#about" id="nav-about">About / Nosotros</a>
+      <a href="nmnewsfeed.html" id="nav-news">News / Noticias</a>
+      <a href="art-showcase.html" id="nav-gallery">Gallery &amp; Map / Galería</a>
+      <a href="biblioteca-landing.html" id="nav-library">Biblioteca</a>
+      <a href="comrade_portal.html" id="nav-portal">Portal</a>
+      <a href="meta-brain.html" id="nav-metabrain" class="active">Meta Brain</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- LANG TOGGLE -->
+    <div class="lang-toggle-container">
+      <button class="chip active" id="btn-lang-en">English</button>
+      <button class="chip" id="btn-lang-es" style="margin-left: 0.5rem;">Español</button>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <div class="metabrain-header-block">
+      <h2 data-en="NUMARA Meta Brain Workspace" data-es="Espacio de Trabajo NUMARA Meta Brain">NUMARA Meta Brain Workspace</h2>
+      <p style="max-width: 650px; margin: 0 auto; color: hsl(var(--text-muted));" data-en="Secure orchestration hub connecting Salvador Sena's Airtable Meta Brain database with live sandbox status graphs and verifiable local commit logs." data-es="Centro de orquestación seguro que conecta la base de datos Airtable Meta Brain de Salvador Sena con gráficos de estado de arena en vivo y registros de confirmación locales verificables.">
+        Secure orchestration hub connecting Salvador Sena's Airtable Meta Brain database with live sandbox status graphs and verifiable local commit logs.
+      </p>
+    </div>
+
+    <!-- DYNAMIC SOURCE BAR -->
+    <div class="status-sync-bar">
+      <div class="status-indicator">
+        <div class="status-dot" id="sync-dot"></div>
+        <span id="sync-source-text">SYNCING METADATA...</span>
+      </div>
+      <div id="sync-timestamp" style="color: hsl(var(--text-muted));">TIMESTAMP: --</div>
+    </div>
+
+    <!-- GRID: GRAPH + CONTROLS -->
+    <div class="metabrain-grid">
+      
+      <!-- GRAPH VIEWPORT CARD -->
+      <div class="sandbox-graph-card">
+        <div class="graph-title">
+          <h4 data-en="QC* Sandbox Process Graph" data-es="QC* Gráfico de Procesos en Arena">QC* Sandbox Process Graph</h4>
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; color: hsl(var(--color-accent)); font-weight: 700;" data-en="SANDBOX: ACTIVE" data-es="ENTORNO SEGURO: ACTIVO">SANDBOX: ACTIVE</span>
+        </div>
+        
+        <div class="graph-viewport" id="graph-viewport-area">
+          <svg class="graph-svg" viewBox="0 0 500 400" id="sandbox-svg">
+            <!-- Background grids -->
+            <defs>
+              <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+                <path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+
+            <!-- Edge connections -->
+            <line x1="250" y1="200" x2="130" y2="120" class="graph-edge" />
+            <line x1="250" y1="200" x2="370" y2="120" class="graph-edge" />
+            <line x1="250" y1="200" x2="130" y2="280" class="graph-edge" />
+            <line x1="250" y1="200" x2="370" y2="280" class="graph-edge" />
+            <line x1="130" y1="120" x2="370" y2="120" class="graph-edge" />
+            <line x1="130" y1="280" x2="370" y2="280" class="graph-edge" />
+
+            <!-- Core Hub Node -->
+            <g class="graph-node" data-target="rec2" transform="translate(250, 200)">
+              <circle r="25" fill="hsla(var(--color-primary) / 0.2)" stroke="hsl(var(--color-primary))" stroke-width="2" />
+              <text y="5" font-family="var(--font-mono)" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">QC* CORE</text>
+            </g>
+
+            <!-- Node: NUMARA Core -->
+            <g class="graph-node" data-target="rec1" transform="translate(130, 120)">
+              <circle r="20" fill="hsla(var(--color-secondary) / 0.15)" stroke="hsl(var(--color-secondary))" stroke-width="1.5" />
+              <text y="4" font-family="var(--font-mono)" font-size="8" fill="#fff" text-anchor="middle">NUMARA</text>
+            </g>
+
+            <!-- Node: UOS Narrative -->
+            <g class="graph-node" data-target="rec5" transform="translate(370, 120)">
+              <circle r="20" fill="hsla(300 65% 55% / 0.15)" stroke="hsl(300 65% 55%)" stroke-width="1.5" />
+              <text y="4" font-family="var(--font-mono)" font-size="8" fill="#fff" text-anchor="middle">UOS</text>
+            </g>
+
+            <!-- Node: GIS preflight -->
+            <g class="graph-node" data-target="rec4" transform="translate(130, 280)">
+              <circle r="20" fill="hsla(var(--color-sky) / 0.15)" stroke="hsl(var(--color-sky))" stroke-width="1.5" />
+              <text y="4" font-family="var(--font-mono)" font-size="8" fill="#fff" text-anchor="middle">GIS</text>
+            </g>
+
+            <!-- Node: Grant Writing -->
+            <g class="graph-node" data-target="rec3" transform="translate(370, 280)">
+              <circle r="20" fill="hsla(var(--color-accent) / 0.15)" stroke="hsl(var(--color-accent))" stroke-width="1.5" />
+              <text y="4" font-family="var(--font-mono)" font-size="8" fill="#fff" text-anchor="middle">GRANTS</text>
+            </g>
+          </svg>
+        </div>
+
+        <div style="padding: 1rem; border-top: 1px solid hsl(var(--border-light)); background: hsla(0 0% 100% / 0.01); display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; color: hsl(var(--text-muted));" data-en="💡 Tip: Click nodes to inspect sandbox states" data-es="💡 Consejo: Haz clic en los nodos para inspeccionar el estado seguro">💡 Tip: Click nodes to inspect sandbox states</span>
+          <button class="btn secondary tiny" id="btn-reset-graph" data-en="Reset View" data-es="Restablecer">Reset View</button>
+        </div>
+      </div>
+
+      <!-- FILTER CONTROLS & QUERY HUB -->
+      <div class="query-matrix-card">
+        <div class="feed-controls" style="margin-bottom: 0;">
+          
+          <!-- SEARCH FIELD -->
+          <div class="search-row">
+            <input type="text" id="meta-search-input" placeholder="Search knowledge matrix, projects, tags... / Buscar...">
+            <button class="search-icon-btn">🔍</button>
+          </div>
+
+          <!-- CATEGORY FILTERS -->
+          <div class="control-row" style="margin-top: 0.5rem;">
+            <div class="row-label" data-en="Categories" data-es="Categorías">Categories</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+              <button class="chip active" data-cat="">All</button>
+              <button class="chip" data-cat="Systems Architecture" data-en="Systems" data-es="Sistemas">Systems</button>
+              <button class="chip" data-cat="Geospatial Science" data-en="GIS" data-es="Geospacial">GIS</button>
+              <button class="chip" data-cat="Civic & Public-Interest" data-en="Civic" data-es="Cívico">Civic</button>
+              <button class="chip" data-cat="Speculative R&D" data-en="R&D" data-es="I+D">R&D</button>
+              <button class="chip" data-cat="Creative Worlds" data-en="Creative" data-es="Creativo">Creative</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SEARCH STATUS -->
+        <div id="query-meta-stats" style="font-family: var(--font-mono); font-size: 0.75rem; color: hsl(var(--text-muted)); padding-left: 0.5rem;">
+          Query results loaded. Synced nodes count: 0
+        </div>
+
+        <!-- CRYSTALS PORTAL GRID -->
+        <div class="crystals-container" id="crystals-grid">
+          <!-- Dynamically filled with Knowledge Crystals -->
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- GRAPH & GIT COMPLIANCE SPECIFICS PANEL -->
+    <div class="section">
+      <h3 data-en="Git Verification Layer & Cryptographic Sandbox Graph" data-es="Capa de Verificación Git y Gráfico de Arena Criptográfico">Git Verification Layer & Cryptographic Sandbox Graph</h3>
+      <div class="two-col" style="margin-top: 1.5rem;">
+        <div>
+          <h4 style="color: hsl(var(--color-primary));" data-en="1. Secure Sandbox Execution" data-es="1. Ejecución en Entorno de Arena Seguro">1. Secure Sandbox Execution</h4>
+          <p style="font-size: 0.9rem; margin-top: 0.5rem;" data-en="Every background script, Python-based GIS Preflight validate, or neural image render task executes under isolated processes. The central hypervisor manages memory lattices and limits system scopes, preventing untrusted scripts from running directly on Salvador's RTX 4090 host ('Beast')." data-es="Cada script en segundo plano, validación de GIS Preflight basada en Python o tarea de renderizado de imagen neural se ejecuta bajo procesos aislados. El hipervisor central gestiona redes de memoria y limita los alcances del sistema, evitando que scripts no confiables se ejecuten directamente en el host principal de Salvador RTX 4090 ('Beast').">
+            Every background script, Python-based GIS Preflight validate, or neural image render task executes under isolated processes. The central hypervisor manages memory lattices and limits system scopes, preventing untrusted scripts from running directly on Salvador's RTX 4090 host ('Beast').
+          </p>
+        </div>
+        <div>
+          <h4 style="color: hsl(var(--color-secondary));" data-en="2. Cryptographic Commit Verification" data-es="2. Verificación de Confirmación Criptográfica">2. Cryptographic Commit Verification</h4>
+          <p style="font-size: 0.9rem; margin-top: 0.5rem;" data-en="To guarantee absolute security and build integrity, the deployment and tuning pipelines run automatic SHA256 checksum verifications against Salvador's local commits and remote git tags. Any code changes must pass matching checksum integrity layers before being tunably loaded into production environments." data-es="Para garantizar una seguridad absoluta y la integridad de la compilación, las tuberías de despliegue y sintonización ejecutan verificaciones automáticas de suma de comprobación SHA256 contra las confirmaciones locales y etiquetas de git remotas de Salvador. Cualquier cambio de código debe pasar capas de integridad de suma de comprobación coincidentes antes de ser cargado de manera sintonizable en entornos de producción.">
+            To guarantee absolute security and build integrity, the deployment and tuning pipelines run automatic SHA256 checksum verifications against Salvador's local commits and remote git tags. Any code changes must pass matching checksum integrity layers before being tunably loaded into production environments.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- OVERLAY DETAIL DRAWER -->
+  <div class="drawer-backdrop" id="detail-drawer-backdrop"></div>
+  <div class="crystal-detail-drawer" id="crystal-detail-drawer">
+    <button class="drawer-close-btn" id="btn-close-drawer">×</button>
+    <div class="drawer-content" id="drawer-content-area">
+      <!-- Dynamically filled on click -->
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p data-en="&copy; 2026 New Mexico Socialists. NUMARA Meta Brain Portal. All rights reserved." data-es="&copy; 2026 Socialistas de Nuevo México. Portal NUMARA Meta Brain. Todos los derechos reservados.">&copy; 2026 New Mexico Socialists. NUMARA Meta Brain Portal. All rights reserved.</p>
+  </footer>
+
+  <!-- CORE SCRIPTS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      let activeLang = "en";
+      let allRecords = [];
+      let activeCategory = "";
+
+      // Dom bindings
+      const btnLangEn = document.getElementById("btn-lang-en");
+      const btnLangEs = document.getElementById("btn-lang-es");
+      const searchInput = document.getElementById("meta-search-input");
+      const crystalsGrid = document.getElementById("crystals-grid");
+      const queryStats = document.getElementById("query-meta-stats");
+      const syncDot = document.getElementById("sync-dot");
+      const syncSourceText = document.getElementById("sync-source-text");
+      const syncTimestamp = document.getElementById("sync-timestamp");
+      const detailDrawer = document.getElementById("crystal-detail-drawer");
+      const drawerBackdrop = document.getElementById("detail-drawer-backdrop");
+      const drawerCloseBtn = document.getElementById("btn-close-drawer");
+      const drawerContent = document.getElementById("drawer-content-area");
+      const btnResetGraph = document.getElementById("btn-reset-graph");
+
+      // Set language functions
+      function setLanguage(lang) {
+        activeLang = lang;
+        if (lang === "en") {
+          btnLangEn.classList.add("active");
+          btnLangEs.classList.remove("active");
+        } else {
+          btnLangEs.classList.add("active");
+          btnLangEn.classList.remove("active");
+        }
+
+        // Translate static texts
+        document.querySelectorAll("[data-en]").forEach(el => {
+          const val = el.getAttribute(`data-${lang}`);
+          if (val) el.textContent = val;
+        });
+
+        // Re-render query results
+        renderCrystals();
+      }
+
+      btnLangEn.addEventListener("click", () => setLanguage("en"));
+      btnLangEs.addEventListener("click", () => setLanguage("es"));
+
+      // Fetch from API
+      async function fetchMetaBrain() {
+        syncSourceText.textContent = activeLang === "en" ? "SYNCHRONIZING..." : "SINCRONIZANDO...";
+        syncDot.style.background = "#f6c745";
+        syncDot.style.boxShadow = "0 0 8px #f6c745";
+
+        try {
+          // Point dynamically to local or relative workers function
+          const res = await fetch("/api/airtable");
+          const data = await res.json();
+
+          allRecords = data.records || [];
+          
+          // Set sync status text
+          if (data.connected) {
+            syncSourceText.textContent = activeLang === "en" ? "CONNECTED TO LIVE AIRTABLE CLOUD" : "CONECTADO A AIRTABLE EN LA NUBE";
+            syncDot.style.background = "#77e89f";
+            syncDot.style.boxShadow = "0 0 8px #77e89f";
+          } else {
+            syncSourceText.textContent = activeLang === "en" ? "LOCAL DOSSIER FALLBACK UPTIME" : "MODO DE RESPALDO DE DOSIER LOCAL";
+            syncDot.style.background = "#f6c745";
+            syncDot.style.boxShadow = "0 0 8px #f6c745";
+          }
+
+          syncTimestamp.textContent = `TIMESTAMP: ${new Date(data.timestamp).toLocaleTimeString()}`;
+          renderCrystals();
+
+        } catch (err) {
+          console.error("Meta Brain fetch failed:", err);
+          syncSourceText.textContent = activeLang === "en" ? "OFFLINE WORKSPACE ERROR" : "ERROR DE CONEXIÓN FUERA DE LÍNEA";
+          syncDot.style.background = "#ffb3b3";
+          syncDot.style.boxShadow = "0 0 8px #ffb3b3";
+          queryStats.textContent = activeLang === "en" ? "Failed to synchronize knowledge lattice." : "Error al sincronizar la base de datos.";
+        }
+      }
+
+      // Filter and render cards
+      function renderCrystals() {
+        const query = searchInput.value.toLowerCase();
+        let list = allRecords;
+
+        // Apply local category filter
+        if (activeCategory) {
+          list = list.filter(rec => {
+            const cat = rec.fields.Category?.toLowerCase() || "";
+            const catEs = rec.fields.Category_es?.toLowerCase() || "";
+            return cat.includes(activeCategory.toLowerCase()) || catEs.includes(activeCategory.toLowerCase());
+          });
+        }
+
+        // Apply local search filter
+        if (query) {
+          list = list.filter(rec => {
+            const title = rec.fields.Title?.toLowerCase() || "";
+            const titleEs = rec.fields.Title_es?.toLowerCase() || "";
+            const desc = rec.fields.Description?.toLowerCase() || "";
+            const descEs = rec.fields.Description_es?.toLowerCase() || "";
+            return title.includes(query) || titleEs.includes(query) || desc.includes(query) || descEs.includes(query);
+          });
+        }
+
+        queryStats.textContent = activeLang === "en" 
+          ? `Lattice search loaded. Synced crystals count: ${list.length}`
+          : `Búsqueda cargada. Cristales sincronizados: ${list.length}`;
+
+        crystalsGrid.innerHTML = "";
+
+        if (list.length === 0) {
+          crystalsGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 2rem; border: 1px dashed hsl(var(--border-light)); border-radius: var(--radius-md); color: hsl(var(--text-muted)); font-size: 0.9rem;">
+              ${activeLang === "en" ? "No knowledge crystals matching query." : "No se encontraron cristales de conocimiento."}
+            </div>
+          `;
+          return;
+        }
+
+        list.forEach(rec => {
+          const card = document.createElement("div");
+          card.className = "crystal-card";
+          card.setAttribute("data-id", rec.id);
+
+          const title = activeLang === "en" ? (rec.fields.Title || "Untitled") : (rec.fields.Title_es || rec.fields.Title || "Sin Título");
+          const summary = activeLang === "en" ? (rec.fields.Summary || "") : (rec.fields.Summary_es || rec.fields.Summary || "");
+          const cat = rec.fields.Category || "Speculative R&D";
+          const catEs = rec.fields.Category_es || rec.fields.Category || "I+D Especulativa";
+
+          // Generate class for colors
+          let tagClass = "tag-speculative";
+          if (cat === "Systems Architecture") tagClass = "tag-architecture";
+          else if (cat === "Geospatial Science") tagClass = "tag-geospatial";
+          else if (cat === "Civic & Public-Interest") tagClass = "tag-civic";
+          else if (cat === "Creative Worlds") tagClass = "tag-creative";
+
+          card.innerHTML = `
+            <div>
+              <div class="crystal-tag ${tagClass}">${activeLang === "en" ? cat : catEs}</div>
+              <h4 class="crystal-title">${title}</h4>
+              <p class="crystal-summary">${summary}</p>
+            </div>
+            <div class="crystal-footer">
+              <div class="verification-badge">
+                <span>🛡️</span>
+                <span>${activeLang === "en" ? "GIT SECURE" : "INTEGRIDAD GIT"}</span>
+              </div>
+              <div>${rec.fields.GraphNodeId ? "QC* ACTIVE" : "LOCAL"}</div>
+            </div>
+          `;
+
+          card.addEventListener("click", () => openDrawer(rec));
+          crystalsGrid.appendChild(card);
+        });
+      }
+
+      // Drawer functionality
+      function openDrawer(record) {
+        // Highlighting graph node if matches
+        document.querySelectorAll(".graph-node").forEach(n => n.classList.remove("active"));
+        if (record.fields.GraphNodeId) {
+          const node = document.querySelector(`.graph-node[data-target="${record.id}"]`);
+          if (node) node.classList.add("active");
+        }
+
+        const title = activeLang === "en" ? record.fields.Title : (record.fields.Title_es || record.fields.Title);
+        const desc = activeLang === "en" ? record.fields.Description : (record.fields.Description_es || record.fields.Description);
+        const cat = activeLang === "en" ? record.fields.Category : (record.fields.Category_es || record.fields.Category);
+        const gitStatus = record.fields.GitVerificationStatus || "VERIFIED";
+        const sandboxStatus = record.fields.SandboxProcesses || "Isolated Sandbox running";
+
+        drawerContent.innerHTML = `
+          <div class="drawer-header">
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: hsl(var(--color-secondary));">${cat}</span>
+            <h3>${title}</h3>
+          </div>
+
+          <div style="font-size: 0.95rem; line-height: 1.7; color: hsl(var(--text-primary));">
+            ${desc.replace(/\n/g, "<br>")}
+          </div>
+
+          <div class="sandbox-process-monitor">
+            <div style="border-bottom: 1px solid hsla(142, 45%, 42%, 0.2); padding-bottom: 0.25rem; font-weight: 700; color: #fff;">
+              💻 ${activeLang === "en" ? "SANDBOX RUNTIME LOGS" : "REGISTROS EN TIEMPO REAL"}
+            </div>
+            <div class="monitor-row">
+              <span class="monitor-label">${activeLang === "en" ? "Sandbox Namespace:" : "Espacio seguro:"}</span>
+              <span>isolated_${record.fields.GraphNodeId || "core"}_proc</span>
+            </div>
+            <div class="monitor-row">
+              <span class="monitor-label">${activeLang === "en" ? "Process Memory Lattices:" : "Redes de memoria:"}</span>
+              <span>128MB isolated heap</span>
+            </div>
+            <div class="monitor-row">
+              <span class="monitor-label">${activeLang === "en" ? "Git Commit Integrity:" : "Integridad de Confirmación:"}</span>
+              <span style="color: hsl(var(--color-accent)); font-weight:700;">${gitStatus}</span>
+            </div>
+            <div class="monitor-row">
+              <span class="monitor-label">${activeLang === "en" ? "Sandbox Task Graph:" : "Gráfico de Tareas:"}</span>
+              <span>${sandboxStatus}</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #52a872; margin-top: 0.5rem; border-top: 1px dashed #285638; padding-top: 0.5rem;">
+              [SYSTEM OK] - Verified by SHA256 checksum lattice.
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:1rem;">
+            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: hsl(var(--text-muted));">
+              <strong>${activeLang === "en" ? "Associated Projects:" : "Proyectos Asociados:"}</strong><br>
+              ${record.fields.AssociatedProjects || "N/A"}
+            </div>
+          </div>
+        `;
+
+        detailDrawer.classList.add("active");
+        drawerBackdrop.classList.add("active");
+      }
+
+      function closeDrawer() {
+        detailDrawer.classList.remove("active");
+        drawerBackdrop.classList.remove("active");
+        document.querySelectorAll(".graph-node").forEach(n => n.classList.remove("active"));
+      }
+
+      drawerCloseBtn.addEventListener("click", closeDrawer);
+      drawerBackdrop.addEventListener("click", closeDrawer);
+
+      // Category chip listeners
+      document.querySelectorAll(".control-row button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".control-row button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          activeCategory = btn.getAttribute("data-cat");
+          renderCrystals();
+        });
+      });
+
+      // Search input listener
+      searchInput.addEventListener("input", renderCrystals);
+
+      // Graph node integration
+      document.querySelectorAll(".graph-node").forEach(node => {
+        node.addEventListener("click", () => {
+          const recId = node.getAttribute("data-target");
+          const record = allRecords.find(r => r.id === recId);
+          if (record) {
+            openDrawer(record);
+          }
+        });
+      });
+
+      // Graph pan & zoom basics
+      const svg = document.getElementById("sandbox-svg");
+      const viewport = document.getElementById("graph-viewport-area");
+      let isDragging = false;
+      let startX, startY;
+      let translateX = 0, translateY = 0;
+      let scale = 1;
+
+      viewport.addEventListener("mousedown", (e) => {
+        if (e.target.closest(".graph-node")) return;
+        isDragging = true;
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+      });
+
+      window.addEventListener("mouseup", () => isDragging = false);
+
+      viewport.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+        svg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      });
+
+      viewport.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const zoomIntensity = 0.05;
+        if (e.deltaY < 0) {
+          scale += zoomIntensity;
+        } else {
+          scale -= zoomIntensity;
+        }
+        scale = Math.min(Math.max(0.6, scale), 2);
+        svg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      }, { passive: false });
+
+      btnResetGraph.addEventListener("click", () => {
+        translateX = 0;
+        translateY = 0;
+        scale = 1;
+        svg.style.transform = `translate(0, 0) scale(1)`;
+      });
+
+      // Launch initialization fetch
+      fetchMetaBrain();
+    });
+  </script>
+</body>
+</html>

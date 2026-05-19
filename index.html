@@ -31,13 +31,13 @@
       </div>
     </div>
     <nav class="site-nav">
-      <a href="#about">About</a>
-      <a href="#join">Join</a>
-      <a href="#donate">Donate</a>
-      <a href="nmnewsfeed.html">News</a>
-      <a href="biblioteca-landing.html">Biblioteca</a>
-      <a href="comrade_portal.html">Portal</a>
-      <a href="#memes">Memes</a>
+      <a href="index.html" id="nav-home" class="active">Home / Inicio</a>
+      <a href="index.html#about" id="nav-about">About / Nosotros</a>
+      <a href="nmnewsfeed.html" id="nav-news">News / Noticias</a>
+      <a href="art-showcase.html" id="nav-gallery">Gallery &amp; Map / Galería</a>
+      <a href="biblioteca-landing.html" id="nav-library">Biblioteca</a>
+      <a href="comrade_portal.html" id="nav-portal">Portal</a>
+      <a href="meta-brain.html" id="nav-metabrain">Meta Brain</a>
     </nav>
   </header>
 
@@ -57,7 +57,7 @@
         </p>
         <div class="hero-actions">
           <a href="#join" class="btn primary">Join the movement / Únete</a>
-          <a href="#memes" class="btn secondary">Memes &amp; posters</a>
+          <a href="art-showcase.html" class="btn secondary">Art &amp; map / Galería</a>
         </div>
       </div>
       
@@ -147,6 +147,7 @@
         <p id="join-status" class="status-msg"></p>
       </form>
 
+      <!-- Facebook Integration Deactivated
       <div class="social-cta">
         <h4>Follow &amp; Share</h4>
         <p>
@@ -162,6 +163,7 @@
           </a>
         </div>
       </div>
+      -->
     </section>
 
     <!-- DONATE -->
@@ -187,7 +189,7 @@
           </div>
           <p class="donate-note">
             <small><em>Note: Update these links with your actual payment accounts. Contact us at 
-            <a href="mailto:NewMexicoSocialists@proton.me">NewMexicoSocialists@proton.me</a> for direct transfer details.</em></small>
+            <a href="mailto:salvadorsena@senacolectivo.com">salvadorsena@senacolectivo.com</a> for direct transfer details.</em></small>
           </p>
         </div>
 
@@ -195,7 +197,7 @@
           <h4>📬 Mail a Check / Enviar un Cheque</h4>
           <p>Prefer to send a check? Contact us for mailing address:</p>
           <p style="margin-top:1rem;">
-            Email: <a href="mailto:NewMexicoSocialists@proton.me" style="color:hsl(var(--color-secondary));font-weight:600;">NewMexicoSocialists@proton.me</a>
+            Email: <a href="mailto:salvadorsena@senacolectivo.com" style="color:hsl(var(--color-secondary));font-weight:600;">salvadorsena@senacolectivo.com</a>
           </p>
           <p class="hero-es" style="margin-top:1rem;">
             ¿Prefieres enviar un cheque? Contáctanos para la dirección postal.
@@ -223,224 +225,48 @@
       </div>
     </section>
 
-    <!-- MEMES -->
-    <section id="memes" class="section">
-      <h3>Memes &amp; Posters</h3>
-      <p>
-        Click a meme to open the <strong>Comrade Meme Studio</strong> where you can customize it, add text, 
-        download your creation, or post it directly to the Facebook Page!
-      </p>
-      
-      <div class="gallery">
-        <!-- Generates all 19 unique templates -->
-        <figure class="gallery-item" data-index="1">
-          <img src="assets/img/meme_1.png" alt="Meme 1" />
-          <figcaption>
-            <span class="meme-label">Meme 1</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_1.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_1.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="2">
-          <img src="assets/img/meme_2.png" alt="Meme 2" />
-          <figcaption>
-            <span class="meme-label">Meme 2</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_2.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_2.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="3">
-          <img src="assets/img/meme_3.png" alt="Meme 3" />
-          <figcaption>
-            <span class="meme-label">Meme 3</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_3.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_3.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="4">
-          <img src="assets/img/meme_4.png" alt="Meme 4" />
-          <figcaption>
-            <span class="meme-label">Meme 4</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_4.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_4.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="5">
-          <img src="assets/img/meme_5.png" alt="Meme 5" />
-          <figcaption>
-            <span class="meme-label">Meme 5</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_5.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_5.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="6">
-          <img src="assets/img/meme_6.png" alt="Meme 6" />
-          <figcaption>
-            <span class="meme-label">Meme 6</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_6.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_6.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="7">
-          <img src="assets/img/meme_7.png" alt="Meme 7" />
-          <figcaption>
-            <span class="meme-label">Meme 7</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_7.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_7.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="8">
-          <img src="assets/img/meme_8.png" alt="Meme 8" />
-          <figcaption>
-            <span class="meme-label">Meme 8</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_8.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_8.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="9">
-          <img src="assets/img/meme_9.png" alt="Meme 9" />
-          <figcaption>
-            <span class="meme-label">Meme 9</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_9.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_9.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="10">
-          <img src="assets/img/meme_10.png" alt="Meme 10" />
-          <figcaption>
-            <span class="meme-label">Meme 10</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_10.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_10.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="11">
-          <img src="assets/img/meme_11.png" alt="Meme 11" />
-          <figcaption>
-            <span class="meme-label">Meme 11</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_11.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_11.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="12">
-          <img src="assets/img/meme_12.png" alt="Meme 12" />
-          <figcaption>
-            <span class="meme-label">Meme 12</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_12.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_12.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="13">
-          <img src="assets/img/meme_13.png" alt="Meme 13" />
-          <figcaption>
-            <span class="meme-label">Meme 13</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_13.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_13.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="14">
-          <img src="assets/img/meme_14.png" alt="Meme 14" />
-          <figcaption>
-            <span class="meme-label">Meme 14</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_14.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_14.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="15">
-          <img src="assets/img/meme_15.png" alt="Meme 15" />
-          <figcaption>
-            <span class="meme-label">Meme 15</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_15.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_15.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="16">
-          <img src="assets/img/meme_16.png" alt="Meme 16" />
-          <figcaption>
-            <span class="meme-label">Meme 16</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_16.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_16.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="17">
-          <img src="assets/img/meme_17.png" alt="Meme 17" />
-          <figcaption>
-            <span class="meme-label">Meme 17</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_17.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_17.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="18">
-          <img src="assets/img/meme_18.png" alt="Meme 18" />
-          <figcaption>
-            <span class="meme-label">Meme 18</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_18.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_18.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
-
-        <figure class="gallery-item" data-index="19">
-          <img src="assets/img/meme_19.png" alt="Meme 19" />
-          <figcaption>
-            <span class="meme-label">Meme 19</span>
-            <div class="gallery-actions">
-              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_19.png">Edit Slogans</button>
-              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_19.png">Share</button>
-            </div>
-          </figcaption>
-        </figure>
+    <!-- EDITORIAL STORYMAP & ART SHOWCASE TEASER -->
+    <section id="memes" class="section teaser-section">
+      <div class="card glass-card" style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:2.5rem; align-items:center; padding:3rem; border:1px solid hsla(var(--color-primary) / 0.2); box-shadow: var(--shadow-premium), 0 0 40px hsla(var(--color-primary) / 0.1); border-radius: var(--radius-lg); background: radial-gradient(circle at 100% 100%, hsla(var(--color-primary-glow)) 0%, hsla(var(--bg-surface) / 0.8) 70%);">
+        <div>
+          <span style="font-family:var(--font-mono); font-size:0.75rem; text-transform:uppercase; color:hsl(var(--color-secondary)); font-weight:700; letter-spacing:0.15em; display:block; margin-bottom:0.75rem;">✊ Flagship Interactive Spatial Portal</span>
+          <h3 style="font-family:var(--font-syne); font-size:2.2rem; line-height:1.15; margin-bottom:1rem; color:hsl(var(--text-primary));">The Living Storymap &amp; Revolutionary Art Showcase</h3>
+          <p style="font-size:1.05rem; line-height:1.65; margin-bottom:1.5rem; color:hsl(var(--text-primary));">
+            Explore the spatial history of working-class resistance, acequia commons water defenses, and labor strikes across New Mexico. 
+            Drop anonymous struggle pins on our interactive SVG map and customize bilingual activist poster templates in our integrated canvas graphics studio.
+          </p>
+          <p class="hero-es" style="font-size:0.95rem; line-height:1.6; margin-bottom:2rem; border-left: 2px solid hsl(var(--color-secondary)); padding-left:1rem; color:hsl(var(--text-muted)); font-style:italic;">
+            Explora la historia espacial de la resistencia de la clase trabajadora, la defensa de acequias comunitarias y huelgas laborales en Nuevo México. 
+            Coloca pines de lucha anónimos en nuestro mapa SVG interactivo y personaliza carteles activistas bilingües en nuestro estudio de posters.
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:1rem;">
+            <a href="art-showcase.html" class="btn primary" style="padding:0.8rem 1.75rem; font-family:var(--font-syne); font-weight:700;">🗺️ Enter Storymap &amp; Art Studio / Entrar</a>
+            <a href="art-showcase.html#art-masonry-container" class="btn secondary" style="padding:0.8rem 1.75rem;">🎨 Browse Poster Templates</a>
+          </div>
+        </div>
+        <div style="position:relative; display:flex; justify-content:center; align-items:center;">
+          <div style="width:100%; aspect-ratio:1.1; background:#050505; border-radius:12px; border:1px solid hsl(var(--border-light)); display:flex; align-items:center; justify-content:center; padding:1rem; box-shadow:0 10px 30px rgba(0,0,0,0.6); overflow:hidden;">
+            <svg viewBox="0 0 200 200" style="width:100%; height:auto;">
+              <path fill="rgba(194, 96, 58, 0.08)" stroke="hsla(0, 0%, 100%, 0.12)" stroke-width="1" d="M 30 20 L 170 20 L 170 160 L 90 160 L 90 180 L 30 180 Z" />
+              <path fill="none" stroke="rgba(109, 189, 250, 0.25)" stroke-width="1.5" stroke-dasharray="1 2" d="M 100 20 C 100 50, 92 70, 92 100 C 92 130, 85 150, 80 180" />
+              <circle cx="102" cy="70" r="4" fill="hsl(355, 78%, 48%)" />
+              <circle cx="102" cy="70" r="10" fill="none" stroke="hsl(355, 78%, 48%)" stroke-width="0.5" opacity="0.6">
+                <animate attributeName="r" values="4;12;4" dur="3s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="95" cy="95" r="4" fill="hsl(38, 85%, 48%)" />
+              <circle cx="95" cy="95" r="10" fill="none" stroke="hsl(38, 85%, 48%)" stroke-width="0.5" opacity="0.6">
+                <animate attributeName="r" values="4;14;4" dur="2.5s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.8;0;0.8" dur="2.5s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="85" cy="150" r="3.5" fill="hsl(142, 45%, 42%)" />
+              <circle cx="85" cy="150" r="9" fill="none" stroke="hsl(142, 45%, 42%)" stroke-width="0.5" opacity="0.6">
+                <animate attributeName="r" values="3.5;11;3.5" dur="3.5s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.7;0;0.7" dur="3.5s" repeatCount="indefinite" />
+              </circle>
+            </svg>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -468,7 +294,7 @@
     <!-- CONTACT -->
     <section id="contact" class="section contact">
       <h3>Contact</h3>
-      <p>Email: <a href="mailto:NewMexicoSocialists@proton.me" style="color:hsl(var(--color-secondary));font-weight:600;">NewMexicoSocialists@proton.me</a></p>
+      <p>Email: <a href="mailto:salvadorsena@senacolectivo.com" style="color:hsl(var(--color-secondary));font-weight:600;">salvadorsena@senacolectivo.com</a></p>
       <p style="margin-top:1rem;">Signal / WhatsApp and other secure channels can be shared after you connect via email or in person.</p>
     </section>
   </main>
@@ -575,7 +401,7 @@
             <span id="meme-ai-status" class="status-msg" style="font-size:0.7rem;margin:0;color:hsl(var(--text-muted));"></span>
           </div>
           
-          <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.4rem;border-top:1px solid hsl(var(--border-light));padding-top:0.6rem;">
+          <div style="display:none;flex-direction:column;gap:0.5rem;margin-top:0.4rem;border-top:1px solid hsl(var(--border-light));padding-top:0.6rem;">
             <button type="button" id="fb-post-btn" class="btn primary full-width tiny">Post directly to Facebook Page</button>
             <button type="button" id="fb-settings-btn" class="btn secondary full-width tiny">⚙ Facebook Credentials Settings</button>
             <span id="fb-post-status" class="status-msg" style="text-align:center;font-size:0.75rem;"></span>

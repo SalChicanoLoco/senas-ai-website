@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Revolutionary Art &amp; Living Storymap • New Mexico Socialists</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore New Mexico's history of labor, land, and community resistance through an interactive spatial storymap and bilingual revolutionary art showcase.">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    /* Inline showcase page overrides & specific utilities */
+    .showcase-header-block {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 1rem 0;
+    }
+    
+    .showcase-header-block h2 {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      color: hsl(var(--color-secondary));
+      margin-bottom: 0.5rem;
+    }
+    
+    .showcase-header-block p {
+      font-size: 1.1rem;
+      color: hsl(var(--text-muted));
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .btn-toggle-studio {
+      background: hsl(var(--color-primary));
+      color: #fff;
+      border: 1px solid hsla(var(--color-primary) / 0.5);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-family: var(--font-syne);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all var(--transition-smooth);
+      margin-top: 1rem;
+      box-shadow: 0 4px 15px hsla(var(--color-primary) / 0.3);
+    }
+    .btn-toggle-studio:hover {
+      background: hsl(var(--color-secondary));
+      border-color: hsl(var(--color-secondary));
+      color: hsl(var(--text-dark));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px hsla(var(--color-secondary) / 0.4);
+    }
+
+    /* Map HUD overlay controls styling */
+    .storymap-hud-controls {
+      position: absolute;
+      bottom: 1.25rem;
+      left: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 5;
+    }
+
+    .storymap-drop-hint {
+      animation: pulseGlow 2.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 10px hsla(var(--color-primary) / 0.3); }
+      50% { box-shadow: 0 0 25px hsla(var(--color-primary) / 0.75); }
+    }
+
+    /* Tabs inside sidebar */
+    .sidebar-tabs {
+      display: flex;
+      border-bottom: 1px solid hsl(var(--border-light));
+      margin-bottom: 1rem;
+      gap: 0.5rem;
+    }
+
+    .sidebar-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 0.6rem 0;
+      color: hsl(var(--text-muted));
+      font-family: var(--font-syne);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: center;
+    }
+
+    .sidebar-tab-btn:hover {
+      color: hsl(var(--text-primary));
+    }
+
+    .sidebar-tab-btn.active {
+      color: hsl(var(--color-secondary));
+      border-bottom-color: hsl(var(--color-secondary));
+    }
+
+    .sidebar-content-panel {
+      display: none;
+      height: 100%;
+    }
+
+    .sidebar-content-panel.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Detail View panel */
+    .pin-detail-view {
+      background: hsla(var(--bg-surface-elevated) / 0.45);
+      border: 1px solid hsl(var(--border-light));
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: 100%;
+      overflow-y: auto;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .detail-category-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    .badge-land { background: hsla(142, 45%, 42%, 0.2); color: #7ad894; border: 1px solid hsla(142, 45%, 42%, 0.3); }
+    .badge-labor { background: hsla(355, 78%, 48%, 0.2); color: #ff7676; border: 1px solid hsla(355, 78%, 48%, 0.3); }
+    .badge-art { background: hsla(38, 85%, 48%, 0.2); color: #fcc756; border: 1px solid hsla(38, 85%, 48%, 0.3); }
+    .badge-mutual { background: hsla(204, 65%, 45%, 0.2); color: #6dbdfa; border: 1px solid hsla(204, 65%, 45%, 0.3); }
+
+    .detail-poster-img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+      border: 1px solid hsl(var(--border-light));
+      background: #000;
+    }
+
+    /* Modal / Form specifics */
+    .pin-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .pin-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-row-full {
+      grid-column: 1 / -1;
+    }
+
+    .input-premium, .select-premium, .textarea-premium {
+      background: #080706;
+      border: 1px solid hsl(var(--border-light));
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 1rem;
+      color: hsl(var(--text-primary));
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      transition: all var(--transition-fast);
+      width: 100%;
+    }
+    .input-premium:focus, .select-premium:focus, .textarea-premium:focus {
+      outline: none;
+      border-color: hsl(var(--color-primary));
+      box-shadow: 0 0 12px hsla(var(--color-primary) / 0.15);
+      background: #0c0a09;
+    }
+
+    /* Floating Coordinate Hint Overlay */
+    .map-coordinate-picker-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: hsla(var(--bg-base) / 0.9);
+      border: 2px dashed hsl(var(--color-secondary));
+      padding: 1.5rem 2rem;
+      border-radius: var(--radius-lg);
+      z-index: 10;
+      text-align: center;
+      max-width: 80%;
+      pointer-events: none;
+      display: none;
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-premium);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="logo-title">
+      <div class="logo-circle">
+        <img src="assets/img/meme_1.png" alt="New Mexico Socialists logo">
+      </div>
+      <div>
+        <h1>New Mexico Socialists</h1>
+        <p class="tagline">People over profit • La gente antes que las ganancias</p>
+      </div>
+    </div>
+    <nav class="site-nav">
+      <a href="index.html" id="nav-home">Home / Inicio</a>
+      <a href="index.html#about" id="nav-about">About / Nosotros</a>
+      <a href="nmnewsfeed.html" id="nav-news">News / Noticias</a>
+      <a href="art-showcase.html" id="nav-gallery" class="active">Gallery &amp; Map / Galería</a>
+      <a href="biblioteca-landing.html" id="nav-library">Biblioteca</a>
+      <a href="comrade_portal.html" id="nav-portal">Portal</a>
+      <a href="meta-brain.html" id="nav-metabrain">Meta Brain</a>
+    </nav>
+  </header>
+
+  <main class="section">
+    <!-- PAGE TITLE -->
+    <div class="showcase-header-block">
+      <h2>Interactive Spatial Storymap &amp; Art Studio</h2>
+      <p>
+        Mapping struggles, solidarity networks, and radical history across New Mexico. 
+        Create and customize revolutionary art in our integrated Poster Studio, and pin it to our living storymap.
+      </p>
+      <button class="btn-toggle-studio" id="trigger-studio-btn">
+        🎨 Launch Activist Poster Studio / Abrir Estudio
+      </button>
+    </div>
+
+    <!-- LIVING STORYMAP & BLOG SIDEBAR LAYOUT -->
+    <div class="showcase-layout">
+      <!-- MAP PORTAL -->
+      <div class="storymap-card">
+        <!-- Interactive drop-pin hint -->
+        <button class="storymap-drop-hint" id="drop-pin-trigger-btn">
+          📍 Pin Struggle to Map / Añadir Pin
+        </button>
+
+        <!-- Coordinate picker active display overlay -->
+        <div class="map-coordinate-picker-hint" id="coord-picker-overlay">
+          <h4 style="color: hsl(var(--color-secondary)); margin-bottom: 0.5rem; font-family: var(--font-syne);">🎯 Select Map Location / Selecciona Lugar</h4>
+          <p style="font-size: 0.85rem; color: hsl(var(--text-primary));">
+            Click anywhere on the map outline to place your pin coordinate.<br>
+            <small>Haz clic en cualquier punto del mapa para fijar tu coordenada.</small>
+          </p>
+        </div>
+
+        <!-- SVG Visual canvas -->
+        <div class="storymap-canvas-viewport" id="map-viewport">
+          <svg viewBox="0 0 600 600" class="storymap-svg" id="storymap-svg">
+            <g id="map-content">
+              <!-- Grid Backdrop grid lines for spatial design -->
+              <defs>
+                <pattern id="grid-pattern" width="30" height="30" patternUnits="userSpaceOnUse">
+                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+
+              <!-- Stylized Regional/County Borders of New Mexico -->
+              <!-- Northwest -->
+              <path class="map-county" data-name="Northwest" d="M 60 50 L 200 50 L 200 240 L 60 240 Z" />
+              <!-- North-Central -->
+              <path class="map-county" data-name="North-Central" d="M 200 50 L 360 50 L 360 240 L 200 240 Z" />
+              <!-- Northeast -->
+              <path class="map-county" data-name="Northeast" d="M 360 50 L 540 50 L 540 240 L 360 240 Z" />
+              <!-- West-Central -->
+              <path class="map-county" data-name="West-Central" d="M 60 240 L 200 240 L 200 380 L 60 380 Z" />
+              <!-- Central Valley -->
+              <path class="map-county" data-name="Central Valley" d="M 200 240 L 360 240 L 360 380 L 200 380 Z" />
+              <!-- East-Central -->
+              <path class="map-county" data-name="East-Central" d="M 360 240 L 540 240 L 540 380 L 360 380 Z" />
+              <!-- Southwest & Bootheel -->
+              <path class="map-county" data-name="Southwest" d="M 60 380 L 200 380 L 200 480 L 120 480 L 120 550 L 60 550 Z" />
+              <!-- South-Central -->
+              <path class="map-county" data-name="South-Central" d="M 200 380 L 360 380 L 360 480 L 200 480 Z" />
+              <!-- Southeast -->
+              <path class="map-county" data-name="Southeast" d="M 360 380 L 540 380 L 540 480 L 360 480 Z" />
+
+              <!-- River: Rio Grande -->
+              <path class="map-river" d="M 290 50 C 290 120, 275 160, 275 220 C 275 280, 260 330, 250 390 C 240 440, 242 460, 245 480" />
+
+              <!-- Mountain Ranges -->
+              <!-- Sangre de Cristo -->
+              <path class="map-mountain" d="M 310 70 L 320 90 L 315 100 L 330 120 L 325 130 L 340 155 L 330 170" />
+              <!-- Organ Mountains -->
+              <path class="map-mountain" d="M 265 440 L 272 455 L 268 462 L 278 472 L 273 478 L 285 490" />
+
+              <!-- Pulsing Pins Group (Injected Dynamically via JS) -->
+              <g id="pins-layer"></g>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Category Legend Overlay -->
+        <div class="storymap-category-legend">
+          <div style="font-family: var(--font-mono); font-size: 0.65rem; color: hsl(var(--text-muted)); font-weight: 700; margin-bottom: 0.25rem;">
+            LEGEND &amp; FILTERS
+          </div>
+          <div class="map-legend-item active" data-category="all">
+            <span class="map-legend-dot" style="background: hsl(var(--color-primary));"></span>
+            <span>All Struggles / Todos</span>
+          </div>
+          <div class="map-legend-item" data-category="land">
+            <span class="map-legend-dot" style="background: hsl(var(--color-accent));"></span>
+            <span>Land &amp; Commons / Devolución</span>
+          </div>
+          <div class="map-legend-item" data-category="labor">
+            <span class="map-legend-dot" style="background: hsl(var(--color-primary));"></span>
+            <span>Labor &amp; Unions / Huelgas</span>
+          </div>
+          <div class="map-legend-item" data-category="art">
+            <span class="map-legend-dot" style="background: hsl(var(--color-secondary));"></span>
+            <span>Mural &amp; Public Art / Murales</span>
+          </div>
+          <div class="map-legend-item" data-category="mutual">
+            <span class="map-legend-dot" style="background: hsl(var(--color-sky));"></span>
+            <span>Mutual Aid &amp; Hubs / Ayuda Mutua</span>
+          </div>
+        </div>
+
+        <!-- HUD Controls Overlay -->
+        <div class="storymap-hud-controls">
+          <button class="hud-btn" id="hud-zoom-in" title="Zoom In">+</button>
+          <button class="hud-btn" id="hud-zoom-out" title="Zoom Out">-</button>
+          <button class="hud-btn" id="hud-reset" title="Reset View">↺</button>
+        </div>
+      </div>
+
+      <!-- EDITORIAL SIDEBAR / BLOG PANEL -->
+      <aside class="showcase-sidebar">
+        <!-- Sidebar Selection Tabs -->
+        <div class="sidebar-tabs">
+          <button class="sidebar-tab-btn active" id="tab-stories-list" data-panel="panel-stories-list">
+            📜 Struggle Index / Índice
+          </button>
+          <button class="sidebar-tab-btn" id="tab-pin-detail" data-panel="panel-pin-detail">
+            🔎 Active Detail / Detalle
+          </button>
+        </div>
+
+        <!-- PANEL 1: Stories scroll list index -->
+        <div class="sidebar-content-panel active" id="panel-stories-list">
+          <div class="stories-scroll-box" id="sidebar-stories-container">
+            <!-- Dynamically injected story card item list -->
+          </div>
+        </div>
+
+        <!-- PANEL 2: Active Node Detail View -->
+        <div class="sidebar-content-panel" id="panel-pin-detail">
+          <div class="pin-detail-view" id="active-pin-detail-container">
+            <!-- Dynamic Pin Detail Template -->
+            <div style="text-align: center; margin: auto; padding: 2rem; color: hsl(var(--text-muted));">
+              <span style="font-size: 2.5rem; display: block; margin-bottom: 1rem;">📍</span>
+              <h4>Select a pulsing pin on the map to explore local struggles and radical history across New Mexico.</h4>
+              <p style="font-size: 0.8rem; margin-top: 1rem;">
+                <small>Selecciona un pin en el mapa para explorar las luchas locales y la historia radical.</small>
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- MASONRY GALLERY ART SHOWCASE SECTION -->
+    <section class="masonry-showcase">
+      <h3 style="color: hsl(var(--color-secondary)); font-family: var(--font-syne); font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem;">
+        🎨 Activist Art &amp; Slogan Poster Gallery
+      </h3>
+      <p style="color: hsl(var(--text-muted)); max-width: 800px; margin-bottom: 2rem;">
+        Click on any poster template below to open it inside the <strong>Activist Poster Studio</strong>. Customize slogans,
+        generate new artwork using AI, or pin it to a regional struggle map coordinate!
+      </p>
+
+      <div class="gallery-toolbar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; padding:0.75rem 1.25rem; background:hsla(var(--bg-surface-elevated) / 0.5); border:1px solid hsl(var(--border-light)); border-radius:var(--radius-md); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:var(--shadow-premium);">
+        <div class="gallery-tabs" style="display:flex; gap:0.5rem;">
+          <button type="button" class="gallery-tab-btn active" id="tab-templates" style="background:transparent; border:none; padding:0.5rem 1rem; color:hsl(var(--text-primary)); font-family:var(--font-syne); font-size:0.9rem; font-weight:700; cursor:pointer; border-bottom:2px solid hsl(var(--color-secondary)); transition:all var(--transition-fast);">
+            🎨 Poster Templates / Plantillas
+          </button>
+          <button type="button" class="gallery-tab-btn" id="tab-comrade-art" style="background:transparent; border:none; padding:0.5rem 1rem; color:hsl(var(--text-muted)); font-family:var(--font-syne); font-size:0.9rem; font-weight:700; cursor:pointer; border-bottom:2px solid transparent; transition:all var(--transition-fast);">
+            ✊ Comrade Art Gallery / Arte Público
+          </button>
+        </div>
+        <button type="button" class="btn primary small" id="btn-submit-art" style="display:none; align-items:center; gap:0.5rem; font-family:var(--font-syne); font-weight:700; padding:0.5rem 1rem; font-size:0.85rem;">
+          ✊ Submit Art / Contribuir Arte
+        </button>
+      </div>
+
+      <div class="masonry-grid" id="art-masonry-container">
+        <!-- Dynamically injected gallery figure items (1 to 19 templates) -->
+      </div>
+    </section>
+  </main>
+
+  <!-- COMRADE POSTER & ART STUDIO LIGHTBOX MODAL -->
+  <div id="meme-modal" class="meme-modal" aria-hidden="true">
+    <div class="meme-modal-backdrop" id="modal-backdrop"></div>
+    <div class="meme-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="meme-modal-title" style="max-width: 900px; width: 90%;">
+      <button type="button" class="meme-modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
+      
+      <h3 style="margin-bottom:0.75rem;font-size:1.4rem;color:hsl(var(--color-secondary));display:flex;align-items:center;gap:0.5rem;font-family:var(--font-syne);">
+        ✊ Activist Poster &amp; Revolutionary Art Studio
+      </h3>
+      
+      <div class="meme-modal-body" style="display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;align-items:start;">
+        <!-- Canvas viewbox wrapper -->
+        <div class="canvas-container" style="background:#050505;border:1px solid hsl(var(--border-light));border-radius:12px;padding:0.5rem;display:flex;align-items:center;justify-content:center;aspect-ratio:1;">
+          <canvas id="meme-canvas" style="max-width:100%;height:auto;border-radius:8px;"></canvas>
+        </div>
+        
+        <!-- Studio controls container -->
+        <div class="meme-controls-form" style="display:flex;flex-direction:column;gap:0.6rem;max-height:480px;overflow-y:auto;padding-right:0.25rem;">
+          
+          <!-- Base Image upload -->
+          <div class="field">
+            <label style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;font-weight:600;">
+              <span>1. Base Image / Imagen Base</span>
+              <span style="font-size:0.7rem;color:hsl(var(--color-secondary));font-weight:400;">Upload File / Subir Archivo</span>
+            </label>
+            <input type="file" id="meme-file-upload" accept="image/*" style="font-size:0.8rem;padding:0.25rem;background:rgba(255,255,255,0.02);border:1px dashed hsl(var(--border-light));border-radius:6px;cursor:pointer;width:100%;">
+          </div>
+
+          <!-- AI generation tools -->
+          <div style="border:1px solid hsla(var(--color-secondary) / 0.15); background: hsla(var(--color-secondary-glow) / 0.05); padding:0.6rem; border-radius:8px; display:flex; flex-direction:column; gap:0.4rem;">
+            <label style="font-size:0.8rem;font-weight:700;color:hsl(var(--color-secondary));">
+              🤖 AI Image Generator / Generar con IA
+            </label>
+            <div style="display:flex;gap:0.4rem;">
+              <input type="text" id="meme-ai-prompt" placeholder="Describe revolutionary art (e.g. desert farm cooperative woodcut)" style="flex:1;font-size:0.8rem;padding:0.4rem;height:34px;background:#050505;border:1px solid hsl(var(--border-light));color:hsl(var(--text-primary));border-radius:6px;">
+              <button type="button" id="meme-ai-generate-btn" class="btn primary tiny" style="white-space:nowrap;height:34px;padding:0 0.8rem;">Generate</button>
+            </div>
+            <span id="meme-ai-status" class="status-msg" style="font-size:0.7rem;margin:0;color:hsl(var(--text-muted));"></span>
+          </div>
+
+          <div class="field">
+            <label>2. Top Slogan / Texto Superior</label>
+            <input type="text" class="input-premium" id="meme-top-text" placeholder="ENTER TOP TEXT">
+          </div>
+          <div class="field">
+            <label>3. Bottom Slogan / Texto Inferior</label>
+            <input type="text" class="input-premium" id="meme-bottom-text" placeholder="ENTER BOTTOM TEXT">
+          </div>
+          
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+            <div class="field">
+              <label>4. Font Family / Fuente</label>
+              <select id="meme-font-family" style="padding:0.4rem;font-size:0.8rem;border-radius:6px;background:#080706;border:1px solid hsl(var(--border-light));color:hsl(var(--text-primary));cursor:pointer;width:100%;">
+                <option value="Space Grotesk">Space Grotesk (Brand)</option>
+                <option value="Fraunces">Fraunces (Editorial)</option>
+                <option value="Impact">Classic Impact</option>
+                <option value="JetBrains Mono">Activist Mono</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>5. Layout Style / Estilo</label>
+              <select id="meme-layout" style="padding:0.4rem;font-size:0.8rem;border-radius:6px;background:#080706;border:1px solid hsl(var(--border-light));color:hsl(var(--text-primary));cursor:pointer;width:100%;">
+                <option value="classic">Classic Overlay</option>
+                <option value="demotivational">Demotivational Poster</option>
+                <option value="banner">Activist Banner (Bottom)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 0.8fr 0.8fr;gap:0.5rem;align-items:end;">
+            <div class="field">
+              <label>Font Size</label>
+              <input type="range" id="meme-font-size" min="4" max="15" value="8" style="padding:0;cursor:pointer;height:34px;width:100%;">
+            </div>
+            <div class="field">
+              <label>Alignment</label>
+              <select id="meme-align" style="padding:0.4rem;font-size:0.8rem;border-radius:6px;background:#080706;border:1px solid hsl(var(--border-light));color:hsl(var(--text-primary));height:34px;cursor:pointer;width:100%;">
+                <option value="center">Center</option>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Color</label>
+              <input type="color" id="meme-color" value="#ffffff" style="padding:0;height:34px;cursor:pointer;width:100%;border-radius:6px;border:1px solid hsl(var(--border-light));">
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.02);padding:0.5rem;border-radius:6px;border:1px solid hsl(var(--border-light));margin-top:0.25rem;">
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.75rem;margin:0;color:hsl(var(--text-muted));">
+              <input type="checkbox" id="meme-uppercase" checked style="width:auto;margin:0;cursor:pointer;">
+              <span>Force Uppercase</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.75rem;margin:0;color:hsl(var(--text-muted));">
+              <span>Outline:</span>
+              <input type="range" id="meme-outline-weight" min="0" max="10" value="4" style="width:50px;cursor:pointer;padding:0;margin:0;">
+            </label>
+          </div>
+
+          <!-- Pin to Storymap Callout Button -->
+          <button type="button" id="trigger-map-pinning-btn" class="btn primary full-width tiny" style="background:hsl(var(--color-secondary)); border-color:hsl(var(--color-secondary)); color:hsl(var(--text-dark)); font-weight:800; font-size:0.85rem; margin-top:0.5rem; box-shadow: 0 4px 12px hsla(var(--color-secondary) / 0.25);">
+            📍 Pin Poster to Living Storymap / Fijar en Mapa
+          </button>
+          
+          <div style="display:none;flex-direction:column;gap:0.4rem;margin-top:0.4rem;border-top:1px solid hsl(var(--border-light));padding-top:0.6rem;">
+            <button type="button" id="fb-post-btn" class="btn primary full-width tiny">Post directly to Facebook Page</button>
+            <button type="button" id="fb-settings-btn" class="btn secondary full-width tiny">⚙ Facebook Credentials Settings</button>
+            <span id="fb-post-status" class="status-msg" style="text-align:center;font-size:0.75rem;"></span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Studio Footer actions -->
+      <div class="meme-modal-footer" style="margin-top:0.75rem;border-top:1px solid hsl(var(--border-light));padding-top:0.75rem;justify-content:space-between;width:100%;">
+        <div style="display:flex;gap:0.5rem;">
+          <a id="meme-download" href="#" download class="btn secondary tiny">Download PNG</a>
+          <button type="button" id="meme-share" class="btn tiny">Share Template</button>
+          <button type="button" id="meme-copy-link" class="btn tiny secondary">Copy link</button>
+        </div>
+        <span id="meme-copy-status" class="status-msg" style="margin:0;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DROPPING PIN FORMS MODAL DRAWER -->
+  <div id="pin-submission-modal" class="meme-modal" aria-hidden="true">
+    <div class="meme-modal-backdrop" id="pin-modal-backdrop"></div>
+    <div class="meme-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="pin-modal-title" style="max-width: 650px; width: 90%;">
+      <button type="button" class="meme-modal-close" id="pin-modal-close-btn" aria-label="Close">&times;</button>
+      
+      <h3 style="margin-bottom:0.75rem;font-size:1.35rem;color:hsl(var(--color-secondary));font-family:var(--font-syne);display:flex;align-items:center;gap:0.5rem;">
+        📍 Pin Your Poster &amp; Struggle to the Map
+      </h3>
+      
+      <!-- Form for Netlify Submission and Local Storage Storage -->
+      <form id="storymap-pins-form" 
+            name="storymap-pin-submission" 
+            method="POST" 
+            data-netlify="true" 
+            netlify-honeypot="bot-field"
+            class="meme-controls-form"
+            style="display:flex;flex-direction:column;gap:0.8rem;text-align:left;">
+        
+        <input type="hidden" name="form-name" value="storymap-pin-submission">
+        <p style="display:none;"><input name="bot-field"></p>
+
+        <!-- Hidden canvas artwork data representation field -->
+        <input type="hidden" id="form-pin-image-data" name="image-data">
+
+        <div class="pin-form-grid">
+          <div class="field">
+            <label style="display:flex;justify-content:space-between;align-items:center;">
+              <span>Contributor / Colaborador</span>
+              <label style="font-size:0.72rem;display:inline-flex;align-items:center;gap:0.25rem;cursor:pointer;margin:0;text-transform:none;">
+                <input type="checkbox" id="form-pin-anonymous" checked style="width:auto;margin:0;"> Anonymous
+              </label>
+            </label>
+            <input type="text" class="input-premium" id="form-pin-name" name="name" value="Anonymous" placeholder="Name or collective name">
+          </div>
+
+          <div class="field">
+            <label>Struggle Category / Categoría</label>
+            <select class="select-premium" id="form-pin-category" name="category" required>
+              <option value="land">Land &amp; Commons / Devolución de Tierras</option>
+              <option value="labor">Labor Struggles / Huelgas y Sindicatos</option>
+              <option value="art">Public Murals &amp; Revolutionary Art</option>
+              <option value="mutual">Mutual Aid, Commons &amp; Hubs</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Title of Struggle (English) / Título del Pin</label>
+          <input type="text" class="input-premium" id="form-pin-title-en" name="title-en" placeholder="e.g. Acequia Water Defense Campaign" required>
+        </div>
+
+        <div class="field">
+          <label>Title in Spanish / Título en Español</label>
+          <input type="text" class="input-premium" id="form-pin-title-es" name="title-es" placeholder="e.g. Campaña de Defensa de Aguas de Acequia" required>
+        </div>
+
+        <div class="field">
+          <label>Story / Description of Struggle (English)</label>
+          <textarea class="textarea-premium" id="form-pin-story-en" name="story-en" rows="3" placeholder="Explain the local campaign, history, or mural background..." required></textarea>
+        </div>
+
+        <div class="field">
+          <label>Story in Spanish / Historia en Español</label>
+          <textarea class="textarea-premium" id="form-pin-story-es" name="story-es" rows="3" placeholder="Explica la campaña local, la historia o el contexto del mural..." required></textarea>
+        </div>
+
+        <!-- Coordinates settings row -->
+        <div class="pin-form-grid">
+          <div class="field">
+            <label>Coordinates Preset / Selección de Lugar</label>
+            <select class="select-premium" id="form-pin-preset" name="preset-location" required>
+              <option value="custom">-- Click on map / Clic en el Mapa --</option>
+              <option value="taos">Taos [320, 110]</option>
+              <option value="santafe">Santa Fe [300, 200]</option>
+              <option value="albuquerque">Albuquerque [280, 280]</option>
+              <option value="gallup">Gallup [90, 220]</option>
+              <option value="lascruces">Las Cruces [250, 460]</option>
+              <option value="carlsbad">Carlsbad [460, 450]</option>
+              <option value="silvercity">Silver City [110, 420]</option>
+            </select>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+            <div class="field">
+              <label>X-Coordinate</label>
+              <input type="number" class="input-premium" id="form-pin-x" name="coordinate-x" required min="50" max="550" value="280">
+            </div>
+            <div class="field">
+              <label>Y-Coordinate</label>
+              <input type="number" class="input-premium" id="form-pin-y" name="coordinate-y" required min="50" max="550" value="280">
+            </div>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.02);border:1px solid hsl(var(--border-light));border-radius:8px;padding:0.75rem;margin-top:0.25rem;">
+          <p style="font-size:0.78rem;color:hsl(var(--text-muted));line-height:1.55;">
+            💡 <strong>Moderation Note:</strong> Your pinned struggle poster will immediately appear in your browser local storage cache so you can verify it. It is also pushed securely to Netlify Forms for admin approval before showing globally.
+          </p>
+        </div>
+
+        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+          <button type="submit" class="btn primary full-width" style="height:44px;">📌 Submit Pin &amp; Publish / Publicar Pin</button>
+          <button type="button" class="btn secondary" id="btn-cancel-pin" style="height:44px;">Cancel</button>
+        </div>
+        <p id="pin-form-status" class="status-msg" style="text-align:center;font-size:0.85rem;margin:0;"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- COMRADE GALLERY ART SUBMISSION MODAL -->
+  <div id="art-submission-modal" class="meme-modal" aria-hidden="true">
+    <div class="meme-modal-backdrop" id="art-modal-backdrop"></div>
+    <div class="meme-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="art-modal-title" style="max-width: 650px; width: 90%;">
+      <button type="button" class="meme-modal-close" id="art-modal-close-btn" aria-label="Close">&times;</button>
+      
+      <h3 style="margin-bottom:0.75rem;font-size:1.35rem;color:hsl(var(--color-secondary));font-family:var(--font-syne);display:flex;align-items:center;gap:0.5rem;">
+        ✊ Submit Revolutionary Comrade Art
+      </h3>
+      
+      <!-- Form for Netlify Submission and Local Storage Caching -->
+      <form id="comrade-art-form" 
+            name="comrade-art-contribution" 
+            method="POST" 
+            data-netlify="true" 
+            netlify-honeypot="bot-field"
+            class="meme-controls-form"
+            style="display:flex;flex-direction:column;gap:0.8rem;text-align:left;">
+        
+        <input type="hidden" name="form-name" value="comrade-art-contribution">
+        <p style="display:none;"><input name="bot-field"></p>
+
+        <!-- Hidden art data representation field -->
+        <input type="hidden" id="form-art-image-data" name="image-data">
+
+        <div class="pin-form-grid">
+          <div class="field">
+            <label style="display:flex;justify-content:space-between;align-items:center;">
+              <span>Contributor / Colaborador</span>
+              <label style="font-size:0.72rem;display:inline-flex;align-items:center;gap:0.25rem;cursor:pointer;margin:0;text-transform:none;">
+                <input type="checkbox" id="form-art-anonymous" checked style="width:auto;margin:0;"> Anonymous
+              </label>
+            </label>
+            <input type="text" class="input-premium" id="form-art-name" name="name" value="Anonymous" placeholder="Name or collective name">
+          </div>
+
+          <div class="field">
+            <label>Art File / Archivo de Arte</label>
+            <input type="file" id="form-art-file" accept="image/*" required style="font-size:0.8rem;padding:0.25rem;background:rgba(255,255,255,0.02);border:1px dashed hsl(var(--border-light));border-radius:6px;cursor:pointer;width:100%;">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Title of Art (English) / Título del Arte</label>
+          <input type="text" class="input-premium" id="form-art-title-en" name="title-en" placeholder="e.g. Workers Solidarity Woodcut" required>
+        </div>
+
+        <div class="field">
+          <label>Title in Spanish / Título en Español</label>
+          <input type="text" class="input-premium" id="form-art-title-es" name="title-es" placeholder="e.g. Grabado de Solidaridad Obrera" required>
+        </div>
+
+        <div class="field">
+          <label>Description of Art (English)</label>
+          <textarea class="textarea-premium" id="form-art-story-en" name="story-en" rows="3" placeholder="Explain the theme, medium, or background of the artwork..." required></textarea>
+        </div>
+
+        <div class="field">
+          <label>Description in Spanish / Descripción en Español</label>
+          <textarea class="textarea-premium" id="form-art-story-es" name="story-es" rows="3" placeholder="Explica el tema, el medio o el contexto de la obra..." required></textarea>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.02);border:1px solid hsl(var(--border-light));border-radius:8px;padding:0.75rem;margin-top:0.25rem;">
+          <p style="font-size:0.78rem;color:hsl(var(--text-muted));line-height:1.55;">
+            💡 <strong>Moderation Note:</strong> Your contribution will immediately appear in your browser local storage cache so you can verify it in the "Comrade Art Gallery" tab. It is also pushed securely to Netlify Forms for admin approval.
+          </p>
+        </div>
+
+        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+          <button type="submit" class="btn primary full-width" style="height:44px;">✊ Submit Art &amp; Publish / Publicar Arte</button>
+          <button type="button" class="btn secondary" id="btn-cancel-art" style="height:44px;">Cancel</button>
+        </div>
+        <p id="art-form-status" class="status-msg" style="text-align:center;font-size:0.85rem;margin:0;"></p>
+      </form>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 New Mexico Socialists. Built for Netlify static hosting. Designed by Salvador Sena.</p>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    // Embedded inline JS for Showcase Map Controls & Dynamic Visual rendering
+    document.addEventListener("DOMContentLoaded", () => {
+      // ── HISTORICAL STORIES & PINS CONFIGURATION ──
+      const historicalPins = [
+        {
+          id: "gallup-1933",
+          category: "labor",
+          x: 90,
+          y: 220,
+          titleEn: "Gallup Coal Strike (1933)",
+          titleEs: "Huelga de Carbón de Gallup (1933)",
+          creator: "Historical Struggle",
+          storyEn: "In 1933, coal miners in Gallup organized under the National Miners Union, resisting brutal martial law, arrests, and eviction by coal bosses. The strike remains a cornerstone of multicultural labor resistance in New Mexico.",
+          storyEs: "En 1933, los mineros de carbón en Gallup se organizaron bajo el Sindicato Nacional de Mineros, resistiendo la brutal ley marcial, arrestos y desalojos por parte de los patrones del carbón. La huelga sigue siendo una piedra angular de la resistencia laboral multicultural.",
+          image: "assets/img/meme_4.png"
+        },
+        {
+          id: "acequia-taos",
+          category: "land",
+          x: 320,
+          y: 110,
+          titleEn: "Acequia Commons & Water Rights",
+          titleEs: "Derechos de Agua y Acequias Comunes",
+          creator: "Land/Water Commons",
+          storyEn: "Centuries-old community-run irrigation systems (acequias) in Taos and northern New Mexico operate on the socialist principle of water as a shared commons rather than private property, successfully resisting corporate water transfers and luxury development.",
+          storyEs: "Los sistemas de riego comunitarios de siglos de antigüedad (acequias) en Taos y el norte de Nuevo México operan bajo el principio socialista del agua como un bien común compartido en lugar de propiedad privada, resistiendo con éxito las transferencias corporativas y los desarrollos de lujo.",
+          image: "assets/img/meme_12.png"
+        },
+        {
+          id: "barelas-art",
+          category: "art",
+          x: 280,
+          y: 280,
+          titleEn: "Barelas Mutual Aid & Public Art",
+          titleEs: "Ayuda Mutua y Arte Público en Barelas",
+          creator: "Colectivo Chicano",
+          storyEn: "In the historic neighborhood of Barelas (Albuquerque), local collectives run community pantries and paint public murals celebrating Chicano resistance, international solidarity, and local working-class pride.",
+          storyEs: "En el histórico barrio de Barelas (Albuquerque), los colectivos locales gestionan despensas comunitarias y pintan murales públicos que celebran la resistencia chicana, la solidaridad internacional y el orgullo de la clase trabajadora local.",
+          image: "assets/img/meme_7.png"
+        },
+        {
+          id: "organ-landback",
+          category: "land",
+          x: 250,
+          y: 460,
+          titleEn: "Organ Mountains Land Back Struggles",
+          titleEs: "Luchas por la Devolución de la Tierra en las Montañas Organ",
+          creator: "Indigenous Resistance",
+          storyEn: "Indigenous activists and local allies in southern New Mexico continue to lead efforts to return public lands to tribal stewardship, linking ecological conservation with anti-colonial justice.",
+          storyEs: "Activistas indígenas y aliados locales en el sur de Nuevo México continúan liderando esfuerzos para devolver las tierras públicas a la administración tribal, vinculando la conservación ecológica con la justicia anticolonial.",
+          image: "assets/img/meme_10.png"
+        },
+        {
+          id: "empire-zinc",
+          category: "labor",
+          x: 110,
+          y: 420,
+          titleEn: "Hanover Empire Zinc Strike (1950)",
+          titleEs: "Huelga de Empire Zinc en Hanover (1950)",
+          creator: "Miners Union Local 890",
+          storyEn: "When Mexican-American miners in Hanover were banned from striking, their wives stepped onto the picket lines, facing tear gas and arrests to win a historic 15-month strike. Inspired the classic film 'Salt of the Earth'.",
+          storyEs: "Cuando a los mineros mexicano-americanos en Hanover se les prohibió hacer huelga, sus esposas se unieron a los piquetes, enfrentando gas lacrimógeno y arrestos para ganar una huelga histórica de 15 meses. Inspiró la película clásica 'La sal de la tierra'.",
+          image: "assets/img/meme_3.png"
+        }
+      ];
+
+      // Load submitted pins from localStorage
+      function getLocalPins() {
+        try {
+          return JSON.parse(localStorage.getItem("local_storymap_pins") || "[]");
+        } catch (e) {
+          return [];
+        }
+      }
+
+      // ── SYSTEM STATE variables ──
+      let activeCategoryFilter = "all";
+      let selectedPinId = null;
+
+      // ── DOM SELECTORS ──
+      const pinsLayer = document.getElementById("pins-layer");
+      const sidebarStoriesContainer = document.getElementById("sidebar-stories-container");
+      const activePinDetailContainer = document.getElementById("active-pin-detail-container");
+
+      const tabStoriesList = document.getElementById("tab-stories-list");
+      const tabPinDetail = document.getElementById("tab-pin-detail");
+      const panelStoriesList = document.getElementById("panel-stories-list");
+      const panelPinDetail = document.getElementById("panel-pin-detail");
+
+      // ── MAP PAN & ZOOM STATE ──
+      const mapViewport = document.getElementById("map-viewport");
+      const mapContent = document.getElementById("map-content");
+      const svgEl = document.getElementById("storymap-svg");
+
+      let scale = 1.0;
+      let panX = 0;
+      let panY = 0;
+      let isDragging = false;
+      let startX, startY;
+
+      // Apply transforms smoothly to map container
+      function applyTransforms() {
+        mapContent.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+      }
+
+      // Dragging mechanics
+      mapViewport.addEventListener("mousedown", (e) => {
+        // Only drag if not clicking on buttons or picker mode is inactive
+        if (e.target.closest(".hud-btn") || e.target.closest(".storymap-drop-hint") || pickerActive) return;
+        isDragging = true;
+        mapViewport.style.cursor = "grabbing";
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        applyTransforms();
+      });
+
+      window.addEventListener("mouseup", () => {
+        isDragging = false;
+        mapViewport.style.cursor = "grab";
+      });
+
+      // Mouse wheel Zoom
+      mapViewport.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const rect = svgEl.getBoundingClientRect();
+        // Mouse coordinate relative to viewport
+        const mouseX = e.clientX - rect.left - rect.width/2;
+        const mouseY = e.clientY - rect.top - rect.height/2;
+
+        const zoomFactor = 1.1;
+        if (e.deltaY < 0) {
+          if (scale < 5.0) {
+            scale *= zoomFactor;
+            panX -= mouseX * (zoomFactor - 1);
+            panY -= mouseY * (zoomFactor - 1);
+          }
+        } else {
+          if (scale > 0.5) {
+            scale /= zoomFactor;
+            panX += mouseX * (1 - 1/zoomFactor);
+            panY += mouseY * (1 - 1/zoomFactor);
+          }
+        }
+        applyTransforms();
+      }, { passive: false });
+
+      // HUD Zoom Controls
+      document.getElementById("hud-zoom-in").addEventListener("click", () => {
+        if (scale < 5.0) {
+          scale *= 1.25;
+          applyTransforms();
+        }
+      });
+
+      document.getElementById("hud-zoom-out").addEventListener("click", () => {
+        if (scale > 0.5) {
+          scale /= 1.25;
+          applyTransforms();
+        }
+      });
+
+      document.getElementById("hud-reset").addEventListener("click", () => {
+        scale = 1.0;
+        panX = 0;
+        panY = 0;
+        applyTransforms();
+      });
+
+      // Sidebar Tab Switching
+      function switchSidebarTab(targetPanelId) {
+        document.querySelectorAll(".sidebar-tab-btn").forEach(btn => {
+          btn.classList.toggle("active", btn.getAttribute("data-panel") === targetPanelId);
+        });
+        document.querySelectorAll(".sidebar-content-panel").forEach(panel => {
+          panel.classList.toggle("active", panel.id === targetPanelId);
+        });
+      }
+
+      tabStoriesList.addEventListener("click", () => switchSidebarTab("panel-stories-list"));
+      tabPinDetail.addEventListener("click", () => switchSidebarTab("panel-pin-detail"));
+
+      // ── STORY INDEX / STORY DETAIL RENDERING ──
+      function renderStruggles() {
+        const allPins = [...historicalPins, ...getLocalPins()];
+        
+        // Filter by category
+        const filteredPins = allPins.filter(pin => {
+          if (activeCategoryFilter === "all") return true;
+          return pin.category === activeCategoryFilter;
+        });
+
+        // 1. Draw Pins on SVG
+        pinsLayer.innerHTML = "";
+        filteredPins.forEach(pin => {
+          const pinColor = getCategoryColor(pin.category);
+          
+          const pinGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          pinGroup.setAttribute("class", "story-pin");
+          pinGroup.setAttribute("data-id", pin.id);
+          
+          // Outer pulsing ring
+          const pulseCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          pulseCircle.setAttribute("class", "story-pin-pulse");
+          pulseCircle.setAttribute("cx", pin.x);
+          pulseCircle.setAttribute("cy", pin.y);
+          pulseCircle.setAttribute("r", 15);
+          pulseCircle.style.fill = pinColor;
+          
+          // Inner solid core
+          const coreCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          coreCircle.setAttribute("class", "story-pin-circle");
+          coreCircle.setAttribute("cx", pin.x);
+          coreCircle.setAttribute("cy", pin.y);
+          coreCircle.setAttribute("r", 7);
+          coreCircle.style.fill = pinColor;
+          
+          pinGroup.appendChild(pulseCircle);
+          pinGroup.appendChild(coreCircle);
+          
+          // Click on SVG pin handler
+          pinGroup.addEventListener("click", (e) => {
+            e.stopPropagation();
+            focusOnPin(pin);
+          });
+          
+          pinsLayer.appendChild(pinGroup);
+        });
+
+        // 2. Draw sidebar list index
+        sidebarStoriesContainer.innerHTML = "";
+        if (filteredPins.length === 0) {
+          sidebarStoriesContainer.innerHTML = `
+            <div style="text-align:center;padding:2rem;color:hsl(var(--text-muted));">
+              No pins found in this category / Ningún pin encontrado en esta categoría.
+            </div>
+          `;
+          return;
+        }
+
+        filteredPins.forEach(pin => {
+          const card = document.createElement("div");
+          card.className = `story-card-item ${selectedPinId === pin.id ? 'focused' : ''}`;
+          card.setAttribute("data-id", pin.id);
+
+          const catLabel = getCategoryLabel(pin.category);
+          const catColor = getCategoryColor(pin.category);
+
+          card.innerHTML = `
+            <div class="story-meta-row">
+              <span style="color:${catColor};">${catLabel}</span>
+              <span>By ${pin.creator || 'Anonymous'}</span>
+            </div>
+            <h4 style="font-family:var(--font-syne);font-size:0.95rem;margin-bottom:0.4rem;">
+              ${pin.titleEn}
+            </h4>
+            <h5 style="font-family:var(--font-serif);font-style:italic;font-size:0.85rem;color:hsl(var(--text-muted));font-weight:400;margin-bottom:0.5rem;">
+              ${pin.titleEs}
+            </h5>
+            <p style="font-size:0.8rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:hsl(var(--text-muted));margin:0;">
+              ${pin.storyEn}
+            </p>
+          `;
+
+          card.addEventListener("click", () => focusOnPin(pin));
+          sidebarStoriesContainer.appendChild(card);
+        });
+      }
+
+      function getCategoryLabel(cat) {
+        switch(cat) {
+          case "land": return "Land & Commons";
+          case "labor": return "Labor Struggle";
+          case "art": return "Public Art";
+          case "mutual": return "Mutual Aid";
+          default: return "Struggle";
+        }
+      }
+
+      function getCategoryColor(cat) {
+        switch(cat) {
+          case "land": return "hsl(var(--color-accent))";
+          case "labor": return "hsl(var(--color-primary))";
+          case "art": return "hsl(var(--color-secondary))";
+          case "mutual": return "hsl(var(--color-sky))";
+          default: return "hsl(var(--color-primary))";
+        }
+      }
+
+      // Centers view, zooms, selects pin, and updates detail sidebar tab
+      function focusOnPin(pin) {
+        selectedPinId = pin.id;
+        
+        // Highlights selected in sidebar list
+        document.querySelectorAll(".story-card-item").forEach(item => {
+          item.classList.toggle("focused", item.getAttribute("data-id") === pin.id);
+        });
+
+        // 1. Center Map Viewport on pin coordinates [x, y]
+        // viewBox is 0 0 600 600. Center is [300, 300]
+        scale = 1.8;
+        panX = (300 - pin.x) * scale;
+        panY = (300 - pin.y) * scale;
+        applyTransforms();
+
+        // 2. Render Pin Detail Panel
+        const badgeClass = `badge-${pin.category}`;
+        const catLabel = getCategoryLabel(pin.category);
+        const imageBlock = pin.image ? `<img class="detail-poster-img" src="${pin.image}" alt="Art poster">` : "";
+
+        activePinDetailContainer.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid hsl(var(--border-light));padding-bottom:0.75rem;margin-bottom:0.75rem;">
+            <span class="detail-category-badge ${badgeClass}">${catLabel}</span>
+            <span style="font-family:var(--font-mono);font-size:0.68rem;color:hsl(var(--text-muted));">By: ${pin.creator || 'Anonymous'}</span>
+          </div>
+
+          <h3 style="font-family:var(--font-syne);font-size:1.25rem;color:hsl(var(--text-primary));margin-bottom:0.4rem;line-height:1.25;">
+            ${pin.titleEn}
+          </h3>
+          <h4 style="font-family:var(--font-serif);font-size:1.05rem;color:hsl(var(--color-secondary));font-style:italic;font-weight:400;margin-bottom:0.75rem;">
+            ${pin.titleEs}
+          </h4>
+
+          ${imageBlock}
+
+          <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.85rem;line-height:1.6;margin-top:0.5rem;">
+            <div>
+              <strong style="font-family:var(--font-mono);font-size:0.7rem;text-transform:uppercase;color:hsl(var(--text-muted));display:block;margin-bottom:0.25rem;">English</strong>
+              <p style="margin:0;color:hsl(var(--text-primary));">${pin.storyEn}</p>
+            </div>
+            <div style="border-left:2px solid hsl(var(--color-secondary));padding-left:0.75rem;margin-top:0.5rem;">
+              <strong style="font-family:var(--font-mono);font-size:0.7rem;text-transform:uppercase;color:hsl(var(--color-secondary));display:block;margin-bottom:0.25rem;">Español</strong>
+              <p style="margin:0;color:hsl(var(--text-muted));font-style:italic;">${pin.storyEs}</p>
+            </div>
+          </div>
+        `;
+
+        // Switch to the Active Detail tab dynamically
+        switchSidebarTab("panel-pin-detail");
+      }
+
+      // Legend category filter click
+      document.querySelectorAll(".map-legend-item").forEach(item => {
+        item.addEventListener("click", () => {
+          document.querySelectorAll(".map-legend-item").forEach(l => l.classList.remove("active"));
+          item.classList.add("active");
+          activeCategoryFilter = item.getAttribute("data-category");
+          renderStruggles();
+        });
+      });
+
+
+      // ── MASONRY ARTWORK GALLERY GENERATOR (19 items + Comrade Art) ──
+      const galleryContainer = document.getElementById("art-masonry-container");
+      let activeGalleryTab = 'templates'; // 'templates' or 'comrade'
+
+      function getLocalArtContributions() {
+        try {
+          const raw = localStorage.getItem("local_user_art_contributions");
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          console.error("Failed to parse local contributions", e);
+          return [];
+        }
+      }
+
+      function renderGallery() {
+        galleryContainer.innerHTML = "";
+        
+        if (activeGalleryTab === "templates") {
+          // Loop 19 times for preloaded template cards
+          for (let i = 1; i <= 19; i++) {
+            const figure = document.createElement("figure");
+            figure.className = "gallery-item";
+            figure.setAttribute("data-index", i);
+            
+            figure.innerHTML = `
+              <img src="assets/img/meme_${i}.png" alt="Activist Poster ${i}" loading="lazy" decoding="async" style="cursor:pointer;">
+              <figcaption style="padding:0.75rem;background:rgba(10,10,10,0.85);">
+                <span class="meme-label" style="font-family:var(--font-mono);font-size:0.72rem;color:hsl(var(--color-secondary));font-weight:600;">Template #${i}</span>
+                <div class="gallery-actions" style="margin-top:0.4rem;display:flex;gap:0.4rem;">
+                  <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_${i}.png" style="flex:1;font-size:0.7rem;padding:0.35rem;">Customize</button>
+                  <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_${i}.png" style="font-size:0.7rem;padding:0.35rem 0.6rem;">Share</button>
+                </div>
+              </figcaption>
+            `;
+            
+            // Image click launches studio preloaded
+            figure.querySelector("img").addEventListener("click", () => {
+              openStudioModal(`assets/img/meme_${i}.png`);
+            });
+            
+            figure.querySelector(".js-view-meme").addEventListener("click", () => {
+              openStudioModal(`assets/img/meme_${i}.png`);
+            });
+
+            figure.querySelector(".js-share-meme").addEventListener("click", async () => {
+              const absolute = getAbsoluteUrl(`assets/img/meme_${i}.png`);
+              if (navigator.share) {
+                try {
+                  await navigator.share({
+                    title: 'New Mexico Socialists Revolutionary Art',
+                    text: 'Check out this revolutionary art poster from New Mexico Socialists!',
+                    url: absolute
+                  });
+                } catch (err) {
+                  console.log("Web Share cancelled or failed", err);
+                }
+              } else {
+                try {
+                  await navigator.clipboard.writeText(absolute);
+                  alert("Poster template link copied to clipboard! Share it with comrades! / ¡Enlace copiado!");
+                } catch (err) {
+                  console.error("Clipboard copy failed", err);
+                }
+              }
+            });
+
+            galleryContainer.appendChild(figure);
+          }
+        } else {
+          // Render Comrade Art Gallery contributions
+          const userContribs = getLocalArtContributions();
+          
+          // Also fetch map pin images that have actual artwork uploaded (exclude preloads)
+          const localPins = getLocalPins().filter(p => p.image && !p.image.startsWith("assets/img/"));
+          
+          // Merge contributions
+          const allComradeArt = [];
+          
+          userContribs.forEach(c => {
+            allComradeArt.push({
+              id: c.id,
+              titleEn: c.titleEn,
+              titleEs: c.titleEs,
+              creator: c.creator,
+              image: c.image,
+              storyEn: c.storyEn,
+              storyEs: c.storyEs,
+              badge: "Gallery Contributor"
+            });
+          });
+          
+          localPins.forEach(p => {
+            allComradeArt.push({
+              id: p.id,
+              titleEn: p.titleEn,
+              titleEs: p.titleEs,
+              creator: p.creator,
+              image: p.image,
+              storyEn: p.storyEn,
+              storyEs: p.storyEs,
+              badge: "Map Pin Art"
+            });
+          });
+
+          if (allComradeArt.length === 0) {
+            galleryContainer.innerHTML = `
+              <div style="grid-column: 1/-1; text-align: center; padding: 3rem 1.5rem; border: 1px dashed hsl(var(--border-light)); border-radius: var(--radius-md); color: hsl(var(--text-muted)); font-size: 0.95rem;">
+                ✊ <strong style="color:hsl(var(--color-secondary)); display:block; margin-bottom:0.5rem;">No public art contributed yet / Ningún arte público aún.</strong>
+                Be the first to upload revolutionary poster art using the button above!
+              </div>
+            `;
+            return;
+          }
+
+          allComradeArt.forEach(art => {
+            const figure = document.createElement("figure");
+            figure.className = "gallery-item";
+            figure.setAttribute("data-id", art.id);
+            
+            figure.innerHTML = `
+              <img src="${art.image}" alt="${art.titleEn}" loading="lazy" decoding="async" style="cursor:pointer;">
+              <figcaption style="padding:0.75rem;background:rgba(10,10,10,0.85); display:flex; flex-direction:column; gap:0.25rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="meme-label" style="font-family:var(--font-mono);font-size:0.68rem;color:hsl(var(--color-accent));font-weight:700; text-transform:uppercase;">${art.badge}</span>
+                  <span style="font-family:var(--font-mono);font-size:0.65rem;color:hsl(var(--text-muted));">By: ${art.creator}</span>
+                </div>
+                <h4 style="font-family:var(--font-syne); font-size:0.9rem; margin:0.1rem 0; color:hsl(var(--text-primary));">${art.titleEn}</h4>
+                <p style="font-size:0.75rem; color:hsl(var(--text-muted)); margin:0; line-height:1.4; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${art.storyEn}</p>
+                <div class="gallery-actions" style="margin-top:0.4rem;display:flex;gap:0.4rem;">
+                  <button type="button" class="btn tiny primary js-view-art" style="flex:1;font-size:0.7rem;padding:0.35rem;">Customize Studio</button>
+                </div>
+              </figcaption>
+            `;
+            
+            figure.querySelector("img").addEventListener("click", () => {
+              openStudioModal(art.image);
+            });
+            figure.querySelector(".js-view-art").addEventListener("click", () => {
+              openStudioModal(art.image);
+            });
+            
+            galleryContainer.appendChild(figure);
+          });
+        }
+      }
+
+      // ── GALLERY TAB EVENT BINDINGS ──
+      const tabTemplatesBtn = document.getElementById("tab-templates");
+      const tabComradeBtn = document.getElementById("tab-comrade-art");
+      const submitArtBtn = document.getElementById("btn-submit-art");
+
+      tabTemplatesBtn.addEventListener("click", () => {
+        activeGalleryTab = "templates";
+        tabTemplatesBtn.classList.add("active");
+        tabTemplatesBtn.style.borderBottomColor = "hsl(var(--color-secondary))";
+        tabTemplatesBtn.style.color = "hsl(var(--text-primary))";
+        tabComradeBtn.classList.remove("active");
+        tabComradeBtn.style.borderBottomColor = "transparent";
+        tabComradeBtn.style.color = "hsl(var(--text-muted))";
+        submitArtBtn.style.display = "none";
+        renderGallery();
+      });
+
+      tabComradeBtn.addEventListener("click", () => {
+        activeGalleryTab = "comrade";
+        tabComradeBtn.classList.add("active");
+        tabComradeBtn.style.borderBottomColor = "hsl(var(--color-secondary))";
+        tabComradeBtn.style.color = "hsl(var(--text-primary))";
+        tabTemplatesBtn.classList.remove("active");
+        tabTemplatesBtn.style.borderBottomColor = "transparent";
+        tabTemplatesBtn.style.color = "hsl(var(--text-muted))";
+        submitArtBtn.style.display = "flex";
+        renderGallery();
+      });
+
+      // ── COMRADE ART SUBMISSION MODAL WORKFLOWS ──
+      const artModal = document.getElementById("art-submission-modal");
+      const comradeArtForm = document.getElementById("comrade-art-form");
+      const artNameInput = document.getElementById("form-art-name");
+      const artAnonCheckbox = document.getElementById("form-art-anonymous");
+      const artFileInput = document.getElementById("form-art-file");
+      const formArtImageData = document.getElementById("form-art-image-data");
+
+      function openArtModal() {
+        artModal.classList.add("active");
+        artModal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeArtModal() {
+        artModal.classList.remove("active");
+        artModal.setAttribute("aria-hidden", "true");
+      }
+
+      submitArtBtn.addEventListener("click", openArtModal);
+      document.getElementById("art-modal-close-btn").addEventListener("click", closeArtModal);
+      document.getElementById("art-modal-backdrop").addEventListener("click", closeArtModal);
+      document.getElementById("btn-cancel-art").addEventListener("click", closeArtModal);
+
+      artAnonCheckbox.addEventListener("change", () => {
+        if (artAnonCheckbox.checked) {
+          artNameInput.value = "Anonymous";
+          artNameInput.setAttribute("disabled", "true");
+        } else {
+          artNameInput.value = "";
+          artNameInput.removeAttribute("disabled");
+        }
+      });
+
+      // ── SUBMIT COMRADE ART FORM ──
+      comradeArtForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const statusEl = document.getElementById("art-form-status");
+        statusEl.textContent = "Publishing artwork... / Publicando arte...";
+        statusEl.style.color = "hsl(var(--color-secondary))";
+
+        const file = artFileInput.files[0];
+        if (!file) {
+          statusEl.textContent = "Please select an image file. / Por favor selecciona una imagen.";
+          statusEl.style.color = "#ffb3b3";
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const base64Data = event.target.result;
+          formArtImageData.value = base64Data;
+
+          const contributorName = artAnonCheckbox.checked ? "Anonymous" : artNameInput.value.trim() || "Anonymous";
+          const titleEn = document.getElementById("form-art-title-en").value.trim();
+          const titleEs = document.getElementById("form-art-title-es").value.trim();
+          const storyEn = document.getElementById("form-art-story-en").value.trim();
+          const storyEs = document.getElementById("form-art-story-es").value.trim();
+
+          const newArt = {
+            id: "art-" + Date.now(),
+            creator: contributorName,
+            titleEn: titleEn,
+            titleEs: titleEs,
+            storyEn: storyEn,
+            storyEs: storyEs,
+            image: base64Data
+          };
+
+          // Save immediately to localStorage
+          try {
+            const raw = localStorage.getItem("local_user_art_contributions");
+            const current = raw ? JSON.parse(raw) : [];
+            current.push(newArt);
+            localStorage.setItem("local_user_art_contributions", JSON.stringify(current));
+          } catch (err) {
+            console.error("Local art caching error:", err);
+          }
+
+          // Submit Netlify Form
+          const formData = new FormData(comradeArtForm);
+          formData.set("name", contributorName);
+          formData.set("image-data", base64Data);
+
+          try {
+            const bodyPayload = new URLSearchParams(formData).toString();
+            await fetch("/", {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: bodyPayload
+            });
+
+            statusEl.textContent = "Artwork submitted successfully! ✊ / ¡Arte publicado!";
+            statusEl.style.color = "#77e89f";
+
+            setTimeout(() => {
+              closeArtModal();
+              renderGallery();
+              comradeArtForm.reset();
+              artAnonCheckbox.checked = true;
+              artNameInput.value = "Anonymous";
+              artNameInput.setAttribute("disabled", "true");
+              statusEl.textContent = "";
+            }, 1200);
+          } catch (err) {
+            console.error("Netlify submit error:", err);
+            statusEl.textContent = "Saved locally to browser cache. / Guardado en caché local.";
+            statusEl.style.color = "#ffb3b3";
+            setTimeout(() => {
+              closeArtModal();
+              renderGallery();
+              comradeArtForm.reset();
+              artAnonCheckbox.checked = true;
+              artNameInput.value = "Anonymous";
+              artNameInput.setAttribute("disabled", "true");
+              statusEl.textContent = "";
+            }, 1500);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+
+      function getAbsoluteUrl(relativePath) {
+        const loc = window.location;
+        const basePath = loc.pathname.replace(/art-showcase\.html$/, "");
+        return loc.origin + basePath + relativePath;
+      }
+
+
+      // ── LAUNCH POSTER STUDIO MODAL LOOP ──
+      const studioModal = document.getElementById("meme-modal");
+      const memeCanvas = document.getElementById("meme-canvas");
+      const memeTopText = document.getElementById("meme-top-text");
+      const memeBottomText = document.getElementById("meme-bottom-text");
+      const memeFontSize = document.getElementById("meme-font-size");
+      const memeColor = document.getElementById("meme-color");
+      const memeFileUpload = document.getElementById("meme-file-upload");
+      const memeFontFamily = document.getElementById("meme-font-family");
+      const memeLayout = document.getElementById("meme-layout");
+      const memeAlign = document.getElementById("meme-align");
+      const memeUppercase = document.getElementById("meme-uppercase");
+      const memeOutlineWeight = document.getElementById("meme-outline-weight");
+
+      // AI Image Generator fields
+      const memeAiPrompt = document.getElementById("meme-ai-prompt");
+      const memeAiGenerateBtn = document.getElementById("meme-ai-generate-btn");
+      const memeAiStatus = document.getElementById("meme-ai-status");
+
+      const fbPostBtn = document.getElementById("fb-post-btn");
+      const fbSettingsBtn = document.getElementById("fb-settings-btn");
+      const fbPostStatus = document.getElementById("fb-post-status");
+
+      const modalDownload = document.getElementById("meme-download");
+      const modalShare = document.getElementById("meme-share");
+      const modalCopy = document.getElementById("meme-copy-link");
+      const modalCopyStatus = document.getElementById("meme-copy-status");
+
+      let activeTemplateSrc = "assets/img/meme_1.png";
+
+      function openStudioModal(src) {
+        activeTemplateSrc = src;
+        const absolute = getAbsoluteUrl(src);
+        
+        modalDownload.href = src;
+        modalShare.dataset.shareUrl = absolute;
+        modalCopy.dataset.copyUrl = absolute;
+        modalCopyStatus.textContent = "";
+        if (fbPostStatus) fbPostStatus.textContent = "";
+        
+        studioModal.classList.add("active");
+        studioModal.setAttribute("aria-hidden", "false");
+        
+        setTimeout(redrawMeme, 50);
+      }
+
+      function closeStudioModal() {
+        studioModal.classList.remove("active");
+        studioModal.setAttribute("aria-hidden", "true");
+      }
+
+      document.getElementById("trigger-studio-btn").addEventListener("click", () => {
+        openStudioModal("assets/img/meme_1.png");
+      });
+      document.getElementById("modal-close-btn").addEventListener("click", closeStudioModal);
+      document.getElementById("modal-backdrop").addEventListener("click", closeStudioModal);
+
+      // Redraw Canvas meme with live inputs
+      function redrawMeme() {
+        if (!memeCanvas || !activeTemplateSrc) return;
+        const ctx = memeCanvas.getContext("2d");
+        const img = new Image();
+        
+        if (activeTemplateSrc.startsWith("http") && !activeTemplateSrc.startsWith(window.location.origin)) {
+          img.crossOrigin = "anonymous";
+        }
+        img.src = activeTemplateSrc;
+
+        img.onload = () => {
+          const layout = memeLayout ? memeLayout.value : "classic";
+          const fSizeFactor = memeFontSize ? parseInt(memeFontSize.value) / 100 : 0.08;
+          const fontFam = memeFontFamily ? memeFontFamily.value : "Space Grotesk";
+          const align = memeAlign ? memeAlign.value : "center";
+          const txtColor = memeColor ? memeColor.value : "#ffffff";
+          const outlineWt = memeOutlineWeight ? parseInt(memeOutlineWeight.value) : 4;
+          const forceUpper = memeUppercase ? memeUppercase.checked : true;
+
+          let topTextStr = (memeTopText && memeTopText.value) ? memeTopText.value : "";
+          let bottomTextStr = (memeBottomText && memeBottomText.value) ? memeBottomText.value : "";
+          
+          if (forceUpper) {
+            topTextStr = topTextStr.toUpperCase();
+            bottomTextStr = bottomTextStr.toUpperCase();
+          }
+
+          if (layout === "demotivational") {
+            const borderSize = Math.floor(img.naturalWidth * 0.08);
+            const bottomPadding = Math.floor(img.naturalHeight * 0.26);
+
+            memeCanvas.width = img.naturalWidth + borderSize * 2;
+            memeCanvas.height = img.naturalHeight + borderSize * 1.5 + bottomPadding;
+
+            ctx.fillStyle = "#0c0a08";
+            ctx.fillRect(0, 0, memeCanvas.width, memeCanvas.height);
+            ctx.drawImage(img, borderSize, borderSize, img.naturalWidth, img.naturalHeight);
+
+            ctx.strokeStyle = "hsl(38, 85%, 48%)";
+            ctx.lineWidth = Math.max(img.naturalWidth * 0.003, 1.5);
+            ctx.strokeRect(borderSize - 3, borderSize - 3, img.naturalWidth + 6, img.naturalHeight + 6);
+
+            ctx.textAlign = "center";
+            
+            if (topTextStr) {
+              const finalFontSize = Math.floor(memeCanvas.width * (fSizeFactor * 1.1));
+              ctx.font = `600 ${finalFontSize}px "${fontFam}", "Fraunces", serif`;
+              ctx.fillStyle = "hsl(38, 85%, 48%)";
+              const y = img.naturalHeight + borderSize * 1.5 + bottomPadding * 0.35;
+              ctx.fillText(topTextStr, memeCanvas.width / 2, y, memeCanvas.width * 0.9);
+            }
+
+            if (bottomTextStr) {
+              const finalFontSize = Math.floor(memeCanvas.width * (fSizeFactor * 0.65));
+              ctx.font = `300 ${finalFontSize}px "${fontFam}", "Outfit", sans-serif`;
+              ctx.fillStyle = "#f5ead8";
+              const y = img.naturalHeight + borderSize * 1.5 + bottomPadding * 0.72;
+              ctx.fillText(bottomTextStr, memeCanvas.width / 2, y, memeCanvas.width * 0.9);
+            }
+
+          } else if (layout === "banner") {
+            memeCanvas.width = img.naturalWidth || 600;
+            memeCanvas.height = img.naturalHeight || 600;
+            ctx.drawImage(img, 0, 0, memeCanvas.width, memeCanvas.height);
+
+            const bannerHeight = Math.floor(memeCanvas.height * 0.22);
+            ctx.fillStyle = "rgba(194, 96, 58, 0.95)";
+            ctx.fillRect(0, memeCanvas.height - bannerHeight, memeCanvas.width, bannerHeight);
+
+            ctx.strokeStyle = "hsl(38, 85%, 48%)";
+            ctx.lineWidth = Math.max(memeCanvas.width * 0.005, 3);
+            ctx.beginPath();
+            ctx.moveTo(0, memeCanvas.height - bannerHeight);
+            ctx.lineTo(memeCanvas.width, memeCanvas.height - bannerHeight);
+            ctx.stroke();
+
+            ctx.textAlign = align;
+            let textX = memeCanvas.width / 2;
+            if (align === "left") textX = memeCanvas.width * 0.05;
+            if (align === "right") textX = memeCanvas.width * 0.95;
+
+            if (topTextStr) {
+              const finalFontSize = Math.floor(memeCanvas.width * (fSizeFactor * 0.85));
+              ctx.font = `700 ${finalFontSize}px "${fontFam}", sans-serif`;
+              ctx.fillStyle = "#fdf6ea";
+              const y = memeCanvas.height - bannerHeight + bannerHeight * 0.35;
+              ctx.fillText(topTextStr, textX, y, memeCanvas.width * 0.9);
+            }
+            
+            if (bottomTextStr) {
+              const finalFontSize = Math.floor(memeCanvas.width * (fSizeFactor * 0.65));
+              ctx.font = `500 ${finalFontSize}px "${fontFam}", monospace`;
+              ctx.fillStyle = "hsl(38, 85%, 48%)";
+              const y = memeCanvas.height - bannerHeight + bannerHeight * 0.72;
+              ctx.fillText(bottomTextStr, textX, y, memeCanvas.width * 0.9);
+            }
+
+          } else {
+            memeCanvas.width = img.naturalWidth || 600;
+            memeCanvas.height = img.naturalHeight || 600;
+            ctx.drawImage(img, 0, 0, memeCanvas.width, memeCanvas.height);
+
+            const finalFontSize = Math.floor(memeCanvas.width * fSizeFactor);
+            ctx.fillStyle = txtColor;
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = outlineWt;
+            ctx.textAlign = align;
+            ctx.font = `700 ${finalFontSize}px "${fontFam}", Impact, sans-serif`;
+
+            let textX = memeCanvas.width / 2;
+            if (align === "left") textX = memeCanvas.width * 0.05;
+            if (align === "right") textX = memeCanvas.width * 0.95;
+
+            if (topTextStr) {
+              ctx.textBaseline = "top";
+              const y = memeCanvas.height * 0.05;
+              if (outlineWt > 0) ctx.strokeText(topTextStr, textX, y, memeCanvas.width * 0.9);
+              ctx.fillText(topTextStr, textX, y, memeCanvas.width * 0.9);
+            }
+
+            if (bottomTextStr) {
+              ctx.textBaseline = "bottom";
+              const y = memeCanvas.height * 0.95;
+              if (outlineWt > 0) ctx.strokeText(bottomTextStr, textX, y, memeCanvas.width * 0.9);
+              ctx.fillText(bottomTextStr, textX, y, memeCanvas.width * 0.9);
+            }
+          }
+
+          try {
+            modalDownload.href = memeCanvas.toDataURL("image/png");
+          } catch (e) {
+            modalDownload.href = activeTemplateSrc;
+          }
+        };
+      }
+
+      // Add generator input listeners
+      [memeTopText, memeBottomText, memeFontSize, memeColor, memeOutlineWeight].forEach(el => {
+        el.addEventListener("input", redrawMeme);
+      });
+      [memeFontFamily, memeLayout, memeAlign, memeUppercase].forEach(el => {
+        el.addEventListener("change", redrawMeme);
+      });
+
+      memeFileUpload.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            activeTemplateSrc = event.target.result;
+            redrawMeme();
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // AI prompt generator triggers
+      memeAiGenerateBtn.addEventListener("click", async () => {
+        const promptVal = memeAiPrompt.value.trim();
+        if (!promptVal) {
+          memeAiStatus.textContent = "Please enter description / Ingresa descripción";
+          memeAiStatus.style.color = "#ffb3b3";
+          return;
+        }
+
+        memeAiStatus.textContent = "🤖 Generating stock image with AI... / Generando con IA...";
+        memeAiStatus.style.color = "hsl(var(--color-secondary))";
+        memeAiGenerateBtn.disabled = true;
+
+        try {
+          const res = await fetch("/api/generate-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: promptVal })
+          });
+
+          if (res.ok && res.headers.get("content-type")?.includes("image")) {
+            const blob = await res.blob();
+            const localUrl = URL.createObjectURL(blob);
+            activeTemplateSrc = localUrl;
+            memeAiStatus.textContent = "🎨 AI Image loaded successfully! / ¡Imagen cargada!";
+            memeAiStatus.style.color = "#77e89f";
+            redrawMeme();
+          } else {
+            throw new Error("Serverless Worker fallback to direct client-side Pollinations AI");
+          }
+        } catch (err) {
+          const seed = Math.floor(Math.random() * 999999);
+          const fallbackUrl = `https://image.pollinations.ai/p/${encodeURIComponent(promptVal)}?width=768&height=768&nologo=true&seed=${seed}`;
+          
+          const imgPreloader = new Image();
+          imgPreloader.crossOrigin = "anonymous";
+          imgPreloader.src = fallbackUrl;
+          imgPreloader.onload = () => {
+            activeTemplateSrc = fallbackUrl;
+            memeAiStatus.textContent = "🤖 AI image generated / ¡Generada con IA!";
+            memeAiStatus.style.color = "#77e89f";
+            redrawMeme();
+          };
+          imgPreloader.onerror = () => {
+            memeAiStatus.textContent = "AI generation failed. Try again / Error de generación.";
+            memeAiStatus.style.color = "#ffb3b3";
+          };
+        } finally {
+          memeAiGenerateBtn.disabled = false;
+        }
+      });
+
+      // Facebook auto-posting
+      if (fbPostBtn) {
+        fbPostBtn.addEventListener("click", async () => {
+          if (fbPostStatus) {
+            fbPostStatus.textContent = "Posting to Facebook... / Publicando...";
+            fbPostStatus.style.color = "#f6c745";
+          }
+
+          const token = localStorage.getItem("fb_page_access_token");
+          const pageId = localStorage.getItem("fb_page_id");
+
+          if (!token || !pageId) {
+            if (fbPostStatus) {
+              fbPostStatus.textContent = "Error: FB credentials not configured. Setup in Settings below! / Credenciales no configuradas.";
+              fbPostStatus.style.color = "#ffb3b3";
+            }
+            return;
+          }
+
+          try {
+            memeCanvas.toBlob(async (blob) => {
+              if (!blob) {
+                if (fbPostStatus) {
+                  fbPostStatus.textContent = "Canvas rendering error. / Error de renderizado.";
+                  fbPostStatus.style.color = "#ffb3b3";
+                }
+                return;
+              }
+
+              const formData = new FormData();
+              formData.append("access_token", token);
+              formData.append("source", blob);
+              
+              let captionText = "✊ Posted via NM Socialists Revolutionary Art Portal!\n";
+              if (memeTopText && memeTopText.value) captionText += `\n"${memeTopText.value.toUpperCase()}"`;
+              if (memeBottomText && memeBottomText.value) captionText += `\n"${memeBottomText.value.toUpperCase()}"`;
+              captionText += "\n\nJoin the movement at newmexicosocialists.com";
+              
+              formData.append("message", captionText);
+
+              const res = await fetch(`https://graph.facebook.com/v19.0/${pageId}/photos`, {
+                method: "POST",
+                body: formData
+              });
+
+              const result = await res.json();
+              if (result.post_id || result.id) {
+                if (fbPostStatus) {
+                  fbPostStatus.textContent = "Posted successfully to Facebook! ✊ / ¡Publicado con éxito!";
+                  fbPostStatus.style.color = "#77e89f";
+                }
+              } else {
+                if (fbPostStatus) {
+                  fbPostStatus.textContent = `FB API Error: ${result.error?.message || "Rejected"}`;
+                  fbPostStatus.style.color = "#ffb3b3";
+                }
+              }
+            }, "image/png");
+          } catch (err) {
+            if (fbPostStatus) {
+              fbPostStatus.textContent = "Direct access error. Use Download and upload manually.";
+              fbPostStatus.style.color = "#ffb3b3";
+            }
+          }
+        });
+      }
+
+      if (fbSettingsBtn) {
+        fbSettingsBtn.addEventListener("click", () => {
+          const pageId = prompt("Enter Facebook Page ID:", localStorage.getItem("fb_page_id") || "");
+          if (pageId === null) return;
+          const token = prompt("Enter Facebook Page Access Token:", localStorage.getItem("fb_page_access_token") || "");
+          if (token === null) return;
+
+          localStorage.setItem("fb_page_id", pageId.trim());
+          localStorage.setItem("fb_page_access_token", token.trim());
+          alert("Credentials stored securely in your browser!");
+        });
+      }
+
+      modalShare.addEventListener("click", async () => {
+        const url = modalShare.dataset.shareUrl;
+        if (!url) return;
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'New Mexico Socialists Revolutionary Art',
+              text: 'Check out this revolutionary art poster from New Mexico Socialists!',
+              url: url
+            });
+          } catch (err) {
+            console.log("Web Share cancelled or failed", err);
+          }
+        } else {
+          try {
+            await navigator.clipboard.writeText(url);
+            modalCopyStatus.textContent = "Link copied! Share it with comrades! / ¡Copiado!";
+            modalCopyStatus.style.color = "#77e89f";
+          } catch (err) {
+            console.error("Clipboard copy failed", err);
+            modalCopyStatus.textContent = "Could not share or copy.";
+            modalCopyStatus.style.color = "#ffb3b3";
+          }
+        }
+      });
+
+      modalCopy.addEventListener("click", async () => {
+        const url = modalCopy.dataset.copyUrl;
+        if (!url) return;
+        try {
+          await navigator.clipboard.writeText(url);
+          modalCopyStatus.textContent = "Link copied! / ¡Enlace copiado!";
+          modalCopyStatus.style.color = "#77e89f";
+        } catch (err) {
+          modalCopyStatus.textContent = "Could not copy.";
+          modalCopyStatus.style.color = "#ffb3b3";
+        }
+      });
+
+
+      // ── "PIN TO MAP" DROPPING MODE WORKFLOWS ──
+      const pinModal = document.getElementById("pin-submission-modal");
+      const pinForm = document.getElementById("storymap-pins-form");
+      const pinNameInput = document.getElementById("form-pin-name");
+      const pinAnonCheckbox = document.getElementById("form-pin-anonymous");
+      const pinPresetLocation = document.getElementById("form-pin-preset");
+      const pinXInput = document.getElementById("form-pin-x");
+      const pinYInput = document.getElementById("form-pin-y");
+      const formImageData = document.getElementById("form-pin-image-data");
+
+      const dropPinTriggerBtn = document.getElementById("drop-pin-trigger-btn");
+      const coordPickerOverlay = document.getElementById("coord-picker-overlay");
+      const triggerMapPinningBtn = document.getElementById("trigger-map-pinning-btn");
+
+      let pickerActive = false;
+
+      // Handle Anonymous contributor check toggle
+      pinAnonCheckbox.addEventListener("change", () => {
+        if (pinAnonCheckbox.checked) {
+          pinNameInput.value = "Anonymous";
+          pinNameInput.setAttribute("disabled", "true");
+        } else {
+          pinNameInput.value = "";
+          pinNameInput.removeAttribute("disabled");
+        }
+      });
+
+      // City Preset coordinates mapping
+      pinPresetLocation.addEventListener("change", () => {
+        const preset = pinPresetLocation.value;
+        if (preset === "taos") { pinXInput.value = 320; pinYInput.value = 110; }
+        else if (preset === "santafe") { pinXInput.value = 300; pinYInput.value = 200; }
+        else if (preset === "albuquerque") { pinXInput.value = 280; pinYInput.value = 280; }
+        else if (preset === "gallup") { pinXInput.value = 90; pinYInput.value = 220; }
+        else if (preset === "lascruces") { pinXInput.value = 250; pinYInput.value = 460; }
+        else if (preset === "carlsbad") { pinXInput.value = 460; pinYInput.value = 450; }
+        else if (preset === "silvercity") { pinXInput.value = 110; pinYInput.value = 420; }
+      });
+
+      // Triggers picker coordinates on SVG map directly!
+      function activateCoordinatePicker() {
+        pickerActive = true;
+        coordPickerOverlay.style.display = "block";
+        
+        // Temporarily highlight map outline to signal interactive click
+        document.querySelectorAll(".map-county").forEach(c => {
+          c.style.stroke = "hsl(var(--color-secondary))";
+          c.style.strokeWidth = "2px";
+        });
+      }
+
+      function deactivateCoordinatePicker() {
+        pickerActive = false;
+        coordPickerOverlay.style.display = "none";
+        document.querySelectorAll(".map-county").forEach(c => {
+          c.style.stroke = "";
+          c.style.strokeWidth = "";
+        });
+      }
+
+      // Map SVG Click handler specifically for dropping coordinate pins!
+      svgEl.addEventListener("click", (e) => {
+        if (!pickerActive) return;
+        e.stopPropagation();
+
+        // Gold standard coordinate translation taking into account all active transforms!
+        const point = svgEl.createSVGPoint();
+        point.x = e.clientX;
+        point.y = e.clientY;
+        const svgPoint = point.matrixTransform(mapContent.getScreenCTM().inverse());
+        
+        const targetX = Math.round(svgPoint.x);
+        const targetY = Math.round(svgPoint.y);
+
+        // Fill coordinates inputs in form
+        pinXInput.value = targetX;
+        pinYInput.value = targetY;
+        pinPresetLocation.value = "custom";
+
+        deactivateCoordinatePicker();
+        openPinModal();
+      });
+
+      // Opens Form Modal
+      function openPinModal() {
+        // Automatically inject canvas customized data image
+        try {
+          formImageData.value = memeCanvas.toDataURL("image/png");
+        } catch (e) {
+          formImageData.value = "";
+        }
+        
+        pinModal.classList.add("active");
+        pinModal.setAttribute("aria-hidden", "false");
+      }
+
+      function closePinModal() {
+        pinModal.classList.remove("active");
+        pinModal.setAttribute("aria-hidden", "true");
+        deactivateCoordinatePicker();
+      }
+
+      // Trigger pinning from within Studio Modal
+      triggerMapPinningBtn.addEventListener("click", () => {
+        closeStudioModal();
+        activateCoordinatePicker();
+      });
+
+      // Drop pin floating button trigger
+      dropPinTriggerBtn.addEventListener("click", () => {
+        activateCoordinatePicker();
+      });
+
+      document.getElementById("pin-modal-close-btn").addEventListener("click", closePinModal);
+      document.getElementById("pin-modal-backdrop").addEventListener("click", closePinModal);
+      document.getElementById("btn-cancel-pin").addEventListener("click", closePinModal);
+
+      // ── SUBMIT PIN FORM (Netlify AJAX + localStorage caching) ──
+      pinForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const statusEl = document.getElementById("pin-form-status");
+        statusEl.textContent = "Publishing pin... / Publicando pin...";
+        statusEl.style.color = "hsl(var(--color-secondary))";
+
+        const contributorName = pinAnonCheckbox.checked ? "Anonymous" : pinNameInput.value.trim() || "Anonymous";
+        const cat = document.getElementById("form-pin-category").value;
+        const titleEn = document.getElementById("form-pin-title-en").value.trim();
+        const titleEs = document.getElementById("form-pin-title-es").value.trim();
+        const storyEn = document.getElementById("form-pin-story-en").value.trim();
+        const storyEs = document.getElementById("form-pin-story-es").value.trim();
+        const cx = parseInt(pinXInput.value);
+        const cy = parseInt(pinYInput.value);
+        const imgData = formImageData.value;
+
+        const newPin = {
+          id: "custom-" + Date.now(),
+          category: cat,
+          x: cx,
+          y: cy,
+          titleEn: titleEn,
+          titleEs: titleEs,
+          creator: contributorName,
+          storyEn: storyEn,
+          storyEs: storyEs,
+          image: imgData || "assets/img/meme_1.png"
+        };
+
+        // 1. Save immediately to LocalStorage so they see their pin live!
+        try {
+          const currentLocal = getLocalPins();
+          currentLocal.push(newPin);
+          localStorage.setItem("local_storymap_pins", JSON.stringify(currentLocal));
+        } catch (err) {
+          console.error("Local caching pin error:", err);
+        }
+
+        // 2. Submit to Netlify forms via AJAX payload
+        const formData = new FormData(pinForm);
+        formData.set("name", contributorName); // Sync name state
+        
+        try {
+          // Fallback to static post
+          const bodyPayload = new URLSearchParams(formData).toString();
+          await fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: bodyPayload
+          });
+          
+          statusEl.textContent = "Pin published successfully! 📍 / ¡Pin publicado!";
+          statusEl.style.color = "#77e89f";
+
+          setTimeout(() => {
+            closePinModal();
+            renderStruggles();
+            
+            // Focus map directly onto their newly dropped pulsing node pin!
+            focusOnPin(newPin);
+            
+            // Reset form
+            pinForm.reset();
+            pinAnonCheckbox.checked = true;
+            pinNameInput.value = "Anonymous";
+            pinNameInput.setAttribute("disabled", "true");
+            statusEl.textContent = "";
+          }, 1200);
+
+        } catch (error) {
+          console.error("Netlify form submission error:", error);
+          statusEl.textContent = "Network error. Pinned locally to your browser cache.";
+          statusEl.style.color = "#ffb3b3";
+        }
+      });
+
+
+      // ── GLOBAL INITIALIZATION ──
+      renderStruggles();
+      renderGallery();
+
+      // Deep linking for the poster studio modal auto-popup
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("studio") === "true") {
+        openStudioModal("assets/img/meme_1.png");
+      }
+    });
+  </script>
+</body>
+</html>

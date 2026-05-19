@@ -429,14 +429,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Share template directly
+  // Share template directly bilingually with Web Share API or Clipboard fallback
   document.querySelectorAll(".js-share-meme").forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
       const imgPath = btn.getAttribute("data-img");
       const absolute = getAbsoluteUrl(imgPath);
-      const shareUrl = new URL("https://www.facebook.com/sharer/sharer.php");
-      shareUrl.searchParams.set("u", absolute);
-      window.open(shareUrl.toString(), "_blank", "noopener");
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'New Mexico Socialists Revolutionary Art',
+            text: 'Check out this revolutionary art poster from New Mexico Socialists!',
+            url: absolute
+          });
+        } catch (err) {
+          console.log("Web Share cancelled or failed", err);
+        }
+      } else {
+        try {
+          await navigator.clipboard.writeText(absolute);
+          alert("Poster template link copied to clipboard! Share it with comrades! / ¡Enlace copiado!");
+        } catch (err) {
+          console.error("Clipboard copy failed", err);
+        }
+      }
     });
   });
 
@@ -450,12 +465,30 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   if (modalShare) {
-    modalShare.addEventListener("click", () => {
+    modalShare.addEventListener("click", async () => {
       const url = modalShare.dataset.shareUrl;
       if (!url) return;
-      const shareUrl = new URL("https://www.facebook.com/sharer/sharer.php");
-      shareUrl.searchParams.set("u", url);
-      window.open(shareUrl.toString(), "_blank", "noopener");
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'New Mexico Socialists Revolutionary Art',
+            text: 'Check out this revolutionary art poster from New Mexico Socialists!',
+            url: url
+          });
+        } catch (err) {
+          console.log("Web Share cancelled or failed", err);
+        }
+      } else {
+        try {
+          await navigator.clipboard.writeText(url);
+          modalCopyStatus.textContent = "Link copied! Share it with comrades! / ¡Copiado!";
+          modalCopyStatus.style.color = "#77e89f";
+        } catch (err) {
+          console.error("Clipboard copy failed", err);
+          modalCopyStatus.textContent = "Could not share or copy.";
+          modalCopyStatus.style.color = "#ffb3b3";
+        }
+      }
     });
   }
 

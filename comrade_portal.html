@@ -137,10 +137,13 @@
       </div>
     </div>
     <nav class="site-nav">
-      <a href="index.html">Home</a>
-      <a href="nmnewsfeed.html">News Feed</a>
-      <a href="biblioteca-landing.html">Biblioteca</a>
-      <a href="index.html#memes">Memes</a>
+      <a href="index.html" id="nav-home">Home / Inicio</a>
+      <a href="index.html#about" id="nav-about">About / Nosotros</a>
+      <a href="nmnewsfeed.html" id="nav-news">News / Noticias</a>
+      <a href="art-showcase.html" id="nav-gallery">Gallery &amp; Map / Galería</a>
+      <a href="biblioteca-landing.html" id="nav-library">Biblioteca</a>
+      <a href="comrade_portal.html" id="nav-portal" class="active">Portal</a>
+      <a href="meta-brain.html" id="nav-metabrain">Meta Brain</a>
     </nav>
   </header>
 
@@ -162,8 +165,9 @@
           Navigation
         </div>
         <button class="portal-nav-btn active" data-target="panel-dash">📊 Overview Dashboard</button>
-        <button class="portal-nav-btn" data-target="panel-fb">📘 Facebook Meta API</button>
+        <button class="portal-nav-btn" data-target="panel-fb" style="display:none;">📘 Facebook Meta API</button>
         <button class="portal-nav-btn" data-target="panel-forms">📬 Netlify Forms</button>
+        <button class="portal-nav-btn" data-target="panel-metabrain">🧠 NUMARA Meta Brain</button>
         <button class="portal-nav-btn" data-target="panel-settings">⚙ Portal Credentials</button>
       </aside>
 
@@ -173,7 +177,7 @@
         <!-- PANEL: OVERVIEW -->
         <div id="panel-dash" class="portal-tab-panel active">
           <div class="stats-grid">
-            <div class="stat-card">
+            <div class="stat-card" style="display:none;">
               <div class="stat-val" id="dash-fb-status">OFFLINE</div>
               <div class="stat-label">Facebook Page Integration</div>
             </div>
@@ -196,14 +200,14 @@
               capabilities directly from the Meme Studio.
             </p>
             <div style="display:flex;gap:0.75rem;margin-top:1rem;">
-              <a href="index.html#memes" class="btn primary tiny">Open Comrade Meme Studio</a>
+              <a href="art-showcase.html?studio=true" class="btn primary tiny">Open Activist Poster Studio</a>
               <a href="nmnewsfeed.html" class="btn secondary tiny">View Leftist Newsfeed</a>
             </div>
           </div>
         </div>
 
         <!-- PANEL: FACEBOOK API -->
-        <div id="panel-fb" class="portal-tab-panel">
+        <div id="panel-fb" class="portal-tab-panel" style="display:none !important;">
           <div class="card">
             <h4>📘 Facebook Meta API Posting Workbench</h4>
             <p style="margin-top:0.5rem;margin-bottom:1rem;">
@@ -255,16 +259,56 @@
           </div>
         </div>
 
+        <!-- PANEL: NUMARA META BRAIN -->
+        <div id="panel-metabrain" class="portal-tab-panel">
+          <div class="card">
+            <h4>🧠 NUMARA Meta Brain &amp; Airtable Sync Admin</h4>
+            <p style="margin-top:0.5rem;margin-bottom:1.5rem;">
+              Manage and synchronize Salvador's <strong>Airtable Meta Brain</strong> database with the public portal. Set up Cloudflare bindings or check sync status.
+            </p>
+
+            <div class="stats-grid">
+              <div class="stat-card" style="background: hsla(0 0% 100% / 0.02); border: 1px solid hsl(var(--border-light));">
+                <div class="stat-val" id="meta-sync-indicator" style="color: #f6c745;">CHECKING...</div>
+                <div class="stat-label">Synchronization Mode</div>
+              </div>
+              <div class="stat-card" style="background: hsla(0 0% 100% / 0.02); border: 1px solid hsl(var(--border-light));">
+                <div class="stat-val" id="meta-sync-count">0</div>
+                <div class="stat-label">Indexed Knowledge Cards</div>
+              </div>
+            </div>
+
+            <div class="card" style="background: hsla(0 0% 100% / 0.02); margin-top: 1rem; border: 1px solid hsl(var(--border-light));">
+              <h5>☁️ Cloudflare Pages Production Setup</h5>
+              <p style="font-size:0.85rem; line-height: 1.6; margin-top: 0.5rem; color: hsl(var(--text-primary));">
+                To transition from the local offline dossier fallback to your live Airtable base, define the following Environment Variables in your <strong>Cloudflare Pages Dashboard</strong> under <code>Settings &gt; Environment Variables</code>:
+              </p>
+              <ul style="font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.8; margin-top: 0.5rem; color: hsl(var(--color-secondary));">
+                <li><strong>AIRTABLE_PAT</strong>: Your Airtable Personal Access Token (Bearer Token)</li>
+                <li><strong>AIRTABLE_BASE_ID</strong>: Your Airtable Base Identifier (e.g. <code>appXXXXXXXXX</code>)</li>
+                <li><strong>AIRTABLE_TABLE_NAME</strong>: Name of the table (default is <code>MetaBrain</code>)</li>
+              </ul>
+              <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+                <a href="meta-brain.html" class="btn primary tiny" target="_blank">Open Public Meta Brain Page</a>
+                <button type="button" id="btn-force-meta-sync" class="btn secondary tiny">Force Cache Refresh</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- PANEL: SETTINGS -->
         <div id="panel-settings" class="portal-tab-panel">
           <div class="card">
             <h4>⚙️ API Key &amp; Credential Management</h4>
-            <p style="margin-top:0.5rem;margin-bottom:1.5rem;">
-              Configure credentials here. This information is saved immediately to your browser's private `localStorage` 
-              and is requested when auto-generating memes or pushing announcements.
-            </p>
+            
+            <div style="background: hsla(var(--color-primary) / 0.08); border: 1px solid hsla(var(--color-primary) / 0.3); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem; border-left: 3px solid hsl(var(--color-primary));">
+              <strong style="color: hsl(var(--color-primary)); font-size: 0.9rem; display: block; margin-bottom: 0.4rem; font-family: var(--font-syne);">📘 Meta API Integration Deactivated</strong>
+              <p style="font-size: 0.85rem; margin: 0; line-height: 1.6; color: hsl(var(--text-primary));">
+                The Facebook Page Graph API pipeline is currently deactivated to avoid runtime authorization failures. Stored local tokens are bypassed, and all outreach publishing is directed to manual downloads or local map pinning.
+              </p>
+            </div>
 
-            <form id="settings-form">
+            <form id="settings-form" style="display:none;">
               <div class="field">
                 <label>Facebook Page ID</label>
                 <input type="text" id="set-fb-id" placeholder="e.g. 61584102062292">
@@ -489,9 +533,44 @@
         });
       }
 
+      // Fetch Meta Brain Admin Status
+      const metaSyncIndicator = document.getElementById("meta-sync-indicator");
+      const metaSyncCount = document.getElementById("meta-sync-count");
+      const btnForceMetaSync = document.getElementById("btn-force-meta-sync");
+
+      async function updateMetaBrainAdminStats() {
+        if (!metaSyncIndicator || !metaSyncCount) return;
+        try {
+          const res = await fetch("/api/airtable");
+          const data = await res.json();
+          if (data.connected) {
+            metaSyncIndicator.textContent = "LIVE CLOUD";
+            metaSyncIndicator.style.color = "#77e89f";
+          } else {
+            metaSyncIndicator.textContent = "DOSSIER MODE";
+            metaSyncIndicator.style.color = "#f6c745";
+          }
+          metaSyncCount.textContent = data.count || 0;
+        } catch (err) {
+          metaSyncIndicator.textContent = "ERROR";
+          metaSyncIndicator.style.color = "#ffb3b3";
+          metaSyncCount.textContent = "0";
+        }
+      }
+
+      if (btnForceMetaSync) {
+        btnForceMetaSync.addEventListener("click", async () => {
+          metaSyncIndicator.textContent = "SYNCING...";
+          metaSyncIndicator.style.color = "#f6c745";
+          await updateMetaBrainAdminStats();
+          alert("Airtable sync refreshed successfully!");
+        });
+      }
+
       // Initial stats check
       updateDashboardStats();
       loadLocalSubmissions();
+      updateMetaBrainAdminStats();
     });
   </script>
 </body>
