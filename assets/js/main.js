@@ -120,6 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const memeAlign = document.getElementById("meme-align");
   const memeUppercase = document.getElementById("meme-uppercase");
   const memeOutlineWeight = document.getElementById("meme-outline-weight");
+  
+  // AI Image Generator fields
+  const memeAiPrompt = document.getElementById("meme-ai-prompt");
+  const memeAiGenerateBtn = document.getElementById("meme-ai-generate-btn");
+  const memeAiStatus = document.getElementById("meme-ai-status");
 
   const fbPostBtn = document.getElementById("fb-post-btn");
   const fbSettingsBtn = document.getElementById("fb-settings-btn");
@@ -322,6 +327,63 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Hook AI Image Generation trigger
+  if (memeAiGenerateBtn && memeAiPrompt) {
+    memeAiGenerateBtn.addEventListener("click", async () => {
+      const promptVal = memeAiPrompt.value.trim();
+      if (!promptVal) {
+        memeAiStatus.textContent = "Please enter description / Ingresa descripción";
+        memeAiStatus.style.color = "#ffb3b3";
+        return;
+      }
+
+      memeAiStatus.textContent = "🤖 Generating stock image with AI... / Generando con IA...";
+      memeAiStatus.style.color = "hsl(38, 85%, 48%)";
+      memeAiGenerateBtn.disabled = true;
+
+      try {
+        // Try calling Pages serverless Worker endpoint
+        const res = await fetch("/api/generate-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: promptVal })
+        });
+
+        if (res.ok && res.headers.get("content-type")?.includes("image")) {
+          const blob = await res.blob();
+          const localUrl = URL.createObjectURL(blob);
+          activeTemplateSrc = localUrl;
+          memeAiStatus.textContent = "🎨 AI Image loaded successfully! / ¡Imagen cargada!";
+          memeAiStatus.style.color = "#77e89f";
+          redrawMeme();
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Workers AI bypass fallback");
+        }
+      } catch (err) {
+        console.log("Using direct client-side high-speed AI engine fallback...", err);
+        const seed = Math.floor(Math.random() * 999999);
+        const fallbackUrl = `https://image.pollinations.ai/p/${encodeURIComponent(promptVal)}?width=768&height=768&nologo=true&seed=${seed}`;
+        
+        const imgPreloader = new Image();
+        imgPreloader.crossOrigin = "anonymous";
+        imgPreloader.src = fallbackUrl;
+        imgPreloader.onload = () => {
+          activeTemplateSrc = fallbackUrl;
+          memeAiStatus.textContent = "🤖 AI image generated / ¡Generada con IA!";
+          memeAiStatus.style.color = "#77e89f";
+          redrawMeme();
+        };
+        imgPreloader.onerror = () => {
+          memeAiStatus.textContent = "AI generation failed. Try again / Error de generación.";
+          memeAiStatus.style.color = "#ffb3b3";
+        };
+      } finally {
+        memeAiGenerateBtn.disabled = false;
+      }
+    });
+  }
+
   function openMemeModal(imgPath) {
     activeTemplateSrc = imgPath;
     const absolute = getAbsoluteUrl(imgPath);
@@ -343,6 +405,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (memeUppercase) memeUppercase.checked = true;
     if (memeOutlineWeight) memeOutlineWeight.value = "4";
     if (memeFileUpload) memeFileUpload.value = ""; // Clear file selector
+    if (memeAiPrompt) memeAiPrompt.value = ""; // Clear AI prompt
+    if (memeAiStatus) memeAiStatus.textContent = "";
 
     modal.classList.add("active");
     modal.setAttribute("aria-hidden", "false");
