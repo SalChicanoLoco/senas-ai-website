@@ -31,15 +31,18 @@
       </div>
     </div>
     <nav class="site-nav">
-      <a href="#about">About / Acerca</a>
-      <a href="#join">Join / Únete</a>
-      <a href="#memes">Memes &amp; Posters</a>
-      <a href="#resources">Resources</a>
-      <a href="#contact">Contact</a>
+      <a href="#about">About</a>
+      <a href="#join">Join</a>
+      <a href="#donate">Donate</a>
+      <a href="nmnewsfeed.html">News</a>
+      <a href="biblioteca-landing.html">Biblioteca</a>
+      <a href="comrade_portal.html">Portal</a>
+      <a href="#memes">Memes</a>
     </nav>
   </header>
 
   <main>
+    <!-- HERO -->
     <section class="hero">
       <div class="hero-text">
         <h2>Another world is possible.</h2>
@@ -69,14 +72,7 @@
       </div>
     </section>
 
-    <section class="member-counter">
-      <div class="counter-display">
-        <span class="count" id="memberCount">...</span>
-        <p class="label">comrades organizing for socialism in New Mexico</p>
-        <p class="label-es">camaradas organizando por el socialismo en Nuevo México</p>
-      </div>
-    </section>
-
+    <!-- ABOUT -->
     <section id="about" class="section two-col">
       <div>
         <h3>About New Mexico Socialists</h3>
@@ -103,84 +99,51 @@
       </div>
     </section>
 
+    <!-- JOIN -->
     <section id="join" class="section join-section">
       <h3>Join / Únete</h3>
       <p>
         Sign up to get plugged into meetings, study circles, actions, and mutual aid projects.
+        This form is wired to <strong>Netlify Forms</strong>, so submissions are stored automatically
+        in your Netlify dashboard (and can be forwarded to email, Zapier, Supabase, etc.).
       </p>
 
-      <form id="join-form" class="card" method="post" action="submit-form.php">
+      <form id="join-form" class="card"
+            name="join"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="join" />
+        <p class="hidden">
+          <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
+        </p>
 
         <div class="field">
           <label for="name">Name / Nombre</label>
-          <input type="text" id="name" name="name" 
-            placeholder="Your name (or use alias below) / Tu nombre (o usa alias abajo)" />
-        </div>
-
-        <div class="field">
-          <label for="alias">Alias/Username (if not using real name) / Alias (si no usas nombre real)</label>
-          <input type="text" id="alias" name="alias" 
-            placeholder="Anonymous, Comrade123, etc." />
-        </div>
-
-        <div class="field">
-          <label for="email">Email (required) / Correo electrónico (requerido) <span class="required">*</span></label>
-          <input type="email" id="email" name="email" required 
-            placeholder="Email (required) / Correo electrónico (requerido)" />
-        </div>
-
-        <div class="field">
-          <label for="phone">Phone (optional) / Teléfono (opcional)</label>
-          <input type="tel" id="phone" name="phone" 
-            placeholder="(505) 555-1234 (optional)" />
+          <input type="text" id="name" name="name" required />
         </div>
         <div class="field">
-          <label for="country">Country / País <span class="required">*</span></label>
-          <select id="country" name="country" required>
-            <option value="">Select / Seleccionar...</option>
-            <option value="United States">United States / Estados Unidos</option>
-            <option value="Mexico">Mexico / México</option>
-            <option value="Canada">Canada / Canadá</option>
-            <option disabled>──────────</option>
-            <option value="Argentina">Argentina</option>
-            <option value="Bolivia">Bolivia</option>
-            <option value="Brazil">Brazil / Brasil</option>
-            <option value="Chile">Chile</option>
-            <option value="Colombia">Colombia</option>
-            <option value="Costa Rica">Costa Rica</option>
-            <option value="Cuba">Cuba</option>
-            <option value="Dominican Republic">Dominican Republic / República Dominicana</option>
-            <option value="Ecuador">Ecuador</option>
-            <option value="El Salvador">El Salvador</option>
-            <option value="Guatemala">Guatemala</option>
-            <option value="Honduras">Honduras</option>
-            <option value="Nicaragua">Nicaragua</option>
-            <option value="Panama">Panama / Panamá</option>
-            <option value="Paraguay">Paraguay</option>
-            <option value="Peru">Peru / Perú</option>
-            <option value="Puerto Rico">Puerto Rico</option>
-            <option value="Spain">Spain / España</option>
-            <option value="Uruguay">Uruguay</option>
-            <option value="Venezuela">Venezuela</option>
-            <option value="Other">Other / Otro</option>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="field">
+          <label for="city">City / Pueblo</label>
+          <input type="text" id="city" name="city" />
+        </div>
+        <div class="field">
+          <label for="language">Preferred language / Idioma preferido</label>
+          <select id="language" name="language">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="both">Both / Ambos</option>
           </select>
         </div>
         <div class="field">
-          <label for="state">State/Province / Estado/Provincia <span class="required">*</span></label>
-          <input type="text" id="state" name="state" required 
-            placeholder="e.g., New Mexico, Nuevo México, etc." />
+          <label for="interests">How do you want to plug in? / ¿Cómo quieres participar?</label>
+          <textarea id="interests" name="interests" rows="3"
+            placeholder="Events, memes & design, political education, mutual aid, etc."></textarea>
         </div>
-        <div class="field">
-          <label for="city">City / Ciudad <span class="required">*</span></label>
-          <input type="text" id="city" name="city" required 
-            placeholder="e.g., Santa Fe, Albuquerque, etc." />
-        </div>
-        <div class="field">
-          <label for="zip_code">Zip/Postal Code / Código Postal <span class="required">*</span></label>
-          <input type="text" id="zip_code" name="zip_code" required 
-            placeholder="e.g., 87501" />
-        </div>
-        <button type="submit" class="btn primary full-width">¡Únete! / Join Us!</button>
+        <button type="submit" class="btn primary full-width">Submit / Enviar</button>
         <p id="join-status" class="status-msg"></p>
       </form>
 
@@ -201,263 +164,287 @@
       </div>
     </section>
 
+    <!-- DONATE -->
+    <section id="donate" class="section donate-section">
+      <h3>Support Our Work / Apoya Nuestro Trabajo</h3>
+      <p>
+        Help us organize, educate, and build power in our communities. Your contribution supports 
+        study materials, event costs, mutual aid projects, and organizing infrastructure.
+      </p>
+      <p class="hero-es">
+        Ayúdanos a organizar, educar y construir poder en nuestras comunidades. Tu contribución 
+        apoya materiales de estudio, costos de eventos, proyectos de ayuda mutua e infraestructura organizativa.
+      </p>
+
+      <div class="donate-options">
+        <div class="donate-card card">
+          <h4>💳 Donate Online / Donar en línea</h4>
+          <p>Support us through secure online platforms:</p>
+          <div class="donate-buttons" style="display:flex;flex-direction:column;gap:0.5rem;margin-top:1rem;">
+            <a href="https://venmo.com/" target="_blank" rel="noopener" class="btn secondary full-width">Venmo</a>
+            <a href="https://cash.app/" target="_blank" rel="noopener" class="btn secondary full-width">Cash App</a>
+            <a href="https://www.paypal.com/" target="_blank" rel="noopener" class="btn secondary full-width">PayPal</a>
+          </div>
+          <p class="donate-note">
+            <small><em>Note: Update these links with your actual payment accounts. Contact us at 
+            <a href="mailto:NewMexicoSocialists@proton.me">NewMexicoSocialists@proton.me</a> for direct transfer details.</em></small>
+          </p>
+        </div>
+
+        <div class="donate-card card">
+          <h4>📬 Mail a Check / Enviar un Cheque</h4>
+          <p>Prefer to send a check? Contact us for mailing address:</p>
+          <p style="margin-top:1rem;">
+            Email: <a href="mailto:NewMexicoSocialists@proton.me" style="color:hsl(var(--color-secondary));font-weight:600;">NewMexicoSocialists@proton.me</a>
+          </p>
+          <p class="hero-es" style="margin-top:1rem;">
+            ¿Prefieres enviar un cheque? Contáctanos para la dirección postal.
+          </p>
+        </div>
+
+        <div class="donate-card card">
+          <h4>🤝 In-Kind Support / Apoyo en Especie</h4>
+          <p>
+            We also accept donations of materials, space for events, printing services, 
+            and other in-kind contributions. Get in touch to coordinate.
+          </p>
+          <p class="hero-es" style="margin-top:1rem;">
+            También aceptamos donaciones de materiales, espacios para eventos, servicios de impresión 
+            y otras contribuciones en especie. Ponte en contacto para coordinar.
+          </p>
+        </div>
+      </div>
+
+      <div class="transparency-note">
+        <p>
+          <strong>Transparency / Transparencia:</strong> All funds are used directly for organizing activities. 
+          We maintain transparent records and can provide reports on request.
+        </p>
+      </div>
+    </section>
+
+    <!-- MEMES -->
     <section id="memes" class="section">
       <h3>Memes &amp; Posters</h3>
       <p>
-        Click a meme to preview it, download it, or share it directly to Facebook. 
-        Use them for online agitation, tabling, or street wheat-pasting.
+        Click a meme to open the <strong>Comrade Meme Studio</strong> where you can customize it, add text, 
+        download your creation, or post it directly to the Facebook Page!
       </p>
+      
       <div class="gallery">
-        
+        <!-- Generates all 19 unique templates -->
         <figure class="gallery-item" data-index="1">
           <img src="assets/img/meme_1.png" alt="Meme 1" />
           <figcaption>
             <span class="meme-label">Meme 1</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_1.png">View</button>
-              <a href="assets/img/meme_1.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_1.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_1.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_1.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="2">
           <img src="assets/img/meme_2.png" alt="Meme 2" />
           <figcaption>
             <span class="meme-label">Meme 2</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_2.png">View</button>
-              <a href="assets/img/meme_2.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_2.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_2.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_2.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="3">
           <img src="assets/img/meme_3.png" alt="Meme 3" />
           <figcaption>
             <span class="meme-label">Meme 3</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_3.png">View</button>
-              <a href="assets/img/meme_3.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_3.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_3.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_3.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="4">
           <img src="assets/img/meme_4.png" alt="Meme 4" />
           <figcaption>
             <span class="meme-label">Meme 4</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_4.png">View</button>
-              <a href="assets/img/meme_4.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_4.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_4.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_4.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="5">
           <img src="assets/img/meme_5.png" alt="Meme 5" />
           <figcaption>
             <span class="meme-label">Meme 5</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_5.png">View</button>
-              <a href="assets/img/meme_5.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_5.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_5.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_5.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="6">
           <img src="assets/img/meme_6.png" alt="Meme 6" />
           <figcaption>
             <span class="meme-label">Meme 6</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_6.png">View</button>
-              <a href="assets/img/meme_6.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_6.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_6.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_6.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="7">
           <img src="assets/img/meme_7.png" alt="Meme 7" />
           <figcaption>
             <span class="meme-label">Meme 7</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_7.png">View</button>
-              <a href="assets/img/meme_7.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_7.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_7.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_7.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="8">
           <img src="assets/img/meme_8.png" alt="Meme 8" />
           <figcaption>
             <span class="meme-label">Meme 8</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_8.png">View</button>
-              <a href="assets/img/meme_8.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_8.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_8.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_8.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="9">
           <img src="assets/img/meme_9.png" alt="Meme 9" />
           <figcaption>
             <span class="meme-label">Meme 9</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_9.png">View</button>
-              <a href="assets/img/meme_9.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_9.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_9.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_9.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="10">
           <img src="assets/img/meme_10.png" alt="Meme 10" />
           <figcaption>
             <span class="meme-label">Meme 10</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_10.png">View</button>
-              <a href="assets/img/meme_10.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_10.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_10.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_10.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="11">
           <img src="assets/img/meme_11.png" alt="Meme 11" />
           <figcaption>
             <span class="meme-label">Meme 11</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_11.png">View</button>
-              <a href="assets/img/meme_11.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_11.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_11.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_11.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="12">
           <img src="assets/img/meme_12.png" alt="Meme 12" />
           <figcaption>
             <span class="meme-label">Meme 12</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_12.png">View</button>
-              <a href="assets/img/meme_12.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_12.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_12.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_12.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="13">
           <img src="assets/img/meme_13.png" alt="Meme 13" />
           <figcaption>
             <span class="meme-label">Meme 13</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_13.png">View</button>
-              <a href="assets/img/meme_13.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_13.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_13.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_13.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="14">
           <img src="assets/img/meme_14.png" alt="Meme 14" />
           <figcaption>
             <span class="meme-label">Meme 14</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_14.png">View</button>
-              <a href="assets/img/meme_14.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_14.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_14.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_14.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="15">
           <img src="assets/img/meme_15.png" alt="Meme 15" />
           <figcaption>
             <span class="meme-label">Meme 15</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_15.png">View</button>
-              <a href="assets/img/meme_15.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_15.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_15.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_15.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="16">
           <img src="assets/img/meme_16.png" alt="Meme 16" />
           <figcaption>
             <span class="meme-label">Meme 16</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_16.png">View</button>
-              <a href="assets/img/meme_16.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_16.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_16.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_16.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="17">
           <img src="assets/img/meme_17.png" alt="Meme 17" />
           <figcaption>
             <span class="meme-label">Meme 17</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_17.png">View</button>
-              <a href="assets/img/meme_17.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_17.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_17.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_17.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="18">
           <img src="assets/img/meme_18.png" alt="Meme 18" />
           <figcaption>
             <span class="meme-label">Meme 18</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_18.png">View</button>
-              <a href="assets/img/meme_18.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_18.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_18.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_18.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
 
         <figure class="gallery-item" data-index="19">
           <img src="assets/img/meme_19.png" alt="Meme 19" />
           <figcaption>
             <span class="meme-label">Meme 19</span>
             <div class="gallery-actions">
-              <button type="button" class="btn tiny js-view-meme" data-img="assets/img/meme_19.png">View</button>
-              <a href="assets/img/meme_19.png" download class="btn tiny secondary">Download</a>
-              <button type="button" class="btn tiny js-share-meme" data-img="assets/img/meme_19.png">Share</button>
+              <button type="button" class="btn tiny primary js-view-meme" data-img="assets/img/meme_19.png">Edit Slogans</button>
+              <button type="button" class="btn tiny secondary js-share-meme" data-img="assets/img/meme_19.png">Share</button>
             </div>
           </figcaption>
         </figure>
-        
       </div>
     </section>
 
+    <!-- RESOURCES -->
     <section id="resources" class="section two-col">
       <div>
         <h3>Study &amp; Resources</h3>
@@ -478,30 +465,72 @@
       </div>
     </section>
 
+    <!-- CONTACT -->
     <section id="contact" class="section contact">
       <h3>Contact</h3>
-      <p>Email: <a href="mailto:xava@newmexicosocialists.org">xava@newmexicosocialists.org</a></p>
-      <p>Signal / WhatsApp and other secure channels can be shared after you connect via email or in person.</p>
+      <p>Email: <a href="mailto:NewMexicoSocialists@proton.me" style="color:hsl(var(--color-secondary));font-weight:600;">NewMexicoSocialists@proton.me</a></p>
+      <p style="margin-top:1rem;">Signal / WhatsApp and other secure channels can be shared after you connect via email or in person.</p>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>&copy; 2025 New Mexico Socialists.</p>
+    <p>&copy; 2026 New Mexico Socialists. Built for Netlify static hosting. Designed by Salvador Sena.</p>
   </footer>
 
-  <!-- Meme lightbox modal -->
+  <!-- Comrade Meme Studio Lightbox Modal -->
   <div id="meme-modal" class="meme-modal" aria-hidden="true">
     <div class="meme-modal-backdrop"></div>
     <div class="meme-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="meme-modal-title">
       <button type="button" class="meme-modal-close" aria-label="Close">&times;</button>
-      <div class="meme-modal-body">
-        <img id="meme-modal-img" src="" alt="Meme preview" />
+      
+      <h3 style="margin-bottom:0.75rem;font-size:1.4rem;color:hsl(var(--color-secondary));display:flex;align-items:center;gap:0.5rem;">
+        ✊ Comrade Meme Studio
+      </h3>
+      
+      <div class="meme-modal-body" style="display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;align-items:start;">
+        <!-- Canvas viewport -->
+        <div class="canvas-container" style="background:#050505;border:1px solid hsl(var(--border-light));border-radius:12px;padding:0.5rem;display:flex;align-items:center;justify-content:center;aspect-ratio:1;">
+          <canvas id="meme-canvas" style="max-width:100%;height:auto;border-radius:8px;"></canvas>
+        </div>
+        
+        <!-- Controls form -->
+        <div class="meme-controls-form" style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div class="field">
+            <label>Top Slogan / Texto Superior</label>
+            <input type="text" id="meme-top-text" placeholder="ENTER TOP TEXT">
+          </div>
+          <div class="field">
+            <label>Bottom Slogan / Texto Inferior</label>
+            <input type="text" id="meme-bottom-text" placeholder="ENTER BOTTOM TEXT">
+          </div>
+          
+          <div style="display:flex;gap:1rem;">
+            <div class="field" style="flex:1;">
+              <label>Font Size Factor</label>
+              <input type="range" id="meme-font-size" min="4" max="15" value="8" style="padding:0;cursor:pointer;">
+            </div>
+            <div class="field" style="width:70px;">
+              <label>Color</label>
+              <input type="color" id="meme-color" value="#ffffff" style="padding:0;height:38px;cursor:pointer;">
+            </div>
+          </div>
+          
+          <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem;">
+            <button type="button" id="fb-post-btn" class="btn primary full-width tiny">Post directly to Facebook Page</button>
+            <button type="button" id="fb-settings-btn" class="btn secondary full-width tiny">⚙ Facebook Credentials Settings</button>
+            <span id="fb-post-status" class="status-msg" style="text-align:center;font-size:0.75rem;"></span>
+          </div>
+        </div>
       </div>
-      <div class="meme-modal-footer">
-        <a id="meme-download" href="#" download class="btn secondary tiny">Download</a>
-        <button type="button" id="meme-share" class="btn tiny">Share on Facebook</button>
-        <button type="button" id="meme-copy-link" class="btn tiny secondary">Copy link</button>
-        <span id="meme-copy-status" class="status-msg"></span>
+      
+      <!-- Footer actions -->
+      <div class="meme-modal-footer" style="margin-top:0.75rem;border-top:1px solid hsl(var(--border-light));padding-top:0.75rem;justify-content:space-between;width:100%;">
+        <div style="display:flex;gap:0.5rem;">
+          <a id="meme-download" href="#" download class="btn secondary tiny">Download PNG</a>
+          <button type="button" id="meme-share" class="btn tiny">Share Template</button>
+          <button type="button" id="meme-copy-link" class="btn tiny secondary">Copy link</button>
+        </div>
+        <span id="meme-copy-status" class="status-msg" style="margin:0;"></span>
       </div>
     </div>
   </div>

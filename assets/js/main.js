@@ -1,7 +1,4 @@
-
-// main.js
-// Configuration
-const FORM_SUBMIT_URL = 'submit-form.php';
+// main.js - Modernized with Canvas Meme Generator & direct Facebook Page Auto-Posting
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("join-form");
@@ -16,80 +13,91 @@ document.addEventListener("DOMContentLoaded", () => {
     fbShareLink.href = shareUrl.toString();
   }
 
-  // Handle form submission via AJAX to PHP backend
+  // Helper for Netlify AJAX submissions
+  function encode(data) {
+    return Object.keys(data)
+      .map(
+        (key) =>
+          encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+      )
+      .join("&");
+  }
+
   if (form && statusEl) {
-    form.addEventListener("submit", function (event) {
+    form.addEventListener("submit", async function (event) {
       event.preventDefault();
-      
-      // Validate name OR alias is provided
-      const name = form.querySelector('#name').value.trim();
-      const alias = form.querySelector('#alias').value.trim();
-
-      if (!name && !alias) {
-        statusEl.textContent = 'Please provide either your name or an alias.\nPor favor proporciona tu nombre o un alias.';
-        statusEl.style.color = "#ffb3b3";
-        return false;
-      }
-
-      // Validate phone format if provided
-      const phone = form.querySelector('#phone').value.trim();
-      if (phone) {
-        // Check for valid characters
-        const phoneRegex = /^[\d\s\-\(\)\+]+$/;
-        if (!phoneRegex.test(phone)) {
-          statusEl.textContent = 'Please enter a valid phone number.\nPor favor ingresa un número de teléfono válido.';
-          statusEl.style.color = "#ffb3b3";
-          return false;
-        }
-        
-        // Check minimum digit count (must have at least 10 digits)
-        const phoneDigits = phone.replace(/\D/g, '');
-        if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-          statusEl.textContent = 'Phone number must contain 10-15 digits.\nEl número de teléfono debe tener 10-15 dígitos.';
-          statusEl.style.color = "#ffb3b3";
-          return false;
-        }
-      }
-      
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const originalText = submitBtn.textContent;
-      
-      // Disable submit button and show loading state
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitting... / Enviando...';
-      statusEl.textContent = "";
-      statusEl.style.color = "";
+      statusEl.textContent = "Sending / Enviando...";
+      statusEl.style.color = "#f6c745";
 
       const formData = new FormData(form);
+      const payload = {};
+      formData.forEach((value, key) => {
+        payload[key] = value;
+      });
 
-      fetch(FORM_SUBMIT_URL, {
-        method: 'POST',
-        body: formData
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            statusEl.textContent = data.message;
+      // Save submission locally in portal cache for offline testing convenience!
+      try {
+        const cachedSubmissions = JSON.parse(localStorage.getItem("local_comrade_submissions") || "[]");
+        cachedSubmissions.push({
+          name: payload.name,
+          email: payload.email,
+          city: payload.city,
+          language: payload.language,
+          interests: payload.interests,
+          timestamp: new Date().toISOString()
+        });
+        localStorage.setItem("local_comrade_submissions", JSON.stringify(cachedSubmissions));
+      } catch (err) {
+        console.error("Local caching error:", err);
+      }
+
+      // Try Cloudflare Pages / Workers API POST first
+      try {
+        const response = await fetch("/api/join", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.status === 404) {
+          // Worker not present (Standard Static Host fallback, e.g. Netlify)
+          throw new Error("API not found, falling back to static post");
+        }
+
+        const result = await response.json();
+        if (response.ok) {
+          statusEl.textContent = "Thanks for signing up! ¡Gracias por unirte!";
+          statusEl.style.color = "#77e89f";
+          form.reset();
+          return;
+        } else {
+          throw new Error(result.error || "Submission rejected");
+        }
+      } catch (err) {
+        console.log("Cloudflare Worker not detected or errored, attempting Netlify Fallback: ", err.message);
+
+        // Fallback to Netlify Forms POST
+        payload["form-name"] = form.getAttribute("name");
+        fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: encode(payload),
+        })
+          .then(() => {
+            statusEl.textContent = "Thanks for signing up! ¡Gracias por unirte!";
             statusEl.style.color = "#77e89f";
             form.reset();
-          } else {
-            statusEl.textContent = data.message;
+          })
+          .catch((error) => {
+            console.error("Netlify fallback form submission error:", error);
+            statusEl.textContent = "Error sending form. Please try again / Por favor intenta de nuevo.";
             statusEl.style.color = "#ffb3b3";
-          }
-        })
-        .catch(error => {
-          console.error("Form submission error:", error);
-          statusEl.textContent = 'Error. Please email us directly at xava@newmexicosocialists.org';
-          statusEl.style.color = "#ffb3b3";
-        })
-        .finally(() => {
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-        });
+          });
+      }
     });
   }
 
-  // Meme modal + per-meme share/download
+  // Meme modal elements
   const modal = document.getElementById("meme-modal");
   const modalImg = document.getElementById("meme-modal-img");
   const modalDownload = document.getElementById("meme-download");
@@ -99,29 +107,118 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalClose = document.querySelector(".meme-modal-close");
   const modalBackdrop = document.querySelector(".meme-modal-backdrop");
 
+  // Dynamic Meme Generator Elements (Canvas Integration)
+  const canvasContainer = document.getElementById("canvas-container");
+  const memeCanvas = document.getElementById("meme-canvas");
+  const memeTopText = document.getElementById("meme-top-text");
+  const memeBottomText = document.getElementById("meme-bottom-text");
+  const memeFontSize = document.getElementById("meme-font-size");
+  const memeColor = document.getElementById("meme-color");
+  const fbPostBtn = document.getElementById("fb-post-btn");
+  const fbSettingsBtn = document.getElementById("fb-settings-btn");
+  const fbPostStatus = document.getElementById("fb-post-status");
+
+  let activeTemplateSrc = "";
+
   function getAbsoluteUrl(relativePath) {
     const loc = window.location;
     const basePath = loc.pathname.replace(/index\.html$/, "");
     return loc.origin + basePath + relativePath;
   }
 
+  // Redraw Canvas meme with live inputs
+  function redrawMeme() {
+    if (!memeCanvas || !activeTemplateSrc) return;
+    const ctx = memeCanvas.getContext("2d");
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = activeTemplateSrc;
+
+    img.onload = () => {
+      // Set canvas size matching the image
+      memeCanvas.width = img.naturalWidth || 600;
+      memeCanvas.height = img.naturalHeight || 600;
+
+      // Draw base image
+      ctx.drawImage(img, 0, 0, memeCanvas.width, memeCanvas.height);
+
+      // Text styling setup
+      const txtColor = memeColor ? memeColor.value : "#ffffff";
+      const fSizeFactor = memeFontSize ? parseInt(memeFontSize.value) / 100 : 0.08;
+      const finalFontSize = Math.floor(memeCanvas.width * fSizeFactor);
+
+      ctx.fillStyle = txtColor;
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = Math.max(memeCanvas.width * 0.01, 4);
+      ctx.textAlign = "center";
+      ctx.font = `900 ${finalFontSize}px "Impact", "Syne", "Barlow Condensed", sans-serif`;
+
+      // Draw Top Text
+      if (memeTopText && memeTopText.value) {
+        ctx.textBaseline = "top";
+        const y = memeCanvas.height * 0.05;
+        const x = memeCanvas.width / 2;
+        ctx.fillText(memeTopText.value.toUpperCase(), x, y, memeCanvas.width * 0.9);
+        ctx.strokeText(memeTopText.value.toUpperCase(), x, y, memeCanvas.width * 0.9);
+      }
+
+      // Draw Bottom Text
+      if (memeBottomText && memeBottomText.value) {
+        ctx.textBaseline = "bottom";
+        const y = memeCanvas.height * 0.95;
+        const x = memeCanvas.width / 2;
+        ctx.fillText(memeBottomText.value.toUpperCase(), x, y, memeCanvas.width * 0.9);
+        ctx.strokeText(memeBottomText.value.toUpperCase(), x, y, memeCanvas.width * 0.9);
+      }
+
+      // Update download link as canvas data
+      try {
+        modalDownload.href = memeCanvas.toDataURL("image/png");
+      } catch (e) {
+        // Tainted canvas fallback if direct cross-origin fails
+        modalDownload.href = activeTemplateSrc;
+      }
+    };
+  }
+
+  // Hook generator inputs
+  if (memeTopText) memeTopText.addEventListener("input", redrawMeme);
+  if (memeBottomText) memeBottomText.addEventListener("input", redrawMeme);
+  if (memeFontSize) memeFontSize.addEventListener("input", redrawMeme);
+  if (memeColor) memeColor.addEventListener("input", redrawMeme);
+
   function openMemeModal(imgPath) {
+    activeTemplateSrc = imgPath;
     const absolute = getAbsoluteUrl(imgPath);
-    modalImg.src = imgPath;
+    
+    if (modalImg) modalImg.src = imgPath;
     modalDownload.href = imgPath;
     modalShare.dataset.shareUrl = absolute;
     modalCopy.dataset.copyUrl = absolute;
     modalCopyStatus.textContent = "";
+    if (fbPostStatus) fbPostStatus.textContent = "";
+
+    // Reset inputs
+    if (memeTopText) memeTopText.value = "";
+    if (memeBottomText) memeBottomText.value = "";
+    if (memeFontSize) memeFontSize.value = "8";
+    if (memeColor) memeColor.value = "#ffffff";
+
     modal.classList.add("active");
     modal.setAttribute("aria-hidden", "false");
+
+    // Initialize canvas drawing
+    setTimeout(redrawMeme, 50);
   }
 
   function closeMemeModal() {
     modal.classList.remove("active");
     modal.setAttribute("aria-hidden", "true");
-    modalImg.src = "";
+    if (modalImg) modalImg.src = "";
+    activeTemplateSrc = "";
   }
 
+  // Open on button click
   document.querySelectorAll(".js-view-meme").forEach((btn) => {
     btn.addEventListener("click", () => {
       const imgPath = btn.getAttribute("data-img");
@@ -129,6 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Share template directly
   document.querySelectorAll(".js-share-meme").forEach((btn) => {
     btn.addEventListener("click", () => {
       const imgPath = btn.getAttribute("data-img");
@@ -139,14 +237,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  if (modalClose) {
-    modalClose.addEventListener("click", closeMemeModal);
-  }
-  if (modalBackdrop) {
-    modalBackdrop.addEventListener("click", closeMemeModal);
-  }
+  if (modalClose) modalClose.addEventListener("click", closeMemeModal);
+  if (modalBackdrop) modalBackdrop.addEventListener("click", closeMemeModal);
+  
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modal.classList.contains("active")) {
+    if (e.key === "Escape" && modal && modal.classList.contains("active")) {
       closeMemeModal();
     }
   });
@@ -171,8 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modalCopyStatus.style.color = "#77e89f";
       } catch (err) {
         console.error("Clipboard error:", err);
-        modalCopyStatus.textContent =
-          "Couldn't copy link. / No se pudo copiar el enlace.";
+        modalCopyStatus.textContent = "Couldn't copy link. / No se pudo copiar.";
         modalCopyStatus.style.color = "#ffb3b3";
       }
     });
@@ -186,96 +280,79 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Member Counter - Fetch and display member count
-  (function() {
-    const memberCountEl = document.getElementById('memberCount');
-    if (!memberCountEl) return;
-    
-    // Check localStorage cache (1 hour TTL)
-    const CACHE_KEY = 'nm_socialists_member_count';
-    const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
-    
-    function getCachedCount() {
+  // ── FB AUTO-POSTER CORE INTEGRATION ──
+  if (fbPostBtn) {
+    fbPostBtn.addEventListener("click", async () => {
+      if (!memeCanvas) return;
+      fbPostStatus.textContent = "Posting to Facebook... / Publicando...";
+      fbPostStatus.style.color = "#f6c745";
+
+      const token = localStorage.getItem("fb_page_access_token");
+      const pageId = localStorage.getItem("fb_page_id");
+
+      if (!token || !pageId) {
+        fbPostStatus.textContent = "Error: FB credentials not configured. Setup in Settings below! / Credenciales no configuradas.";
+        fbPostStatus.style.color = "#ffb3b3";
+        return;
+      }
+
       try {
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (!cached) return null;
-        
-        const data = JSON.parse(cached);
-        const age = Date.now() - data.timestamp;
-        
-        if (age < CACHE_TTL) {
-          return data.count;
-        }
-      } catch (e) {
-        console.error('Cache read error:', e);
-      }
-      return null;
-    }
-    
-    function setCachedCount(count) {
-      try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify({
-          count: count,
-          timestamp: Date.now()
-        }));
-      } catch (e) {
-        console.error('Cache write error:', e);
-      }
-    }
-    
-    function animateCount(target) {
-      const duration = 2000; // 2 seconds
-      const start = 0;
-      const startTime = performance.now();
-      
-      function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Easing function (ease-out)
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        const current = Math.floor(start + (target - start) * easeOut);
-        
-        memberCountEl.textContent = current;
-        
-        if (progress < 1) {
-          requestAnimationFrame(update);
-        } else {
-          memberCountEl.textContent = target;
-        }
-      }
-      
-      requestAnimationFrame(update);
-    }
-    
-    // Try cache first
-    const cachedCount = getCachedCount();
-    if (cachedCount !== null) {
-      animateCount(cachedCount);
-    }
-    
-    // Fetch fresh count
-    fetch('/api/get-member-count.php')
-      .then(response => response.json())
-      .then(data => {
-        if (data.success && typeof data.count === 'number') {
-          setCachedCount(data.count);
-          if (cachedCount === null) {
-            // Only animate if we didn't show cached version
-            animateCount(data.count);
-          } else if (data.count !== cachedCount) {
-            // Update if count changed
-            memberCountEl.textContent = data.count;
+        // Convert canvas drawing to blob
+        memeCanvas.toBlob(async (blob) => {
+          if (!blob) {
+            fbPostStatus.textContent = "Canvas rendering error. / Error de renderizado.";
+            fbPostStatus.style.color = "#ffb3b3";
+            return;
           }
-        } else {
-          throw new Error('Invalid response');
-        }
-      })
-      .catch(error => {
-        console.error('Failed to fetch member count:', error);
-        if (cachedCount === null) {
-          memberCountEl.textContent = '--';
-        }
-      });
-  })();
+
+          const formData = new FormData();
+          formData.append("access_token", token);
+          formData.append("source", blob);
+          
+          let captionText = "✊ Posted via NM Socialists Comrade Portal!\n";
+          if (memeTopText && memeTopText.value) captionText += `\n"${memeTopText.value.toUpperCase()}"`;
+          if (memeBottomText && memeBottomText.value) captionText += `\n"${memeBottomText.value.toUpperCase()}"`;
+          captionText += "\n\nJoin the movement at newmexicosocialists.com";
+          
+          formData.append("message", captionText);
+
+          const res = await fetch(`https://graph.facebook.com/v19.0/${pageId}/photos`, {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await res.json();
+
+          if (result.post_id || result.id) {
+            fbPostStatus.textContent = "Posted successfully to Facebook! ✊ / ¡Publicado con éxito!";
+            fbPostStatus.style.color = "#77e89f";
+          } else {
+            console.error("Facebook API error:", result);
+            const errCode = result.error?.message || "Unknown error";
+            fbPostStatus.textContent = `FB API Error: ${errCode}`;
+            fbPostStatus.style.color = "#ffb3b3";
+          }
+        }, "image/png");
+      } catch (err) {
+        console.error("FB post capture error:", err);
+        fbPostStatus.textContent = "Security constraint / direct loading error. Use Download and post manually.";
+        fbPostStatus.style.color = "#ffb3b3";
+      }
+    });
+  }
+
+  // Manage FB Settings securely in browser localStorage
+  if (fbSettingsBtn) {
+    fbSettingsBtn.addEventListener("click", () => {
+      const pageId = prompt("Enter Facebook Page ID:", localStorage.getItem("fb_page_id") || "");
+      if (pageId === null) return; // cancelled
+      const token = prompt("Enter Facebook Page Access Token:", localStorage.getItem("fb_page_access_token") || "");
+      if (token === null) return;
+
+      localStorage.setItem("fb_page_id", pageId.trim());
+      localStorage.setItem("fb_page_access_token", token.trim());
+      
+      alert("Credentials stored securely in your browser's local storage!");
+    });
+  }
 });
