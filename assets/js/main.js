@@ -114,14 +114,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const memeBottomText = document.getElementById("meme-bottom-text");
   const memeFontSize = document.getElementById("meme-font-size");
   const memeColor = document.getElementById("meme-color");
+  const memeFileUpload = document.getElementById("meme-file-upload");
+  const memeFontFamily = document.getElementById("meme-font-family");
+  const memeLayout = document.getElementById("meme-layout");
+  const memeAlign = document.getElementById("meme-align");
+  const memeUppercase = document.getElementById("meme-uppercase");
+  const memeOutlineWeight = document.getElementById("meme-outline-weight");
+
   const fbPostBtn = document.getElementById("fb-post-btn");
   const fbSettingsBtn = document.getElementById("fb-settings-btn");
   const fbPostStatus = document.getElementById("fb-post-status");
 
-  let activeTemplateSrc = "";
+  let activeTemplateSrc = "assets/img/meme_1.png"; // Fallback default template
 
   function getAbsoluteUrl(relativePath) {
     const loc = window.location;
+    if (relativePath.startsWith("data:")) return relativePath;
     const basePath = loc.pathname.replace(/index\.html$/, "");
     return loc.origin + basePath + relativePath;
   }
@@ -131,78 +139,210 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!memeCanvas || !activeTemplateSrc) return;
     const ctx = memeCanvas.getContext("2d");
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    
+    // Only set crossOrigin if the url is external to prevent CORS blockages locally
+    if (activeTemplateSrc.startsWith("http") && !activeTemplateSrc.startsWith(window.location.origin)) {
+      img.crossOrigin = "anonymous";
+    }
     img.src = activeTemplateSrc;
 
     img.onload = () => {
-      // Set canvas size matching the image
-      memeCanvas.width = img.naturalWidth || 600;
-      memeCanvas.height = img.naturalHeight || 600;
-
-      // Draw base image
-      ctx.drawImage(img, 0, 0, memeCanvas.width, memeCanvas.height);
-
-      // Text styling setup
-      const txtColor = memeColor ? memeColor.value : "#ffffff";
+      const layout = memeLayout ? memeLayout.value : "classic";
       const fSizeFactor = memeFontSize ? parseInt(memeFontSize.value) / 100 : 0.08;
-      const finalFontSize = Math.floor(memeCanvas.width * fSizeFactor);
+      const fontFam = memeFontFamily ? memeFontFamily.value : "Impact";
+      const align = memeAlign ? memeAlign.value : "center";
+      const txtColor = memeColor ? memeColor.value : "#ffffff";
+      const outlineWt = memeOutlineWeight ? parseInt(memeOutlineWeight.value) : 4;
+      const forceUpper = memeUppercase ? memeUppercase.checked : true;
 
-      ctx.fillStyle = txtColor;
-      ctx.strokeStyle = "#000000";
-      ctx.lineWidth = Math.max(memeCanvas.width * 0.01, 4);
-      ctx.textAlign = "center";
-      ctx.font = `900 ${finalFontSize}px "Impact", "Syne", "Barlow Condensed", sans-serif`;
-
-      // Draw Top Text
-      if (memeTopText && memeTopText.value) {
-        ctx.textBaseline = "top";
-        const y = memeCanvas.height * 0.05;
-        const x = memeCanvas.width / 2;
-        ctx.fillText(memeTopText.value.toUpperCase(), x, y, memeCanvas.width * 0.9);
-        ctx.strokeText(memeTopText.value.toUpperCase(), x, y, memeCanvas.width * 0.9);
+      let topTextStr = (memeTopText && memeTopText.value) ? memeTopText.value : "";
+      let bottomTextStr = (memeBottomText && memeBottomText.value) ? memeBottomText.value : "";
+      
+      if (forceUpper) {
+        topTextStr = topTextStr.toUpperCase();
+        bottomTextStr = bottomTextStr.toUpperCase();
       }
 
-      // Draw Bottom Text
-      if (memeBottomText && memeBottomText.value) {
-        ctx.textBaseline = "bottom";
-        const y = memeCanvas.height * 0.95;
-        const x = memeCanvas.width / 2;
-        ctx.fillText(memeBottomText.value.toUpperCase(), x, y, memeCanvas.width * 0.9);
-        ctx.strokeText(memeBottomText.value.toUpperCase(), x, y, memeCanvas.width * 0.9);
+      if (layout === "demotivational") {
+        // Demotivational layout calculates padding and black margins
+        const borderSize = Math.floor(img.naturalWidth * 0.08);
+        const bottomPadding = Math.floor(img.naturalHeight * 0.26);
+
+        memeCanvas.width = img.naturalWidth + borderSize * 2;
+        memeCanvas.height = img.naturalHeight + borderSize * 1.5 + bottomPadding;
+
+        // Draw solid black background
+        ctx.fillStyle = "#0c0a08";
+        ctx.fillRect(0, 0, memeCanvas.width, memeCanvas.height);
+
+        // Draw main image
+        ctx.drawImage(img, borderSize, borderSize, img.naturalWidth, img.naturalHeight);
+
+        // Gold frame line around image
+        ctx.strokeStyle = "hsl(38, 85%, 48%)";
+        ctx.lineWidth = Math.max(img.naturalWidth * 0.003, 1.5);
+        ctx.strokeRect(borderSize - 3, borderSize - 3, img.naturalWidth + 6, img.naturalHeight + 6);
+
+        // Text setup
+        ctx.textAlign = "center";
+        
+        // Title (Top Slogan)
+        if (topTextStr) {
+          const finalFontSize = Math.floor(memeCanvas.width * (fSizeFactor * 1.1));
+          ctx.font = `600 ${finalFontSize}px "Space Grotesk", "Fraunces", serif`;
+          ctx.fillStyle = "hsl(38, 85%, 48%)"; // Brand Gold
+          const y = img.naturalHeight + borderSize * 1.5 + bottomPadding * 0.35;
+          ctx.fillText(topTextStr, memeCanvas.width / 2, y, memeCanvas.width * 0.9);
+        }
+
+        // Subtitle (Bottom Slogan)
+        if (bottomTextStr) {
+          const finalFontSize = Math.floor(memeCanvas.width * (fSizeFactor * 0.65));
+          ctx.font = `300 ${finalFontSize}px "Space Grotesk", "DM Sans", sans-serif`;
+          ctx.fillStyle = "#f5ead8"; // Sand / Cream
+          const y = img.naturalHeight + borderSize * 1.5 + bottomPadding * 0.72;
+          ctx.fillText(bottomTextStr, memeCanvas.width / 2, y, memeCanvas.width * 0.9);
+        }
+
+      } else if (layout === "banner") {
+        // Activist banner layout with solid colored footer box
+        memeCanvas.width = img.naturalWidth || 600;
+        memeCanvas.height = img.naturalHeight || 600;
+        
+        ctx.drawImage(img, 0, 0, memeCanvas.width, memeCanvas.height);
+
+        const bannerHeight = Math.floor(memeCanvas.height * 0.22);
+        
+        // Draw Terracotta banner backdrop
+        ctx.fillStyle = "rgba(194, 96, 58, 0.95)";
+        ctx.fillRect(0, memeCanvas.height - bannerHeight, memeCanvas.width, bannerHeight);
+
+        // Gold separation divider
+        ctx.strokeStyle = "hsl(38, 85%, 48%)";
+        ctx.lineWidth = Math.max(memeCanvas.width * 0.005, 3);
+        ctx.beginPath();
+        ctx.moveTo(0, memeCanvas.height - bannerHeight);
+        ctx.lineTo(memeCanvas.width, memeCanvas.height - bannerHeight);
+        ctx.stroke();
+
+        ctx.textAlign = align;
+        
+        let textX = memeCanvas.width / 2;
+        if (align === "left") textX = memeCanvas.width * 0.05;
+        if (align === "right") textX = memeCanvas.width * 0.95;
+
+        // Render slogan lines inside the banner strip
+        if (topTextStr) {
+          const finalFontSize = Math.floor(memeCanvas.width * (fSizeFactor * 0.85));
+          ctx.font = `900 ${finalFontSize}px "${fontFam}", sans-serif`;
+          ctx.fillStyle = "#fdf6ea"; // Cream
+          const y = memeCanvas.height - bannerHeight + bannerHeight * 0.35;
+          ctx.fillText(topTextStr, textX, y, memeCanvas.width * 0.9);
+        }
+        
+        if (bottomTextStr) {
+          const finalFontSize = Math.floor(memeCanvas.width * (fSizeFactor * 0.65));
+          ctx.font = `600 ${finalFontSize}px "${fontFam}", monospace`;
+          ctx.fillStyle = "hsl(38, 85%, 48%)"; // Gold
+          const y = memeCanvas.height - bannerHeight + bannerHeight * 0.72;
+          ctx.fillText(bottomTextStr, textX, y, memeCanvas.width * 0.9);
+        }
+
+      } else {
+        // Classic overlay meme layout
+        memeCanvas.width = img.naturalWidth || 600;
+        memeCanvas.height = img.naturalHeight || 600;
+
+        ctx.drawImage(img, 0, 0, memeCanvas.width, memeCanvas.height);
+
+        const finalFontSize = Math.floor(memeCanvas.width * fSizeFactor);
+        ctx.fillStyle = txtColor;
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = outlineWt;
+        ctx.textAlign = align;
+        ctx.font = `900 ${finalFontSize}px "${fontFam}", Impact, sans-serif`;
+
+        let textX = memeCanvas.width / 2;
+        if (align === "left") textX = memeCanvas.width * 0.05;
+        if (align === "right") textX = memeCanvas.width * 0.95;
+
+        // Draw Top Text
+        if (topTextStr) {
+          ctx.textBaseline = "top";
+          const y = memeCanvas.height * 0.05;
+          if (outlineWt > 0) ctx.strokeText(topTextStr, textX, y, memeCanvas.width * 0.9);
+          ctx.fillText(topTextStr, textX, y, memeCanvas.width * 0.9);
+        }
+
+        // Draw Bottom Text
+        if (bottomTextStr) {
+          ctx.textBaseline = "bottom";
+          const y = memeCanvas.height * 0.95;
+          if (outlineWt > 0) ctx.strokeText(bottomTextStr, textX, y, memeCanvas.width * 0.9);
+          ctx.fillText(bottomTextStr, textX, y, memeCanvas.width * 0.9);
+        }
       }
 
       // Update download link as canvas data
       try {
         modalDownload.href = memeCanvas.toDataURL("image/png");
       } catch (e) {
-        // Tainted canvas fallback if direct cross-origin fails
         modalDownload.href = activeTemplateSrc;
       }
     };
+
+    img.onerror = () => {
+      console.error("Error loading active template image for meme rendering:", activeTemplateSrc);
+    };
   }
 
-  // Hook generator inputs
+  // Hook all generator inputs to redraw in real time
   if (memeTopText) memeTopText.addEventListener("input", redrawMeme);
   if (memeBottomText) memeBottomText.addEventListener("input", redrawMeme);
   if (memeFontSize) memeFontSize.addEventListener("input", redrawMeme);
   if (memeColor) memeColor.addEventListener("input", redrawMeme);
+  if (memeFontFamily) memeFontFamily.addEventListener("change", redrawMeme);
+  if (memeLayout) memeLayout.addEventListener("change", redrawMeme);
+  if (memeAlign) memeAlign.addEventListener("change", redrawMeme);
+  if (memeUppercase) memeUppercase.addEventListener("change", redrawMeme);
+  if (memeOutlineWeight) memeOutlineWeight.addEventListener("input", redrawMeme);
+
+  // Hook custom base image upload file input
+  if (memeFileUpload) {
+    memeFileUpload.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          activeTemplateSrc = event.target.result;
+          redrawMeme();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
 
   function openMemeModal(imgPath) {
     activeTemplateSrc = imgPath;
     const absolute = getAbsoluteUrl(imgPath);
     
-    if (modalImg) modalImg.src = imgPath;
     modalDownload.href = imgPath;
     modalShare.dataset.shareUrl = absolute;
     modalCopy.dataset.copyUrl = absolute;
     modalCopyStatus.textContent = "";
     if (fbPostStatus) fbPostStatus.textContent = "";
 
-    // Reset inputs
+    // Reset controls to clean default settings
     if (memeTopText) memeTopText.value = "";
     if (memeBottomText) memeBottomText.value = "";
     if (memeFontSize) memeFontSize.value = "8";
     if (memeColor) memeColor.value = "#ffffff";
+    if (memeFontFamily) memeFontFamily.value = "Impact";
+    if (memeLayout) memeLayout.value = "classic";
+    if (memeAlign) memeAlign.value = "center";
+    if (memeUppercase) memeUppercase.checked = true;
+    if (memeOutlineWeight) memeOutlineWeight.value = "4";
+    if (memeFileUpload) memeFileUpload.value = ""; // Clear file selector
 
     modal.classList.add("active");
     modal.setAttribute("aria-hidden", "false");
@@ -214,7 +354,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeMemeModal() {
     modal.classList.remove("active");
     modal.setAttribute("aria-hidden", "true");
-    if (modalImg) modalImg.src = "";
     activeTemplateSrc = "";
   }
 

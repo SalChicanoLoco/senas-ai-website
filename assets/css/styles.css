@@ -4,7 +4,7 @@
  * Used globally across main site, news feed, biblioteca, and comrade portal.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,600&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,600&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap');
 
 :root {
   /* HSL curated palette - high contrast, rich dark theme */
@@ -12,16 +12,16 @@
   --bg-surface: 12 15% 9%;       /* Smooth glass base dark */
   --bg-surface-elevated: 12 15% 14%; /* Lighter card surface */
   
-  --color-primary: 0 85% 50%;    /* Radiant vibrant socialist crimson */
-  --color-primary-glow: 0 85% 50% / 0.15;
-  --color-secondary: 38 92% 52%; /* Rich warm gold/amber */
-  --color-secondary-glow: 38 92% 52% / 0.15;
+  --color-primary: 355 78% 48%;    /* Rich, warm, organic socialist crimson */
+  --color-primary-glow: 355 78% 48% / 0.15;
+  --color-secondary: 38 85% 48%;   /* Curator's warm editorial amber gold */
+  --color-secondary-glow: 38 85% 48% / 0.15;
   --color-accent: 142 45% 42%;   /* Organic sage green */
   --color-accent-glow: 142 45% 42% / 0.15;
   --color-sky: 204 65% 45%;      /* Clean steel blue */
   
-  --border-color: 0 85% 50% / 0.12;   /* Subtle red border */
-  --border-glow: 0 85% 50% / 0.22;
+  --border-color: 355 78% 48% / 0.12;   /* Subtle red border */
+  --border-glow: 355 78% 48% / 0.22;
   --border-light: 0 0% 100% / 0.08;   /* Universal light border */
   
   --text-primary: 32 24% 94%;    /* Creamy off-white, highly legible */
@@ -37,7 +37,7 @@
   
   --font-serif: 'Fraunces', Georgia, serif;
   --font-sans: 'Outfit', system-ui, sans-serif;
-  --font-syne: 'Syne', sans-serif;
+  --font-syne: 'Space Grotesk', 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
   --max-width: 1100px;

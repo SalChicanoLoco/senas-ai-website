@@ -5,339 +5,439 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La Biblioteca · Sena's AI Collective · senacolectivo.com/biblioteca</title>
 <meta name="description" content="La Biblioteca — bilingual research publication on land, water, and labor rights in New Mexico. Published by Sena's AI Collective, Santa Fe NM.">
-<link rel="stylesheet" href="assets/css/styles.css">
 <style>
-/* Terracotta Earthy Editorial Palette Overrides */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
 :root {
-  --earth:  #150e07;
-  --warm:   #23180c;
-  --sand:   #eedfc6;
-  --terr:   #d35e35;
-  --gold:   #f6c745;
-  --sage:   #749c66;
-  --cream:  #fdf8f0;
+  --earth:  #1a1209;
+  --warm:   #2a1f0e;
+  --sand:   #f5ead8;
+  --terr:   #c2603a;
+  --gold:   #e8a825;
+  --sage:   #6b8f5e;
+  --sky:    #4a7fa5;
+  --cream:  #fdf6ea;
   --ink:    #1c1410;
-  --border: rgba(211,94,53,0.18);
+  --border: rgba(194,96,58,0.18);
   --serif:  'Fraunces', serif;
+  --sans:   'DM Sans', sans-serif;
+  --mono:   'DM Mono', monospace;
 }
 
-body.biblioteca-theme {
-  background: radial-gradient(circle at 50% 0%, #2e1e10 0%, #150e07 65%, #050302 100%);
-  color: var(--sand);
-  font-family: var(--font-sans);
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.7;
 }
 
 /* ── MASTHEAD ── */
 .masthead {
   background: var(--earth);
   border-bottom: 3px solid var(--terr);
-  padding: 1.5rem 2rem;
+  padding: 22px 40px;
   display: flex; align-items: center;
   justify-content: space-between; flex-wrap: wrap; gap: 12px;
 }
 .brand-block { display:flex; flex-direction:column; gap:4px; }
 .pub-title {
   font-family: var(--serif);
-  font-size: 2.2rem; font-weight: 900;
+  font-size: 28px; font-weight: 900;
   color: var(--gold); letter-spacing: -0.5px;
 }
 .pub-tagline {
-  font-family: var(--font-mono);
-  font-size: 10px; color: rgba(238,223,198,0.45);
+  font-family: var(--mono);
+  font-size: 9px; color: rgba(245,234,216,0.4);
   letter-spacing: 2.5px; text-transform: uppercase;
 }
 .masthead-right { display:flex; gap:16px; align-items:center; }
+.nav-link {
+  font-family: var(--mono);
+  font-size: 9px; color: rgba(245,234,216,0.4);
+  letter-spacing: 2px; text-transform: uppercase;
+  text-decoration: none; transition: color 0.15s;
+}
+.nav-link:hover { color: var(--gold); }
 .lang-toggle { display:flex; gap:4px; }
 .lt-btn {
   padding: 5px 14px;
-  font-family: var(--font-mono); font-size: 10px;
+  font-family: var(--mono); font-size: 10px;
   letter-spacing: 2px; text-transform: uppercase;
   background: transparent;
-  border: 1px solid rgba(211,94,53,0.3);
-  color: rgba(238,223,198,0.45);
+  border: 1px solid rgba(194,96,58,0.3);
+  color: rgba(245,234,216,0.4);
   cursor: pointer; transition: all 0.15s;
 }
 .lt-btn:hover { border-color:var(--gold); color:var(--gold); }
 .lt-btn.active { background:var(--terr); border-color:var(--terr); color:var(--cream); }
 
 /* ── HERO ── */
-.bib-hero {
-  background: linear-gradient(135deg, var(--warm) 0%, var(--earth) 100%);
+.hero {
+  background: var(--warm);
   border-bottom: 1px solid var(--border);
-  padding: 4.5rem 2rem;
+  padding: 64px 40px 52px;
   position: relative; overflow: hidden;
-  border-radius: var(--radius-lg);
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-  box-shadow: var(--shadow-premium);
 }
-.bib-hero::after {
+.hero::after {
   content: 'LA BIBLIOTECA';
   position: absolute;
   right: -20px; top: 50%;
   transform: translateY(-50%) rotate(90deg);
   font-family: var(--serif);
-  font-size: 110px; font-weight: 900;
-  color: rgba(246,199,69,0.02);
+  font-size: 120px; font-weight: 900;
+  color: rgba(232,168,37,0.03);
   pointer-events: none; white-space: nowrap;
 }
-.bib-hero-inner { max-width: 860px; position: relative; z-index:1; }
-.bib-hero-eyebrow {
-  font-family: var(--font-mono);
+.hero-inner { max-width: 860px; margin: 0 auto; position: relative; z-index:1; }
+.hero-eyebrow {
+  font-family: var(--mono);
   font-size: 9px; color: var(--terr);
   letter-spacing: 3px; text-transform: uppercase;
-  margin-bottom: 1rem;
+  margin-bottom: 20px;
   display: flex; align-items: center; gap: 10px;
 }
-.bib-hero-eyebrow::after { content:''; flex:1; height:1px; background:var(--border); }
-.bib-hero-h1 {
+.hero-eyebrow::after { content:''; flex:1; height:1px; background:var(--border); }
+.hero-h1 {
   font-family: var(--serif);
-  font-size: clamp(3rem, 7vw, 5rem);
+  font-size: clamp(44px, 7vw, 80px);
   font-weight: 900; color: var(--sand);
   line-height: 1.0; margin-bottom: 12px;
 }
-.bib-hero-h1 em { color: var(--gold); font-style: italic; }
-.bib-hero-sub {
+.hero-h1 em { color: var(--gold); font-style: italic; }
+.hero-sub {
   font-family: var(--serif);
-  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-size: clamp(16px, 2.5vw, 22px);
   font-weight: 300; font-style: italic;
-  color: rgba(238,223,198,0.65);
-  margin-bottom: 2rem; max-width: 600px;
+  color: rgba(245,234,216,0.6);
+  margin-bottom: 32px; max-width: 600px;
   line-height: 1.5;
 }
-.bib-hero-desc {
-  font-size: 1.05rem; color: rgba(238,223,198,0.75);
-  max-width: 620px; line-height: 1.8;
-  margin-bottom: 2.5rem;
+.hero-desc {
+  font-size: 15px; color: rgba(245,234,216,0.65);
+  max-width: 580px; line-height: 1.8;
+  margin-bottom: 32px;
   border-left: 3px solid var(--terr);
   padding-left: 18px;
 }
-.bib-hero-stats {
+.hero-stats {
   display: flex; gap: 32px; flex-wrap: wrap;
 }
-.bib-stat-item { }
-.bib-stat-num {
+.stat-item { }
+.stat-num {
   font-family: var(--serif);
   font-size: 28px; font-weight: 900;
   color: var(--gold); line-height: 1;
 }
-.bib-stat-label {
-  font-family: var(--font-mono);
-  font-size: 8px; color: rgba(238,223,198,0.4);
+.stat-label {
+  font-family: var(--mono);
+  font-size: 8px; color: rgba(245,234,216,0.35);
   letter-spacing: 2px; text-transform: uppercase;
   margin-top: 2px;
+}
+
+/* ── SECTION WRAPPER ── */
+.section-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 60px 40px;
+}
+.section-wrap + .section-wrap {
+  padding-top: 0;
+}
+
+.section-head {
+  margin-bottom: 36px;
+}
+.section-flag {
+  font-family: var(--mono);
+  font-size: 8px; color: var(--gold);
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-flag::after { content:''; flex:1; height:1px; background:rgba(232,168,37,0.15); }
+.section-title {
+  font-family: var(--serif);
+  font-size: 32px; font-weight: 900;
+  color: var(--ink); line-height: 1.1;
+}
+.section-sub {
+  font-family: var(--serif);
+  font-size: 16px; font-weight: 300;
+  font-style: italic; color: var(--terr);
+  margin-top: 4px;
 }
 
 /* ── VOLUME GRID ── */
 .vol-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
 }
 
 .vol-card {
   background: var(--warm);
   border: 1px solid var(--border);
   border-top: 3px solid var(--terr);
-  border-radius: var(--radius-md);
-  padding: 2rem;
+  padding: 24px 22px;
   text-decoration: none;
   display: flex; flex-direction: column;
-  transition: all var(--transition-smooth);
-  box-shadow: var(--shadow-premium);
+  transition: all 0.2s;
   cursor: pointer;
 }
 .vol-card:hover {
   border-color: var(--gold);
   border-top-color: var(--gold);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.65), 0 0 15px hsla(var(--color-secondary) / 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
 }
 
 .vc-num {
-  font-family: var(--font-mono);
-  font-size: 8px; color: rgba(238,223,198,0.35);
+  font-family: var(--mono);
+  font-size: 8px; color: rgba(245,234,216,0.3);
   letter-spacing: 3px; text-transform: uppercase;
   margin-bottom: 6px;
 }
 .vc-tag {
-  font-family: var(--font-mono);
+  font-family: var(--mono);
   font-size: 8px; color: var(--terr);
   letter-spacing: 2px; text-transform: uppercase;
   margin-bottom: 12px;
 }
 .vc-title {
   font-family: var(--serif);
-  font-size: 1.2rem; font-weight: 600;
-  color: var(--sand); line-height: 1.35;
+  font-size: 17px; font-weight: 600;
+  color: var(--sand); line-height: 1.3;
   margin-bottom: 10px; flex:1;
 }
 .vc-title em { color: var(--gold); font-style: italic; }
 .vc-excerpt {
-  font-size: 0.88rem; color: rgba(238,223,198,0.6);
-  line-height: 1.6; margin-bottom: 1.5rem;
+  font-size: 12px; color: rgba(245,234,216,0.5);
+  line-height: 1.6; margin-bottom: 14px;
 }
 .vc-footer {
   display: flex; align-items: center;
   justify-content: space-between; gap: 8px;
   margin-top: auto;
-  border-top: 1px solid var(--border);
-  padding-top: 0.85rem;
 }
 .vc-date {
-  font-family: var(--font-mono);
-  font-size: 9px; color: rgba(238,223,198,0.3);
+  font-family: var(--mono);
+  font-size: 9px; color: rgba(245,234,216,0.25);
   letter-spacing: 1px;
 }
-.vc-badge {
-  font-family: var(--font-mono);
-  font-size: 8px; padding: 3px 10px;
-  letter-spacing: 1px; text-transform: uppercase;
-  border-radius: 4px;
+.vc-badge.live { color: var(--sage); border: 1px solid rgba(107,143,94,0.4); }
+.vc-badge.special { color: var(--gold); border: 1px solid rgba(232,168,37,0.3); }
+
+/* ── DIVIDER ── */
+.full-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
 }
-.vc-badge.live { color: var(--sage); border: 1px solid rgba(116,156,102,0.4); }
-.vc-badge.special { color: var(--gold); border: 1px solid rgba(246,199,69,0.3); }
 
 /* ── ABOUT — dark panel ── */
 .about-panel {
   background: var(--earth);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 3rem 2rem;
-  margin-top: 3rem;
-  box-shadow: var(--shadow-premium);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
+.about-inner {
+  max-width: 860px; margin: 0 auto;
+  padding: 64px 40px;
+}
+
 .about-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 3.5rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
   align-items: start;
 }
+
+@media (max-width: 680px) {
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+}
+
+/* Author card */
+.author-card { }
+
+.author-flag {
+  font-family: var(--mono);
+  font-size: 8px; color: var(--gold);
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.author-flag::after { content:''; width:24px; height:1px; background:rgba(232,168,37,0.3); }
+
 .author-avatar {
   width: 72px; height: 72px;
   background: linear-gradient(135deg, var(--terr), var(--gold));
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 28px; margin-bottom: 20px;
-  box-shadow: 0 4px 20px rgba(211,94,53,0.3);
+  box-shadow: 0 4px 20px rgba(194,96,58,0.3);
 }
+
 .author-name {
   font-family: var(--serif);
-  font-size: 1.8rem; font-weight: 900;
+  font-size: 26px; font-weight: 900;
   color: var(--sand); margin-bottom: 4px;
 }
 .author-title {
-  font-family: var(--font-mono);
+  font-family: var(--mono);
   font-size: 9px; color: var(--terr);
   letter-spacing: 2px; text-transform: uppercase;
   margin-bottom: 20px;
 }
+
 .author-bio {
-  font-size: 0.95rem; color: rgba(238,223,198,0.75);
-  line-height: 1.8; margin-bottom: 14px;
+  font-size: 14px; color: rgba(245,234,216,0.7);
+  line-height: 1.85; margin-bottom: 14px;
 }
 .author-bio em { font-style: italic; color: var(--gold); }
 .author-bio strong { font-weight: 600; color: var(--sand); }
+
 .author-tags {
   display: flex; gap: 6px; flex-wrap: wrap;
-  margin-top: 1.5rem;
+  margin-top: 18px;
 }
 .author-tag {
-  font-family: var(--font-mono);
+  font-family: var(--mono);
   font-size: 8px; padding: 3px 10px;
   border: 1px solid var(--border);
-  color: rgba(238,223,198,0.45);
+  color: rgba(245,234,216,0.4);
   letter-spacing: 1px; text-transform: uppercase;
-  border-radius: 4px;
+}
+
+/* Team section */
+.team-col { }
+
+.team-title {
+  font-family: var(--serif);
+  font-size: 22px; font-weight: 900;
+  color: var(--sand); margin-bottom: 6px;
+}
+.team-sub {
+  font-family: var(--serif);
+  font-size: 14px; font-weight: 300;
+  font-style: italic; color: var(--terr);
+  margin-bottom: 24px;
 }
 
 .team-member {
   display: flex; gap: 14px;
-  padding: 1rem 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--border);
 }
 .team-member:last-child { border-bottom: none; }
+
 .tm-dot {
   width: 8px; height: 8px; border-radius: 50%;
   flex-shrink: 0; margin-top: 6px;
 }
+
 .tm-body { flex:1; }
 .tm-name {
-  font-size: 14px; font-weight: 600;
+  font-family: var(--sans);
+  font-size: 13px; font-weight: 600;
   color: var(--sand); margin-bottom: 2px;
 }
 .tm-role {
-  font-family: var(--font-mono);
+  font-family: var(--mono);
   font-size: 8px; color: var(--terr);
   letter-spacing: 1.5px; text-transform: uppercase;
   margin-bottom: 4px;
 }
 .tm-desc {
-  font-size: 13px; color: rgba(238,223,198,0.55);
-  line-height: 1.6;
-}
-
-/* ── PROGRAMS CELL GRID ── */
-.prog-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
-}
-.prog-cell {
-  background: var(--warm);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  transition: all var(--transition-smooth);
-}
-.prog-cell:hover {
-  border-color: var(--gold);
-}
-.prog-icon { font-size: 24px; margin-bottom: 8px; }
-.prog-name {
-  font-family: var(--serif);
-  font-size: 1.15rem; font-weight: 600;
-  color: var(--sand); margin-bottom: 4px;
-}
-.prog-tagline {
-  font-family: var(--font-mono);
-  font-size: 8px; color: var(--terr);
-  letter-spacing: 2px; text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.prog-desc {
-  font-size: 13px; color: rgba(238,223,198,0.65);
+  font-size: 12px; color: rgba(245,234,216,0.45);
   line-height: 1.6;
 }
 
 /* ── MISSION STRIP ── */
 .mission-strip {
   background: var(--terr);
-  padding: 3rem 2rem;
-  border-radius: var(--radius-lg);
-  margin: 3rem 0;
-  box-shadow: var(--shadow-premium);
+  padding: 40px;
 }
 .mission-inner {
+  max-width: 860px; margin: 0 auto;
   display: flex; gap: 40px; align-items: center;
-  flex-wrap: wrap; justify-content: space-between;
+  flex-wrap: wrap;
 }
 .mission-quote {
   font-family: var(--serif);
-  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-size: clamp(20px, 3vw, 28px);
   font-weight: 600; font-style: italic;
   color: var(--cream); flex:1;
-  min-width: 260px; line-height: 1.35;
+  min-width: 260px; line-height: 1.3;
 }
 .mission-attr {
-  font-family: var(--font-mono);
-  font-size: 9px; color: rgba(253,248,240,0.7);
+  font-family: var(--mono);
+  font-size: 9px; color: rgba(253,246,234,0.6);
   letter-spacing: 2px; text-transform: uppercase;
 }
 
-/* Locale controls */
+/* ── PROGRAMS ── */
+.programs-panel {
+  background: var(--cream);
+  padding: 0;
+}
+
+.prog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 28px;
+}
+
+.prog-cell {
+  background: var(--cream);
+  padding: 24px 22px;
+}
+.prog-icon { font-size: 22px; margin-bottom: 10px; }
+.prog-name {
+  font-family: var(--serif);
+  font-size: 16px; font-weight: 600;
+  color: var(--ink); margin-bottom: 4px;
+}
+.prog-tagline {
+  font-family: var(--mono);
+  font-size: 8px; color: var(--terr);
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.prog-desc {
+  font-size: 12px; color: rgba(26,18,9,0.6);
+  line-height: 1.6;
+}
+
+/* ── FOOTER ── */
+.site-footer {
+  background: var(--earth);
+  border-top: 1px solid var(--border);
+  padding: 28px 40px;
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.footer-id {
+  font-family: var(--mono);
+  font-size: 9px; color: rgba(245,234,216,0.25);
+  letter-spacing: 1.5px; text-transform: uppercase;
+}
+.footer-brand {
+  font-family: var(--serif);
+  font-size: 14px; font-weight: 600; color: var(--gold);
+}
+.footer-url {
+  font-family: var(--mono);
+  font-size: 9px; color: rgba(245,234,216,0.3);
+  letter-spacing: 1px;
+}
+
+/* ── LOCALE ── */
 .en-only { display:block; }
 .es-only { display:none; }
 body.es .en-only { display:none; }
@@ -347,21 +447,27 @@ body.es .es-only { display:block; }
 body.es .inline-en { display:none; }
 body.es .inline-es { display:inline; }
 
-@media (max-width: 780px) {
-  .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+  .masthead, .hero, .mission-strip, .site-footer { padding-left:20px; padding-right:20px; }
+  .section-wrap, .about-inner { padding-left:20px; padding-right:20px; }
+  .hero-stats { gap:20px; }
+  .vol-grid { grid-template-columns: 1fr; }
+  .prog-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-<body id="page" class="biblioteca-theme">
+<body id="page">
 
 <!-- MASTHEAD -->
 <div class="masthead">
   <div class="brand-block">
     <div class="pub-title">La Biblioteca</div>
-    <div class="pub-tagline">senacolectivo.com/biblioteca · Santa Fe, NM</div>
+    <div class="pub-tagline en-only">senacolectivo.com/biblioteca · Santa Fe, NM</div>
+    <div class="pub-tagline es-only">senacolectivo.com/biblioteca · Santa Fe, NM</div>
   </div>
   <div class="masthead-right">
-    <a href="index.html" class="btn secondary tiny" style="margin-right:10px;">← Back / Volver</a>
+    <a href="/" class="nav-link">← NM Socialists Portal</a>
     <div class="lang-toggle">
       <button class="lt-btn active" id="btnEN" onclick="setLang('en')">EN</button>
       <button class="lt-btn"        id="btnES" onclick="setLang('es')">ES</button>
@@ -369,167 +475,235 @@ body.es .inline-es { display:inline; }
   </div>
 </div>
 
-<main>
-  <!-- HERO -->
-  <div class="bib-hero">
-    <div class="bib-hero-inner">
-      <div class="bib-hero-eyebrow en-only">Free Bilingual Research · Land · Water · Labor · New Mexico</div>
-      <div class="bib-hero-eyebrow es-only">Investigación Bilingüe Gratuita · Tierra · Agua · Trabajo · Nuevo México</div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow en-only">Free Bilingual Research · Land · Water · Labor · New Mexico</div>
+    <div class="hero-eyebrow es-only">Investigación Bilingüe Gratuita · Tierra · Agua · Trabajo · Nuevo México</div>
 
-      <div class="bib-hero-h1 en-only">La<br><em>Biblioteca</em></div>
-      <div class="bib-hero-h1 es-only">La<br><em>Biblioteca</em></div>
+    <div class="hero-h1 en-only">La<br><em>Biblioteca</em></div>
+    <div class="hero-h1 es-only">La<br><em>Biblioteca</em></div>
 
-      <div class="bib-hero-sub en-only">Research that belongs to the community that needs it.</div>
-      <div class="bib-hero-sub es-only">Investigación que pertenece a la comunidad que la necesita.</div>
+    <div class="hero-sub en-only">Research that belongs to the community that needs it.</div>
+    <div class="hero-sub es-only">Investigación que pertenece a la comunidad que la necesita.</div>
 
-      <div class="bib-hero-desc en-only">
-        La Biblioteca is a free weekly bilingual publication covering land rights, water rights, and labor in New Mexico. Every volume is research-first — no ideology, no prescription, just the documented record of what happened to this land and these people, and what's happening now.
+    <div class="hero-desc en-only">
+      La Biblioteca is a free weekly bilingual publication covering land rights, water rights, and labor in New Mexico. Every volume is research-first — no ideology, no prescription, just the documented record of what happened to this land and these people, and what's happening now.
+    </div>
+    <div class="hero-desc es-only">
+      La Biblioteca es una publicación bilingüe gratuita que cubre derechos de tierra, agua y trabajo en Nuevo México. Cada volumen es de investigación primero — sin ideología, sin prescripción, solo el registro documentado de lo que le sucedió a esta tierra y a esta gente, y lo que está sucediendo ahora.
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">6</div>
+        <div class="stat-label en-only">Volumes Published</div>
+        <div class="stat-label es-only">Volúmenes Publicados</div>
       </div>
-      <div class="bib-hero-desc es-only">
-        La Biblioteca es una publicación bilingüe gratuita que cubre derechos de tierra, agua y trabajo en Nuevo México. Cada volumen es de investigación primero — sin ideología, sin prescripción, solo el registro documentado de lo que le sucedió a esta tierra y a esta gente, y lo que está sucediendo ahora.
+      <div class="stat-item">
+        <div class="stat-num">EN·ES</div>
+        <div class="stat-label en-only">Always Bilingual</div>
+        <div class="stat-label es-only">Siempre Bilingüe</div>
       </div>
-
-      <div class="bib-hero-stats">
-        <div class="bib-stat-item">
-          <div class="bib-stat-num">6</div>
-          <div class="bib-stat-label en-only">Volumes Published</div>
-          <div class="bib-stat-label es-only">Volúmenes Publicados</div>
-        </div>
-        <div class="bib-stat-item">
-          <div class="bib-stat-num">EN·ES</div>
-          <div class="bib-stat-label en-only">Always Bilingual</div>
-          <div class="bib-stat-label es-only">Siempre Bilingüe</div>
-        </div>
-        <div class="bib-stat-item">
-          <div class="bib-stat-num">$0</div>
-          <div class="bib-stat-label en-only">Cost · Always Free</div>
-          <div class="bib-stat-label es-only">Costo · Siempre Gratis</div>
-        </div>
-        <div class="bib-stat-item">
-          <div class="bib-stat-num">CC</div>
-          <div class="bib-stat-label en-only">BY-NC-SA · Share Freely</div>
-          <div class="bib-stat-label es-only">BY-NC-SA · Comparte Libre</div>
-        </div>
+      <div class="stat-item">
+        <div class="stat-num">$0</div>
+        <div class="stat-label en-only">Cost · Always Free</div>
+        <div class="stat-label es-only">Costo · Siempre Gratis</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">CC</div>
+        <div class="stat-label en-only">BY-NC-SA · Share Freely</div>
+        <div class="stat-label es-only">BY-NC-SA · Comparte Libre</div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- VOLUMES -->
-  <section class="section" style="border:none;background:transparent;box-shadow:none;padding:0;">
-    <h3 style="color:var(--gold);">
-      <span class="en-only">All Volumes</span>
-      <span class="es-only">Todos los Volúmenes</span>
-    </h3>
-    
-    <div class="vol-grid">
-      <!-- VOL 6 (LAMA Day / May Day) -->
-      <a class="vol-card" href="biblioteca-lama-day.html">
-        <div class="vc-num en-only">Volume 06 · Special Edition</div>
-        <div class="vc-num es-only">Volumen 06 · Edición Especial</div>
-        <div class="vc-tag en-only">Labor Rights · General Strike</div>
-        <div class="vc-tag es-only">Derechos Laborales · Huelga General</div>
-        <div class="vc-title en-only">No Work. No School. <em>No Shopping.</em></div>
-        <div class="vc-title es-only">Sin Trabajo. Sin Escuela. <em>Sin Compras.</em></div>
-        <div class="vc-excerpt en-only">The May Day general strike — the Minnesota ICE origin story, $240M in suppressed wages, who's in, and what your rights are if you walk out.</div>
-        <div class="vc-excerpt es-only">La huelga general — la historia de origen de ICE en Minnesota, $240M en salarios suprimidos, quién está adentro y cuáles son tus derechos.</div>
-        <div class="vc-footer">
-          <span class="vc-date en-only">May 2026</span>
-          <span class="vc-date es-only">Mayo 2026</span>
-          <span class="vc-badge special">May Day 2026</span>
-        </div>
-      </a>
-
-      <!-- VOL 5 (MILPA / CCGS Greenhouse) -->
-      <a class="vol-card" href="ccgs_natgeo_paper.html">
-        <div class="vc-num en-only">Volume 05</div>
-        <div class="vc-num es-only">Volumen 05</div>
-        <div class="vc-tag en-only">Community Agriculture · Food Sovereignty</div>
-        <div class="vc-tag es-only">Agricultura Comunal · Soberanía Alimentaria</div>
-        <div class="vc-title en-only">Build <em>MILPA</em>: Your Community Greenhouse</div>
-        <div class="vc-title es-only">Construye <em>MILPA</em>: Tu Invernadero Comunitario</div>
-        <div class="vc-excerpt en-only">CGS-C1 build guide. Passive solar, aquaponics, earth thermal, compute waste heat. Built for the high desert of Northern NM.</div>
-        <div class="vc-excerpt es-only">Guía de construcción CGS-C1. Solar pasivo, acuaponía, calor terrestre, calor residual de cómputo. Para el desierto alto de NM.</div>
-        <div class="vc-footer">
-          <span class="vc-date en-only">April 2026</span>
-          <span class="vc-date es-only">Abril 2026</span>
-          <span class="vc-badge live">Complete</span>
-        </div>
-      </a>
-
-      <!-- VOL 4 -->
-      <div class="vol-card">
-        <div class="vc-num en-only">Volume 04</div>
-        <div class="vc-num es-only">Volumen 04</div>
-        <div class="vc-tag en-only">Land Grant · SMDVLG · Dispossession</div>
-        <div class="vc-tag es-only">Merced de Tierra · SMDVLG · Despojo</div>
-        <div class="vc-title en-only">San Miguel del Vado: 315,000 Acres and the <em>Architecture of Dispossession</em></div>
-        <div class="vc-title es-only">San Miguel del Vado: 315,000 Acres y la <em>Arquitectura del Despojo</em></div>
-        <div class="vc-excerpt en-only">US v. Sandoval (1897) stripped 98.4% of the Genízaro communal land grant in a single ruling. $775M in displaced equity.</div>
-        <div class="vc-excerpt es-only">US v. Sandoval (1897) despojó el 98.4% de la merced comunal Genízara en un solo fallo. $775M en capital desplazado.</div>
-        <div class="vc-footer">
-          <span class="vc-date en-only">April 2026</span>
-          <span class="vc-date es-only">Abril 2026</span>
-          <span class="vc-badge live" style="opacity:0.6;">Archived</span>
-        </div>
-      </div>
-
-      <!-- VOL 3 -->
-      <div class="vol-card">
-        <div class="vc-num en-only">Volume 03</div>
-        <div class="vc-num es-only">Volumen 03</div>
-        <div class="vc-tag en-only">Water Rights · Acequia · Pueblo Doctrine</div>
-        <div class="vc-tag es-only">Derechos de Agua · Acequia · Doctrina Pueblo</div>
-        <div class="vc-title en-only">How Courts Rewrote the <em>Acequia</em></div>
-        <div class="vc-title es-only">Cómo los Tribunales Reescribieron la <em>Acequia</em></div>
-        <div class="vc-excerpt en-only">The Pueblo Water Doctrine was constructed by US courts post-1848 to transfer communal water rights away from acequias.</div>
-        <div class="vc-excerpt es-only">La Doctrina del Agua Pueblo fue construida por tribunales estadounidenses post-1848 para transferir derechos de agua de las acequias.</div>
-        <div class="vc-footer">
-          <span class="vc-date en-only">March 2026</span>
-          <span class="vc-date es-only">Marzo 2026</span>
-          <span class="vc-badge live" style="opacity:0.6;">Archived</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- MISSION STRIP -->
-  <div class="mission-strip">
-    <div class="mission-inner">
-      <div class="mission-quote en-only">"El socialismo es ciencia, no dogma."</div>
-      <div class="mission-quote es-only">"El socialismo es ciencia, no dogma."</div>
-      <div>
-        <div class="mission-attr">New Mexico Socialists · La Biblioteca · Sena's AI Collective</div>
-      </div>
-    </div>
+<!-- VOLUMES -->
+<div class="section-wrap">
+  <div class="section-head">
+    <div class="section-flag en-only">Archive</div>
+    <div class="section-flag es-only">Archivo</div>
+    <div class="section-title en-only">All Volumes</div>
+    <div class="section-title es-only">Todos los Volúmenes</div>
+    <div class="section-sub en-only">Free to read, download, and share with attribution.</div>
+    <div class="section-sub es-only">Gratis para leer, descargar y compartir con atribución.</div>
   </div>
 
-  <!-- ABOUT -->
-  <div class="about-panel">
+  <div class="vol-grid">
+
+    <!-- VOL 6 -->
+    <a class="vol-card" href="./biblioteca-lama-day.html">
+      <div class="vc-num en-only">Volume 06 · Special Edition</div>
+      <div class="vc-num es-only">Volumen 06 · Edición Especial</div>
+      <div class="vc-tag en-only">Labor Rights · General Strike</div>
+      <div class="vc-tag es-only">Derechos Laborales · Huelga General</div>
+      <div class="vc-title en-only">No Work. No School. <em>No Shopping.</em></div>
+      <div class="vc-title es-only">Sin Trabajo. Sin Escuela. <em>Sin Compras.</em></div>
+      <div class="vc-excerpt en-only">The May Day Strong general strike — 85+ cities, the Minnesota ICE origin story, $240M in suppressed wages, who's in, and what your rights are if you walk out.</div>
+      <div class="vc-excerpt es-only">La huelga general May Day Strong — más de 85 ciudades, la historia de origen del ICE en Minnesota, $240M en salarios suprimidos, quién está adentro y cuáles son tus derechos.</div>
+      <div class="vc-footer">
+        <span class="vc-date en-only">May 2026</span>
+        <span class="vc-date es-only">Mayo 2026</span>
+        <span class="vc-badge special">May Day 2026</span>
+      </div>
+    </a>
+
+    <!-- VOL 5 -->
+    <a class="vol-card" href="./ccgs_natgeo_paper.html">
+      <div class="vc-num en-only">Volume 05</div>
+      <div class="vc-num es-only">Volumen 05</div>
+      <div class="vc-tag en-only">Community Agriculture · CEA · Food Sovereignty</div>
+      <div class="vc-tag es-only">Agricultura Comunal · CEA · Soberanía Alimentaria</div>
+      <div class="vc-title en-only">Build <em>MILPA</em>: Your Community Greenhouse</div>
+      <div class="vc-title es-only">Construye <em>MILPA</em>: Tu Invernadero Comunitario</div>
+      <div class="vc-excerpt en-only">CGS-C1 build guide. Four tiers from free to commercial. Passive solar, aquaponics, earth thermal, compute waste heat. Built for the high desert of Northern NM.</div>
+      <div class="vc-excerpt es-only">Guía de construcción CGS-C1. Cuatro niveles de gratuito a comercial. Solar pasivo, acuaponía, calor terrestre, calor residual de cómputo. Hecho para el desierto alto del Norte de NM.</div>
+      <div class="vc-footer">
+        <span class="vc-date en-only">April 2026</span>
+        <span class="vc-date es-only">Abril 2026</span>
+        <span class="vc-badge live">Complete</span>
+      </div>
+    </a>
+
+    <!-- VOL 4 -->
+    <div class="vol-card">
+      <div class="vc-num en-only">Volume 04</div>
+      <div class="vc-num es-only">Volumen 04</div>
+      <div class="vc-tag en-only">Land Grant · SMDVLG · Dispossession</div>
+      <div class="vc-tag es-only">Merced de Tierra · SMDVLG · Despojo</div>
+      <div class="vc-title en-only">San Miguel del Vado: 315,000 Acres and the <em>Architecture of Dispossession</em></div>
+      <div class="vc-title es-only">San Miguel del Vado: 315,000 Acres y la <em>Arquitectura del Despojo</em></div>
+      <div class="vc-excerpt en-only">US v. Sandoval (1897) stripped 98.4% of the Genízaro communal land grant in a single ruling. The legal mechanism, $775M in displaced equity, and the active reclamation today.</div>
+      <div class="vc-excerpt es-only">US v. Sandoval (1897) despojó el 98.4% de la merced comunal Genízara. El mecanismo legal, $775M en capital desplazado, y la reclamación activa hoy.</div>
+      <div class="vc-footer">
+        <span class="vc-date en-only">April 2026</span>
+        <span class="vc-date es-only">Abril 2026</span>
+        <span class="vc-badge live">Complete</span>
+      </div>
+    </div>
+
+    <!-- VOL 3 -->
+    <div class="vol-card">
+      <div class="vc-num en-only">Volume 03</div>
+      <div class="vc-num es-only">Volumen 03</div>
+      <div class="vc-tag en-only">Water Rights · Acequia · Pueblo Doctrine</div>
+      <div class="vc-tag es-only">Derechos de Agua · Acequia · Doctrina Pueblo</div>
+      <div class="vc-title en-only">How Courts Rewrote the <em>Acequia</em></div>
+      <div class="vc-title es-only">Cómo los Tribunales Reescribieron la <em>Acequia</em></div>
+      <div class="vc-excerpt en-only">The Pueblo Water Doctrine was constructed by US courts post-1848 to transfer communal water rights away from acequia communities. Peter Reich's primary legal analysis.</div>
+      <div class="vc-excerpt es-only">La Doctrina del Agua Pueblo fue construida por tribunales estadounidenses post-1848 para transferir derechos de agua comunales lejos de las comunidades de acequias.</div>
+      <div class="vc-footer">
+        <span class="vc-date en-only">March 2026</span>
+        <span class="vc-date es-only">Marzo 2026</span>
+        <span class="vc-badge live">Complete</span>
+      </div>
+    </div>
+
+    <!-- VOL 2 -->
+    <div class="vol-card">
+      <div class="vc-num en-only">Volume 02</div>
+      <div class="vc-num es-only">Volumen 02</div>
+      <div class="vc-tag en-only">Santa Fe Ring · Genízaro Nation · Power</div>
+      <div class="vc-tag es-only">Anillo de Santa Fe · Nación Genízara · Poder</div>
+      <div class="vc-title en-only">The Bloodlines of Power: The Santa Fe Ring and the <em>Genízaro Struggle</em></div>
+      <div class="vc-title es-only">Los Linajes del Poder: El Anillo de Santa Fe y la <em>Lucha Genízara</em></div>
+      <div class="vc-excerpt en-only">The surname traversal. The Rico-Anglo Syndicate. How the legal scalpel of the 19th century became the modern Familyocracy of NM politics.</div>
+      <div class="vc-excerpt es-only">El recorrido de apellidos. El Sindicato Rico-Anglo. Cómo el bisturí legal del siglo XIX se convirtió en la Familiocracia moderna de la política de NM.</div>
+      <div class="vc-footer">
+        <span class="vc-date en-only">April 2026</span>
+        <span class="vc-date es-only">Abril 2026</span>
+        <span class="vc-badge live">Complete</span>
+      </div>
+    </div>
+
+    <!-- VOL 1 -->
+    <div class="vol-card">
+      <div class="vc-num en-only">Volume 01</div>
+      <div class="vc-num es-only">Volumen 01</div>
+      <div class="vc-tag en-only">Land · Water · Origins · NM History</div>
+      <div class="vc-tag es-only">Tierra · Agua · Orígenes · Historia de NM</div>
+      <div class="vc-title en-only">The Shape of <em>Us</em>: SANGRE, the Acequia, and the Morphology of the Commons</div>
+      <div class="vc-title es-only">La Forma de <em>Nosotros</em>: SANGRE, la Acequia y la Morfología de los Bienes Comunes</div>
+      <div class="vc-excerpt en-only">The acequia is a socialist machine. It doesn't ask for a credit score — it asks if you cleaned the ditch. Four hundred years of shared water as the foundation of everything that follows.</div>
+      <div class="vc-excerpt es-only">La acequia es una máquina socialista. No pide un puntaje de crédito — pregunta si limpiaste la acequia. Cuatrocientos años de agua compartida como fundamento de todo lo que sigue.</div>
+      <div class="vc-footer">
+        <span class="vc-date en-only">March 2026</span>
+        <span class="vc-date es-only">Marzo 2026</span>
+        <span class="vc-badge live">Complete</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="full-divider">
+
+<!-- MISSION STRIP -->
+<div class="mission-strip">
+  <div class="mission-inner">
+    <div class="mission-quote en-only">"El socialismo es ciencia, no dogma."</div>
+    <div class="mission-quote es-only">"El socialismo es ciencia, no dogma."</div>
+    <div>
+      <div class="mission-attr en-only">New Mexico Socialists · La Biblioteca · Sena's AI Collective</div>
+      <div class="mission-attr es-only">Socialistas de Nuevo México · La Biblioteca · Sena's AI Collective</div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="about-panel">
+  <div class="about-inner">
+    <div class="section-flag" style="color:var(--gold);font-family:var(--mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;margin-bottom:36px;display:flex;align-items:center;gap:10px;">
+      <span class="en-only">About</span><span class="es-only">Acerca de</span>
+      <span style="flex:1;height:1px;background:rgba(232,168,37,0.15);display:block;"></span>
+    </div>
+
     <div class="about-grid">
+
       <!-- AUTHOR -->
       <div class="author-card">
+        <div class="author-flag en-only">Author · Editor in Chief</div>
+        <div class="author-flag es-only">Autor · Editor en Jefe</div>
+
         <div class="author-avatar">🌵</div>
+
         <div class="author-name">Salvador Sena</div>
         <div class="author-title en-only">Founder · Sena's AI Collective · President · New Mexico Socialists</div>
         <div class="author-title es-only">Fundador · Sena's AI Collective · Presidente · Socialistas de Nuevo México</div>
 
         <div class="author-bio en-only">
-          Salvador Sena grew up in the high desert of Northern New Mexico — in the soil of acequia traditions, land grant history, and a community that knew how to build what it needed.
+          Salvador Sena grew up in the high desert of Northern New Mexico — in the soil of acequia traditions, land grant history, and a community that knew how to build what it needed with what it had. That knowledge didn't go anywhere. It became the architecture.
         </div>
         <div class="author-bio es-only">
-          Salvador Sena creció en el desierto alto del norte de Nuevo México — en el suelo de las tradiciones de acequias, la historia de las mercedes de tierra y una comunidad resiliente.
+          Salvador Sena creció en el desierto alto del norte de Nuevo México — en el suelo de las tradiciones de acequias, la historia de las mercedes de tierra y una comunidad que sabía cómo construir lo que necesitaba con lo que tenía. Ese conocimiento no se fue a ningún lado. Se convirtió en la arquitectura.
         </div>
 
         <div class="author-bio en-only">
-          <strong>La Biblioteca</strong> is the answer. Every volume is a tool — research translated into something a family in Ribera, a student in Las Vegas, a mayordomo on the Acequia Madre can actually use.
+          He spent 20 years building the infrastructure that other people's systems run on — networks, servers, state agencies, universities. He learned the engineering from the inside, at every layer. <em>Then he asked what it was actually for.</em>
         </div>
         <div class="author-bio es-only">
-          <strong>La Biblioteca</strong> es la respuesta. Cada volumen es una herramienta — investigación traducida en algo que una familia en Ribera, un estudiante en Las Vegas o un mayordomo puedan realmente usar.
+          Pasó 20 años construyendo la infraestructura sobre la que corren los sistemas de otras personas — redes, servidores, agencias estatales, universidades. Aprendió la ingeniería desde adentro, en cada capa. <em>Luego preguntó para qué era realmente.</em>
+        </div>
+
+        <div class="author-bio en-only">
+          <strong>La Biblioteca</strong> is the answer. Every volume is a tool — research translated into something a family in Ribera, a student in Las Vegas, a mayordomo on the Acequia Madre can actually use. Not a white paper. Not a policy brief. A field guide written in the language of people who already know the land.
+        </div>
+        <div class="author-bio es-only">
+          <strong>La Biblioteca</strong> es la respuesta. Cada volumen es una herramienta — investigación traducida en algo que una familia en Ribera, un estudiante en Las Vegas, un mayordomo en la Acequia Madre pueda realmente usar. No un documento técnico. No un informe de política. Una guía de campo escrita en el idioma de las personas que ya conocen la tierra.
+        </div>
+
+        <div class="author-bio en-only">
+          He is also the founder of Sena's AI Collective, a Santa Fe-based research and build operation that deploys AI tools in service of civic accountability, community education, and the documentation of what gets erased. He carries a background in environmental mining, law, and the kind of geology you learn by standing in the watershed and watching where the water actually goes.
+        </div>
+        <div class="author-bio es-only">
+          También es el fundador de Sena's AI Collective, una operación de investigación y construcción con sede en Santa Fe que despliega herramientas de IA al servicio de la responsabilidad cívica, la educación comunitaria y la documentación de lo que se borra. Lleva un fondo en minería ambiental, derecho y el tipo de geología que aprendes al pararte en la cuenca hidrográfica y observar hacia dónde va el agua realmente.
         </div>
 
         <div class="author-tags">
           <span class="author-tag">Santa Fe, NM</span>
           <span class="author-tag">EN · ES</span>
+          <span class="author-tag">20+ yrs infrastructure</span>
           <span class="author-tag">Land Grant Research</span>
           <span class="author-tag">AI Systems</span>
         </div>
@@ -537,25 +711,30 @@ body.es .inline-es { display:inline; }
 
       <!-- TEAM -->
       <div class="team-col">
-        <h4 style="font-family:var(--serif);font-size:1.4rem;color:var(--sand);margin-bottom:1rem;">The Research Team</h4>
-        
+        <div class="team-title en-only">The Research Team</div>
+        <div class="team-title es-only">El Equipo de Investigación</div>
+        <div class="team-sub en-only">Sena's AI Collective — the people and agents behind La Biblioteca</div>
+        <div class="team-sub es-only">Sena's AI Collective — las personas y agentes detrás de La Biblioteca</div>
+
         <div class="team-member">
           <div class="tm-dot" style="background:var(--sage);"></div>
           <div class="tm-body">
             <div class="tm-name">Aria</div>
-            <div class="tm-role">Admin &amp; Coordinator</div>
-            <div class="tm-desc en-only">Outreach and publication coordinator. Aria keeps the pipeline moving and the voice warm.</div>
-            <div class="tm-desc es-only">Coordinadora de alcance y publicación. Aria mantiene el pipeline en movimiento.</div>
+            <div class="tm-role en-only">Admin &amp; Coordinator</div>
+            <div class="tm-role es-only">Administración y Coordinación</div>
+            <div class="tm-desc en-only">Primary interface, outreach, and publication coordination. Aria keeps the pipeline moving and the voice warm.</div>
+            <div class="tm-desc es-only">Interfaz principal, alcance y coordinación de publicaciones. Aria mantiene el pipeline en movimiento y la voz cálida.</div>
           </div>
         </div>
 
         <div class="team-member">
-          <div class="tm-dot" style="background:hsl(var(--color-sky));"></div>
+          <div class="tm-dot" style="background:var(--sky);"></div>
           <div class="tm-body">
             <div class="tm-name">Dr. Vex</div>
-            <div class="tm-role">R&amp;D Director</div>
-            <div class="tm-desc en-only">Leads the research division. The intellectual engine behind every volume's architecture.</div>
-            <div class="tm-desc es-only">Dirige la división de investigación. El motor intelectual detrás de cada volumen.</div>
+            <div class="tm-role en-only">R&amp;D Director</div>
+            <div class="tm-role es-only">Director de I+D</div>
+            <div class="tm-desc en-only">Leads the research division. Read → synthesize → build → test → verify. The intellectual engine behind every volume's architecture.</div>
+            <div class="tm-desc es-only">Dirige la división de investigación. Leer → sintetizar → construir → probar → verificar. El motor intelectual detrás de la arquitectura de cada volumen.</div>
           </div>
         </div>
 
@@ -563,48 +742,107 @@ body.es .inline-es { display:inline; }
           <div class="tm-dot" style="background:var(--gold);"></div>
           <div class="tm-body">
             <div class="tm-name">Rox</div>
-            <div class="tm-role">Literature &amp; Sources</div>
-            <div class="tm-desc en-only">Primary source verification. Every claim traces back to a peer-reviewed paper or court record.</div>
-            <div class="tm-desc es-only">Verificación de fuentes primarias. Cada afirmación se remonta a registros judiciales o académicos.</div>
+            <div class="tm-role en-only">Literature &amp; Sources</div>
+            <div class="tm-role es-only">Literatura y Fuentes</div>
+            <div class="tm-desc en-only">Primary source verification. Every claim in La Biblioteca traces back to a peer-reviewed paper, court record, or primary document in Rox's hands.</div>
+            <div class="tm-desc es-only">Verificación de fuentes primarias. Cada afirmación en La Biblioteca se remonta a un artículo revisado por pares, registro judicial o documento primario.</div>
           </div>
         </div>
+
+        <div class="team-member">
+          <div class="tm-dot" style="background:var(--terr);"></div>
+          <div class="tm-body">
+            <div class="tm-name">Grant</div>
+            <div class="tm-role en-only">Grant Writer &amp; Storytelling</div>
+            <div class="tm-role es-only">Redacción de Becas y Narrativa</div>
+            <div class="tm-desc en-only">Translates research into narrative that moves people. The reason La Biblioteca reads like a story, not a policy document.</div>
+            <div class="tm-desc es-only">Traduce la investigación en narrativa que mueve a las personas. La razón por la que La Biblioteca se lee como una historia, no un documento de política.</div>
+          </div>
+        </div>
+
+        <div class="team-member">
+          <div class="tm-dot" style="background:var(--sage);"></div>
+          <div class="tm-body">
+            <div class="tm-name">Zara</div>
+            <div class="tm-role en-only">Data Scientist</div>
+            <div class="tm-role es-only">Científica de Datos</div>
+            <div class="tm-desc en-only">The numbers. GIS analysis, economic modeling, the $775M displaced equity calculation, the statistics that anchor every argument.</div>
+            <div class="tm-desc es-only">Los números. Análisis SIG, modelado económico, el cálculo de $775M en capital desplazado, las estadísticas que anclan cada argumento.</div>
+          </div>
+        </div>
+
+        <div class="team-member">
+          <div class="tm-dot" style="background:var(--sky);opacity:0.6;"></div>
+          <div class="tm-body">
+            <div class="tm-name">Dr. Maya</div>
+            <div class="tm-role en-only">AI Ethics · Team Conscience</div>
+            <div class="tm-role es-only">Ética de IA · Conciencia del Equipo</div>
+            <div class="tm-desc en-only">Nothing leaves without her review. Bias monitoring, ethical framing, the question "who does this serve and who does it harm" asked at every step.</div>
+            <div class="tm-desc es-only">Nada sale sin su revisión. Monitoreo de sesgos, encuadre ético, la pregunta "a quién sirve esto y a quién daña" en cada paso.</div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
+</div>
 
-  <!-- PROGRAMS -->
-  <section class="section" style="border:none;background:transparent;box-shadow:none;padding:0;margin-top:3rem;">
-    <h3 style="color:var(--gold);">Our Programs / Programas</h3>
-    <div class="prog-grid">
-      <div class="prog-cell">
-        <div class="prog-icon">📚</div>
-        <div class="prog-name">La Biblioteca</div>
-        <div class="prog-tagline">Bilingual Research</div>
-        <p class="prog-desc en-only">Weekly research publication covering land, water, and labor.</p>
-        <p class="prog-desc es-only">Publicación semanal de investigación sobre tierra, agua y trabajo.</p>
-      </div>
-      <div class="prog-cell">
-        <div class="prog-icon">🛡️</div>
-        <div class="prog-name">Comunidad Libre</div>
-        <div class="prog-tagline">Safety Application</div>
-        <p class="prog-desc en-only">Bilingual ICE and community safety heat mapping dashboard.</p>
-        <p class="prog-desc es-only">Dashboard bilingüe de seguridad comunitaria y del ICE.</p>
-      </div>
-      <div class="prog-cell">
-        <div class="prog-icon">☕</div>
-        <div class="prog-name">Coffee With Commies</div>
-        <div class="prog-tagline">Podcast Series</div>
-        <p class="prog-desc en-only">Political education podcast hosted by LeeAnn Romero and Antonio.</p>
-        <p class="prog-desc es-only">Podcast de educación política presentado por LeeAnn y Antonio.</p>
-      </div>
+<!-- PROGRAMS -->
+<div class="section-wrap programs-panel">
+  <div class="section-head">
+    <div class="section-flag en-only">New Mexico Socialists Inc. · EIN 41-5210879</div>
+    <div class="section-flag es-only">Socialistas de Nuevo México · EIN 41-5210879</div>
+    <div class="section-title en-only">Our Programs</div>
+    <div class="section-title es-only">Nuestros Programas</div>
+    <div class="section-sub en-only">La Biblioteca is one part of a larger organizing infrastructure.</div>
+    <div class="section-sub es-only">La Biblioteca es una parte de una infraestructura organizativa más amplia.</div>
+  </div>
+
+  <div class="prog-grid">
+    <div class="prog-cell">
+      <div class="prog-icon">📚</div>
+      <div class="prog-name">La Biblioteca</div>
+      <div class="prog-tagline en-only">Weekly Bilingual Research</div>
+      <div class="prog-tagline es-only">Investigación Bilingüe Semanal</div>
+      <div class="prog-desc en-only">Free research publication. Land, water, labor. Every volume verified, every source cited, every word in English and Spanish.</div>
+      <div class="prog-desc es-only">Publicación de investigación gratuita. Tierra, agua, trabajo. Cada volumen verificado, cada fuente citada, cada palabra en inglés y español.</div>
     </div>
-  </section>
-</main>
+    <div class="prog-cell">
+      <div class="prog-icon">🛡️</div>
+      <div class="prog-name">Comunidad Libre</div>
+      <div class="prog-tagline en-only">Free Community Safety App · LIVE</div>
+      <div class="prog-tagline es-only">App de Seguridad Comunitaria · EN VIVO</div>
+      <div class="prog-desc en-only">Bilingual ICE and community safety app. GIS-powered heat maps, pattern analysis, and corridor routing. Free. Always.</div>
+      <div class="prog-desc es-only">App bilingüe de seguridad comunitaria y del ICE. Mapas de calor con SIG, análisis de patrones y rutas de corredor. Gratis. Siempre.</div>
+    </div>
+    <div class="prog-cell">
+      <div class="prog-icon">☕</div>
+      <div class="prog-name">Coffee With Commies</div>
+      <div class="prog-tagline en-only">Bilingual Political Education Podcast</div>
+      <div class="prog-tagline es-only">Podcast Bilingüe de Educación Política</div>
+      <div class="prog-desc en-only">Hosted by LeeAnn Romero and Antonio. Political education in the tradition of the people who built this land — direct, honest, community-first.</div>
+      <div class="prog-desc es-only">Presentado por LeeAnn Romero y Antonio. Educación política en la tradición de la gente que construyó esta tierra — directa, honesta, comunidad primero.</div>
+    </div>
+    <div class="prog-cell">
+      <div class="prog-icon">🔬</div>
+      <div class="prog-name">Research &amp; Organizing</div>
+      <div class="prog-tagline en-only">Evidence-Based Community Action</div>
+      <div class="prog-tagline es-only">Acción Comunitaria Basada en Evidencia</div>
+      <div class="prog-desc en-only">Grant writing, GIS research, acequia and land grant documentation. Available to partner organizations at discount or in-kind.</div>
+      <div class="prog-desc es-only">Redacción de subvenciones, investigación SIG, documentación de acequias y mercedes. Disponible para organizaciones asociadas con descuento o en especie.</div>
+    </div>
+  </div>
+</div>
 
-<footer class="site-footer" style="background:var(--earth);margin-top:4rem;border-color:var(--border);">
-  <div class="en-only">La Biblioteca · Sena's AI Collective · Santa Fe, NM · CC BY-NC-SA 4.0</div>
-  <div class="es-only">La Biblioteca · Sena's AI Collective · Santa Fe, NM · CC BY-NC-SA 4.0</div>
-</footer>
+<!-- FOOTER -->
+<div class="site-footer">
+  <div>
+    <div class="footer-brand">La Biblioteca · Sena's AI Collective</div>
+    <div class="footer-url">senacolectivo.com/biblioteca</div>
+  </div>
+  <div class="footer-id en-only">New Mexico Socialists Inc. · EIN 41-5210879 · Santa Fe, NM · CC BY-NC-SA 4.0</div>
+  <div class="footer-id es-only">Socialistas de Nuevo México · EIN 41-5210879 · Santa Fe, NM · CC BY-NC-SA 4.0</div>
+</div>
 
 <script>
 (function(){
@@ -614,7 +852,7 @@ body.es .inline-es { display:inline; }
 })();
 
 function setLang(l, init) {
-  document.getElementById('page').className = 'biblioteca-theme' + (l === 'es' ? ' es' : '');
+  document.getElementById('page').className = l === 'es' ? 'es' : '';
   document.getElementById('btnEN').className = 'lt-btn' + (l==='en'?' active':'');
   document.getElementById('btnES').className = 'lt-btn' + (l==='es'?' active':'');
   if (!init) localStorage.setItem('bib_lang', l);

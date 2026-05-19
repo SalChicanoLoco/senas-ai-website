@@ -165,13 +165,13 @@ function send_welcome_email($subscriber_data, $unsubscribe_token) {
     $message .= "$unsubscribe_url\n\n";
     $message .= "---\n";
     $message .= "New Mexico Socialists\n";
-    $message .= "Email: xava@newmexicosocialists.org\n";
+    $message .= "Email: salvadorsena@senacolectivo.com\n";
     
     // Email headers (CAN-SPAM compliant)
     // Sanitize FROM_NAME to prevent header injection
     $safe_from_name = str_replace(["\r", "\n", "%0d", "%0a"], '', FROM_NAME);
     $headers = "From: " . $safe_from_name . " <noreply@" . FROM_EMAIL_DOMAIN . ">\r\n";
-    $headers .= "Reply-To: xava@newmexicosocialists.org\r\n";
+    $headers .= "Reply-To: salvadorsena@senacolectivo.com\r\n";
     $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
     $headers .= "List-Unsubscribe: <" . $unsubscribe_url . ">\r\n";
     $headers .= "List-Unsubscribe-Post: List-Unsubscribe=One-Click\r\n";
@@ -302,7 +302,7 @@ try {
     $stmt = $conn->prepare(
         "INSERT INTO form_submissions (name, alias, email, phone, country, state, city, zip_code, submitted_at, ip_address, unsubscribe_token) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)"
-    );
+     );
     
     if (!$stmt) {
         throw new Exception('Database error. Please try again later.');
@@ -315,7 +315,7 @@ try {
     if (!$stmt->execute()) {
         // Check if error is due to duplicate email
         if ($conn->errno === 1062) {  // MySQL duplicate entry error code
-            throw new InvalidArgumentException('This email is already registered. If you need to update your information, please contact us at xava@newmexicosocialists.org / Este correo ya está registrado. Si necesitas actualizar tu información, contáctanos en xava@newmexicosocialists.org');
+            throw new InvalidArgumentException('This email is already registered. If you need to update your information, please contact us at salvadorsena@senacolectivo.com / Este correo ya está registrado. Si necesitas actualizar tu información, contáctanos en salvadorsena@senacolectivo.com');
         }
         throw new Exception('Failed to save submission. Please try again later.');
     }

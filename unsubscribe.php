@@ -8,14 +8,14 @@
 // Load database configuration
 if (!file_exists('config.php')) {
     http_response_code(500);
-    die('Configuration error. Please contact us at xava@newmexicosocialists.org');
+    die('Configuration error. Please contact us at salvadorsena@senacolectivo.com');
 }
 require_once 'config.php';
 
 // Verify required constants are defined
 if (!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !defined('DB_PASS')) {
     http_response_code(500);
-    die('Configuration error. Please contact us at xava@newmexicosocialists.org');
+    die('Configuration error. Please contact us at salvadorsena@senacolectivo.com');
 }
 
 // Rate limiting: Simple session-based rate limiting
@@ -224,9 +224,9 @@ function render_success_page($email) {
             
             <div class="contact">
                 <p><strong>Want to rejoin or have questions?</strong><br>
-                Contact us at <a href="mailto:xava@newmexicosocialists.org">xava@newmexicosocialists.org</a></p>
+                Contact us at <a href="mailto:salvadorsena@senacolectivo.com">salvadorsena@senacolectivo.com</a></p>
                 <p><strong>¿Quieres volver a unirte o tienes preguntas?</strong><br>
-                Contáctanos en <a href="mailto:xava@newmexicosocialists.org">xava@newmexicosocialists.org</a></p>
+                Contáctanos en <a href="mailto:salvadorsena@senacolectivo.com">salvadorsena@senacolectivo.com</a></p>
             </div>
         </div>
     </body>
@@ -337,9 +337,9 @@ function render_already_unsubscribed_page($email) {
             
             <div class="contact">
                 <p><strong>Want to rejoin?</strong><br>
-                Contact us at <a href="mailto:xava@newmexicosocialists.org">xava@newmexicosocialists.org</a></p>
+                Contact us at <a href="mailto:salvadorsena@senacolectivo.com">salvadorsena@senacolectivo.com</a></p>
                 <p><strong>¿Quieres volver a unirte?</strong><br>
-                Contáctanos en <a href="mailto:xava@newmexicosocialists.org">xava@newmexicosocialists.org</a></p>
+                Contáctanos en <a href="mailto:salvadorsena@senacolectivo.com">salvadorsena@senacolectivo.com</a></p>
             </div>
         </div>
     </body>
@@ -445,9 +445,9 @@ function render_error_page($error_en, $error_es) {
             
             <div class="contact">
                 <p><strong>Need help?</strong><br>
-                Contact us at <a href="mailto:xava@newmexicosocialists.org">xava@newmexicosocialists.org</a></p>
+                Contact us at <a href="mailto:salvadorsena@senacolectivo.com">salvadorsena@senacolectivo.com</a></p>
                 <p><strong>¿Necesitas ayuda?</strong><br>
-                Contáctanos en <a href="mailto:xava@newmexicosocialists.org">xava@newmexicosocialists.org</a></p>
+                Contáctanos en <a href="mailto:salvadorsena@senacolectivo.com">salvadorsena@senacolectivo.com</a></p>
             </div>
         </div>
     </body>
