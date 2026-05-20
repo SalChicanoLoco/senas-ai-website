@@ -4,7 +4,7 @@
  * Used globally across main site, news feed, biblioteca, comrade portal, and visual storymap.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,600&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
   /* HSL curated palette - high contrast, rich dark theme */
@@ -22,7 +22,7 @@
   
   --border-color: 355 78% 48% / 0.12;   /* Subtle red border */
   --border-glow: 355 78% 48% / 0.22;
-  --border-light: 0 0% 100% / 0.08;   /* Universal light border */
+  --border-light: 0 0% 100% / 0.05;   /* Universal light border */
   
   --text-primary: 32 24% 94%;    /* Creamy off-white, highly legible */
   --text-muted: 24 10% 70%;      /* Soft grey */
@@ -36,9 +36,9 @@
   --radius-sm: 8px;
   --radius-pill: 999px;
   
-  --font-serif: 'Fraunces', Georgia, serif;
-  --font-sans: 'Outfit', system-ui, sans-serif;
-  --font-syne: 'Space Grotesk', 'Outfit', sans-serif;
+  --font-serif: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-syne: 'Outfit', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
   --max-width: 1200px;
@@ -392,13 +392,19 @@ main {
 
 /* Premium Inputs / Cards */
 .card {
-  background: hsla(var(--bg-surface-elevated) / 0.65);
+  background: hsla(var(--bg-surface) / 0.85);
   border-radius: var(--radius-md);
   padding: 2rem;
-  border: 1px solid hsl(var(--border-light));
-  box-shadow: var(--shadow-premium);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid hsla(var(--color-primary) / 0.15);
+  box-shadow: var(--shadow-premium), inset 0 1px 1px hsla(0, 0%, 100%, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.card:hover {
+  border-color: hsla(var(--color-primary) / 0.3);
+  box-shadow: var(--shadow-premium), 0 0 24px hsla(var(--color-primary) / 0.08);
 }
 
 .field {
@@ -419,14 +425,15 @@ main {
 .field select,
 .field textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  border: 1px solid hsl(var(--border-light));
-  background: hsla(var(--bg-base) / 0.8);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid hsla(var(--color-primary) / 0.15);
+  background: hsla(var(--bg-base) / 0.75);
   color: hsl(var(--text-primary));
   font-family: var(--font-sans);
   font-size: 0.92rem;
-  transition: all var(--transition-fast);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth), background-color var(--transition-smooth);
 }
 
 .field input:focus,
@@ -434,8 +441,8 @@ main {
 .field textarea:focus {
   outline: none;
   border-color: hsl(var(--color-primary));
-  box-shadow: 0 0 0 2px hsla(var(--color-primary) / 0.2);
-  background: hsl(var(--bg-base));
+  box-shadow: 0 0 16px hsla(var(--color-primary) / 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  background: hsla(var(--bg-base) / 0.9);
 }
 
 .status-msg {
@@ -1187,3 +1194,150 @@ main {
   text-decoration: underline;
 }
 
+/* Pledge Form Interactive Elements */
+.donate-options {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+.pledge-frequency-selector {
+  display: flex;
+  background: hsla(var(--bg-base) / 0.85);
+  border: 1px solid hsla(var(--color-primary) / 0.15);
+  border-radius: var(--radius-pill);
+  padding: 0.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.freq-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0.55rem 1rem;
+  font-family: var(--font-syne);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--text-muted));
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+}
+
+.freq-tab:hover {
+  color: hsl(var(--text-primary));
+}
+
+.freq-tab.active {
+  background: linear-gradient(135deg, hsl(var(--color-primary)), hsl(var(--color-secondary)));
+  color: #fff;
+  box-shadow: 0 4px 12px hsla(var(--color-primary) / 0.35);
+}
+
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.platform-capsule {
+  background: hsla(var(--bg-base) / 0.5);
+  border: 1px solid hsla(var(--color-primary) / 0.15);
+  color: hsl(var(--text-muted));
+  padding: 0.75rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-syne);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: inset 0 1px 1px hsla(0, 0%, 100%, 0.02);
+}
+
+.platform-capsule:hover {
+  background: hsla(var(--color-primary) / 0.08);
+  border-color: hsla(var(--color-primary) / 0.3);
+  color: hsl(var(--text-primary));
+}
+
+.platform-capsule.active {
+  background: hsla(var(--color-primary) / 0.15);
+  border-color: hsl(var(--color-primary));
+  color: hsl(var(--text-primary));
+  box-shadow: 0 0 16px hsla(var(--color-primary) / 0.25), inset 0 1px 1px hsla(0, 0%, 100%, 0.05);
+}
+
+.platform-capsule span.icon {
+  font-size: 1.25rem;
+}
+
+.amount-selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.amount-presets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.amount-preset {
+  background: hsla(var(--bg-base) / 0.5);
+  border: 1px solid hsla(var(--color-primary) / 0.15);
+  color: hsl(var(--text-primary));
+  padding: 0.65rem 0.25rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-smooth);
+}
+
+.amount-preset:hover {
+  background: hsla(var(--color-primary) / 0.08);
+  border-color: hsla(var(--color-primary) / 0.3);
+}
+
+.amount-preset.active {
+  background: hsl(var(--color-secondary));
+  border-color: hsl(var(--color-secondary));
+  color: #fff;
+  box-shadow: 0 4px 12px hsla(var(--color-secondary) / 0.35);
+}
+
+.custom-amount-wrapper {
+  position: relative;
+}
+
+.custom-amount-wrapper span.currency-symbol {
+  position: absolute;
+  left: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: hsl(var(--text-muted));
+  font-family: var(--font-mono);
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.custom-amount-wrapper input {
+  padding-left: 2rem !important;
+}

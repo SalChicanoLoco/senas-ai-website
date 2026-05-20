@@ -97,6 +97,152 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ── PLEDGE FORM INTERACTIVE SYSTEM ──
+  const pledgeForm = document.getElementById("pledge-form");
+  if (pledgeForm) {
+    const pledgeStatus = document.getElementById("pledge-status");
+    const frequencyInput = document.getElementById("pledge-frequency");
+    const platformInput = document.getElementById("pledge-platform");
+    const amountInput = document.getElementById("pledge-amount");
+    const freqTabs = pledgeForm.querySelectorAll(".freq-tab");
+    const platforms = pledgeForm.querySelectorAll(".platform-capsule");
+    const presets = pledgeForm.querySelectorAll(".amount-preset");
+
+    // 1. Frequency toggle (One-time vs Monthly)
+    freqTabs.forEach(btn => {
+      btn.addEventListener("click", () => {
+        freqTabs.forEach(t => t.classList.remove("active"));
+        btn.classList.add("active");
+        frequencyInput.value = btn.dataset.freq;
+      });
+    });
+
+    // 2. Platform selection (Venmo, Cash App, PayPal, Check, Other)
+    platforms.forEach(btn => {
+      btn.addEventListener("click", () => {
+        platforms.forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        platformInput.value = btn.dataset.platform;
+      });
+    });
+
+    // 3. Amount Presets ($10, $25, $50, $100)
+    presets.forEach(btn => {
+      btn.addEventListener("click", () => {
+        presets.forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        amountInput.value = btn.dataset.amount;
+      });
+    });
+
+    // Deselect preset if user types custom amount
+    amountInput.addEventListener("input", () => {
+      const val = amountInput.value;
+      let matched = false;
+      presets.forEach(p => {
+        if (p.dataset.amount === val) {
+          p.classList.add("active");
+          matched = true;
+        } else {
+          p.classList.remove("active");
+        }
+      });
+    });
+
+    // 4. Async Form Submission
+    pledgeForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!platformInput.value) {
+        pledgeStatus.textContent = "Please select a payment method / Elige un método de pago";
+        pledgeStatus.style.color = "#ffb3b3";
+        return;
+      }
+
+      pledgeStatus.textContent = "Registering pledge / Registrando compromiso...";
+      pledgeStatus.style.color = "#f6c745";
+
+      const payload = {
+        name: document.getElementById("pledge-name").value.trim(),
+        email: document.getElementById("pledge-email").value.trim(),
+        amount: parseFloat(amountInput.value),
+        frequency: frequencyInput.value,
+        platform: platformInput.value,
+        message: document.getElementById("pledge-message").value.trim()
+      };
+
+      // Save submission locally for sandbox visual check
+      try {
+        const cachedPledges = JSON.parse(localStorage.getItem("local_comrade_pledges") || "[]");
+        cachedPledges.push({
+          ...payload,
+          timestamp: new Date().toISOString()
+        });
+        localStorage.setItem("local_comrade_pledges", JSON.stringify(cachedPledges));
+      } catch (err) {
+        console.error("Local pledge caching error:", err);
+      }
+
+      // Try Cloudflare Worker Endpoint
+      try {
+        const response = await fetch("/api/pledge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.status === 404) {
+          throw new Error("Worker endpoint not found, fallback to PHP");
+        }
+
+        const result = await response.json();
+        if (response.ok) {
+          pledgeStatus.textContent = result.message || "Pledge coordinated! Check your email. / ¡Compromiso registrado!";
+          pledgeStatus.style.color = "#77e89f";
+          pledgeForm.reset();
+          // Reset custom styling classes
+          presets.forEach(p => p.classList.remove("active"));
+          platforms.forEach(p => p.classList.remove("active"));
+          freqTabs.forEach(t => t.classList.remove("active"));
+          freqTabs[0].classList.add("active"); // back to one-time
+          frequencyInput.value = "one-time";
+          return;
+        } else {
+          throw new Error(result.message || "Submission failed");
+        }
+      } catch (err) {
+        console.log("Cloudflare Worker not active or failed, attempting PHP Fallback: ", err.message);
+
+        // Fallback to PHP local endpoint submit-pledge.php
+        try {
+          const phpResponse = await fetch("submit-pledge.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          const phpResult = await phpResponse.json();
+          if (phpResponse.ok && phpResult.success) {
+            pledgeStatus.textContent = phpResult.message || "Pledge registered successfully! / ¡Compromiso registrado!";
+            pledgeStatus.style.color = "#77e89f";
+            pledgeForm.reset();
+            presets.forEach(p => p.classList.remove("active"));
+            platforms.forEach(p => p.classList.remove("active"));
+            freqTabs.forEach(t => t.classList.remove("active"));
+            freqTabs[0].classList.add("active");
+            frequencyInput.value = "one-time";
+          } else {
+            throw new Error(phpResult.message || "PHP backend submission failed");
+          }
+        } catch (phpErr) {
+          console.error("PHP fallback submission error:", phpErr);
+          pledgeStatus.textContent = "Error sending pledge. Please try again / Error de envío.";
+          pledgeStatus.style.color = "#ffb3b3";
+        }
+      }
+    });
+  }
+
   // Meme modal elements
   const modal = document.getElementById("meme-modal");
   const modalImg = document.getElementById("meme-modal-img");

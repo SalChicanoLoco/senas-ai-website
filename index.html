@@ -179,19 +179,80 @@
       </p>
 
       <div class="donate-options">
-        <div class="donate-card card">
-          <h4>💳 Donate Online / Donar en línea</h4>
-          <p>Support us through secure online platforms:</p>
-          <div class="donate-buttons" style="display:flex;flex-direction:column;gap:0.5rem;margin-top:1rem;">
-            <a href="https://venmo.com/" target="_blank" rel="noopener" class="btn secondary full-width">Venmo</a>
-            <a href="https://cash.app/" target="_blank" rel="noopener" class="btn secondary full-width">Cash App</a>
-            <a href="https://www.paypal.com/" target="_blank" rel="noopener" class="btn secondary full-width">PayPal</a>
-          </div>
-          <p class="donate-note">
-            <small><em>Note: Update these links with your actual payment accounts. Contact us at 
-            <a href="mailto:salvadorsena@senacolectivo.com">salvadorsena@senacolectivo.com</a> for direct transfer details.</em></small>
+        <form id="pledge-form" class="donate-card card" method="POST">
+          <h4>💳 Pledge Contribution / Coordinar Contribución</h4>
+          <p style="margin-bottom: 1.25rem;">
+            We cannot process online payments directly yet. Enter your details below to pledge a secure contribution. Salvador Sena will reach out shortly to coordinate Venmo, Cash App, PayPal, or check details.
           </p>
-        </div>
+
+          <!-- Frequency Selector -->
+          <div class="pledge-frequency-selector">
+            <button type="button" class="freq-tab active" data-freq="one-time">One-Time / Una vez</button>
+            <button type="button" class="freq-tab" data-freq="monthly">Monthly / Mensual</button>
+            <input type="hidden" name="frequency" id="pledge-frequency" value="one-time" />
+          </div>
+
+          <!-- Platform Selector -->
+          <div class="field">
+            <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Payment Method / Método de Pago</label>
+            <div class="platform-grid">
+              <button type="button" class="platform-capsule" data-platform="venmo">
+                <span class="icon">📱</span>
+                <span>Venmo</span>
+              </button>
+              <button type="button" class="platform-capsule" data-platform="cashapp">
+                <span class="icon">💸</span>
+                <span>Cash App</span>
+              </button>
+              <button type="button" class="platform-capsule" data-platform="paypal">
+                <span class="icon">💳</span>
+                <span>PayPal</span>
+              </button>
+              <button type="button" class="platform-capsule" data-platform="check">
+                <span class="icon">✉️</span>
+                <span>Check</span>
+              </button>
+              <button type="button" class="platform-capsule" data-platform="other">
+                <span class="icon">🤝</span>
+                <span>Other</span>
+              </button>
+            </div>
+            <input type="hidden" name="platform" id="pledge-platform" value="" required />
+          </div>
+
+          <!-- Amount Selector Group -->
+          <div class="field amount-selector-group">
+            <label style="font-weight: 700; margin-bottom: 0.25rem; display: block;">Pledge Amount / Cantidad de Contribución</label>
+            <div class="amount-presets">
+              <button type="button" class="amount-preset" data-amount="10">$10</button>
+              <button type="button" class="amount-preset" data-amount="25">$25</button>
+              <button type="button" class="amount-preset" data-amount="50">$50</button>
+              <button type="button" class="amount-preset" data-amount="100">$100</button>
+            </div>
+            <div class="custom-amount-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="pledge-amount" name="amount" min="1" step="any" placeholder="Custom Amount / Otra cantidad" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="pledge-name">Name / Nombre</label>
+            <input type="text" id="pledge-name" name="name" placeholder="Your Name / Tu nombre" required />
+          </div>
+
+          <div class="field">
+            <label for="pledge-email">Email / Correo electrónico</label>
+            <input type="email" id="pledge-email" name="email" placeholder="you@example.com" required />
+          </div>
+
+          <div class="field">
+            <label for="pledge-message">Message / Mensaje (Optional / Opcional)</label>
+            <textarea id="pledge-message" name="message" rows="3" placeholder="Solidarity note or specific coordination instructions..."></textarea>
+          </div>
+
+          <button type="submit" class="btn primary full-width">Send Pledge / Enviar Compromiso</button>
+          <p id="pledge-status" class="status-msg" style="margin-top: 1rem; text-align: center;"></p>
+        </form>
 
         <div class="donate-card card">
           <h4>📬 Mail a Check / Enviar un Cheque</h4>
