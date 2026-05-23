@@ -1137,11 +1137,38 @@
         <!-- Controls form -->
         <div class="meme-controls-form" style="display:flex;flex-direction:column;gap:0.75rem;">
           <div class="field">
-            <label style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;font-weight:600;">
-              <span>1. Base Image / Imagen Base</span>
-              <span style="font-size:0.7rem;color:hsl(var(--color-secondary));font-weight:400;">Optional Upload / Opcional</span>
+            <label style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;font-weight:600;margin-bottom:0.25rem;">
+              <span>1. Base Image / Imagen de Fondo</span>
             </label>
-            <input type="file" id="meme-file-upload" accept="image/*" style="font-size:0.8rem;padding:0.25rem 0.5rem;background:rgba(255,255,255,0.03);border:1px dashed hsl(var(--border-light));border-radius:6px;cursor:pointer;width:100%;">
+            <div style="display:flex;gap:0.4rem;align-items:center;width:100%;">
+              <select id="meme-template-preset" style="flex:1;padding:0.45rem;font-size:0.8rem;border-radius:6px;background:hsl(var(--bg-input));border:1px solid hsl(var(--border-light));color:hsl(var(--text-primary));cursor:pointer;height:36px;box-sizing:border-box;">
+                <option value="" disabled selected>-- Choose Preset Template --</option>
+                <option value="assets/img/meme_1.png">Template 1: Chicano Power</option>
+                <option value="assets/img/meme_2.png">Template 2: La Tierra</option>
+                <option value="assets/img/meme_3.png">Template 3: Struggle Map</option>
+                <option value="assets/img/meme_4.png">Template 4: Acequia Defense</option>
+                <option value="assets/img/meme_5.png">Template 5: Unionize</option>
+                <option value="assets/img/meme_6.png">Template 6: Working Class</option>
+                <option value="assets/img/meme_7.png">Template 7: Land Back</option>
+                <option value="assets/img/meme_8.png">Template 8: Strike Together</option>
+                <option value="assets/img/meme_9.png">Template 9: Housing is a Right</option>
+                <option value="assets/img/meme_10.png">Template 10: People's Power</option>
+                <option value="assets/img/meme_11.png">Template 11: Food Sovereignty</option>
+                <option value="assets/img/meme_12.png">Template 12: Mutual Aid SF</option>
+                <option value="assets/img/meme_13.png">Template 13: Free Education</option>
+                <option value="assets/img/meme_14.png">Template 14: Healthcare for All</option>
+                <option value="assets/img/meme_15.png">Template 15: Env. Justice</option>
+                <option value="assets/img/meme_16.png">Template 16: Indigenous Sov.</option>
+                <option value="assets/img/meme_17.png">Template 17: Stop Displace</option>
+                <option value="assets/img/meme_18.png">Template 18: Anti-War</option>
+                <option value="assets/img/meme_19.png">Template 19: Build Commons</option>
+                <option value="custom" disabled>-- Custom Uploaded Photo --</option>
+              </select>
+              <label for="meme-file-upload" class="btn secondary tiny" style="margin:0;display:flex;align-items:center;justify-content:center;font-size:0.72rem;cursor:pointer;height:36px;padding:0 0.6rem;white-space:nowrap;box-sizing:border-box;">
+                📷 Upload Photo
+              </label>
+              <input type="file" id="meme-file-upload" accept="image/*" style="display:none;">
+            </div>
           </div>
 
           <div class="field">

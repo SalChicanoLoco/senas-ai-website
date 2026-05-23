@@ -1743,6 +1743,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const memeFontSize = document.getElementById("meme-font-size");
   const memeColor = document.getElementById("meme-color");
   const memeFileUpload = document.getElementById("meme-file-upload");
+  const memeTemplatePreset = document.getElementById("meme-template-preset");
   const memeFontFamily = document.getElementById("meme-font-family");
   const memeLayout = document.getElementById("meme-layout");
   const memeAlign = document.getElementById("meme-align");
@@ -1942,9 +1943,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const reader = new FileReader();
       reader.onload = (event) => {
         activeTemplateSrc = event.target.result;
+        if (memeTemplatePreset) memeTemplatePreset.value = "custom";
         redrawMeme();
       };
       reader.readAsDataURL(file);
+    }
+  });
+
+  // Bind template preset dropdown select
+  memeTemplatePreset?.addEventListener("change", (e) => {
+    const src = e.target.value;
+    if (src && src !== "custom") {
+      activeTemplateSrc = src;
+      const absolute = getAbsoluteUrl(activeTemplateSrc);
+      if (btnMemeDownload) btnMemeDownload.href = activeTemplateSrc;
+      if (btnMemeShare) btnMemeShare.dataset.shareUrl = absolute;
+      if (btnMemeCopyLink) btnMemeCopyLink.dataset.copyUrl = absolute;
+      redrawMeme();
     }
   });
 
@@ -2015,6 +2030,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (memeFileUpload) memeFileUpload.value = "";
     if (memeAiPrompt) memeAiPrompt.value = "";
     if (memeAiStatus) memeAiStatus.textContent = "";
+
+    if (memeTemplatePreset) {
+      if (activeTemplateSrc.startsWith("data:") || activeTemplateSrc.startsWith("blob:")) {
+        memeTemplatePreset.value = "custom";
+      } else {
+        let matchedVal = activeTemplateSrc;
+        if (activeTemplateSrc.includes("assets/img/")) {
+          const idx = activeTemplateSrc.indexOf("assets/img/");
+          matchedVal = activeTemplateSrc.substring(idx);
+        }
+        const exists = Array.from(memeTemplatePreset.options).some(opt => opt.value === matchedVal);
+        if (exists) {
+          memeTemplatePreset.value = matchedVal;
+        } else {
+          memeTemplatePreset.value = "";
+        }
+      }
+    }
 
     memeModal?.classList.add("active");
     memeModal?.setAttribute("aria-hidden", "false");
