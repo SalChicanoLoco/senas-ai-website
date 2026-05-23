@@ -5,6 +5,12 @@
   <title>Leftist News Feed &amp; Regional Intelligence • New Mexico Socialists</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Dynamic regional, labor, and socialist news feed aggregating independent NM media, trade union strikes, land struggles, and international socialist voices.">
+  <link rel="canonical" href="https://nmsocialists.org/nmnewsfeed.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Leftist News Feed &amp; Regional Intelligence • New Mexico Socialists" />
+  <meta property="og:description" content="Dynamic regional, labor, and socialist news feed aggregating independent NM media, trade union strikes, land struggles, and international socialist voices." />
+  <meta property="og:url" content="https://nmsocialists.org/nmnewsfeed.html" />
   <link rel="stylesheet" href="assets/css/styles.css">
   <style>
     /* Inline news-specific controls to align with visual guidelines */
@@ -205,7 +211,7 @@
       <a href="nmnewsfeed.html" id="nav-news" class="active">News / Noticias</a>
       <a href="art-showcase.html" id="nav-gallery">Gallery &amp; Map / Galería</a>
       <a href="biblioteca-landing.html" id="nav-library">Biblioteca</a>
-      <a href="comrade_portal.html" id="nav-portal">Portal</a>
+      <a href="index.html#portal" id="nav-portal">Portal</a>
       <a href="meta-brain.html" id="nav-metabrain">Meta Brain</a>
     </nav>
   </header>
@@ -267,22 +273,26 @@
       <!-- Right Column: Stats & Resource Guide -->
       <div class="feed-right-col">
         <!-- Segmented Breakdown Header Card -->
-        <div class="perspective-breakdown-card">
-          <div class="breakdown-header">
-            <div class="breakdown-title">
-              📊 Perspective Breakdown / Análisis de Perspectiva
+          <div class="breakdown-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <div class="breakdown-title" style="margin-right:auto;">
+              📊 Perspective Breakdown
             </div>
-            <div style="display:flex; align-items:center; gap:0.75rem;">
-              <span id="sync-status-indicator" class="bg-sync-badge">
+            <div style="display:flex; align-items:center; gap:0.4rem;">
+              <button id="btn-refresh-feed" class="btn tiny secondary" style="padding: 0.25rem 0.5rem; font-size: 0.7rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 0.3rem; height: 28px; line-height: 1; cursor: pointer;">
+                <span class="refresh-icon" style="font-size:0.75rem;">🔄</span> <span class="btn-text">Refresh</span>
+              </button>
+              <span id="sync-status-indicator" class="bg-sync-badge" style="height: 28px; display: inline-flex; align-items: center;">
                 <span class="pulse-dot" style="background:hsl(var(--color-secondary));"></span> Syncing
               </span>
-              <span id="article-count-badge" style="font-family:var(--font-mono);font-size:0.75rem;color:hsl(var(--text-muted));font-weight:700;">
+              <span id="article-count-badge" style="font-family:var(--font-mono);font-size:0.7rem;color:hsl(var(--text-muted));font-weight:700;">
                 Calculating feeds...
               </span>
             </div>
           </div>
+          <div id="last-refreshed-time" style="font-family:var(--font-mono); font-size:0.65rem; color:hsl(var(--text-muted)); margin-top:0.35rem; text-align:right; border-bottom:1px solid hsl(var(--border-light)); padding-bottom:0.35rem; margin-bottom:0.75rem;">
+            Last Refreshed: Never
+          </div>
           
-          <!-- Multi-colored segment bar -->
           <div class="perspective-bar-container">
             <div id="bar-socialist" class="seg-socialist" style="width: 0%;"></div>
             <div id="bar-labor" class="seg-labor" style="width: 0%;"></div>
@@ -290,8 +300,7 @@
             <div id="bar-independent" class="seg-independent" style="width: 0%;"></div>
           </div>
           
-          <!-- Legends list -->
-          <div class="segment-legends">
+          <div class="segment-legends" style="margin-bottom:1rem;">
             <div class="legend-item" style="color: hsl(var(--color-primary));">
               <span class="legend-dot" style="background: hsl(var(--color-primary));"></span>
               Socialist Organ: <span id="val-socialist">0%</span>
@@ -309,7 +318,26 @@
               NM Independent: <span id="val-independent">0%</span>
             </div>
           </div>
-        </div>
+
+          <!-- Collapsible System Diagnostics Details Panel -->
+          <details class="system-diagnostics-details" style="background: hsla(12, 10%, 4%, 0.4); border: 1px solid hsl(var(--border-light)); border-radius: 8px; padding: 0.6rem 0.75rem;">
+            <summary style="font-family: var(--font-mono); font-size: 0.72rem; color: hsl(var(--color-secondary)); cursor: pointer; user-select: none; font-weight: 700; outline: none; list-style: none; display: flex; align-items: center; gap: 0.4rem;">
+              <span>⚙️</span> <span>System Diagnostics / Fuentes</span>
+            </summary>
+            <div style="margin-top: 0.6rem; font-size: 0.72rem; font-family: var(--font-mono); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem;">
+              <table style="width: 100%; border-collapse: collapse; text-align: left;" id="diagnostics-table">
+                <thead>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); color: hsl(var(--text-muted)); font-weight: 700;">
+                    <th style="padding: 0.2rem 0; font-size: 0.65rem; text-transform: uppercase;">Source</th>
+                    <th style="padding: 0.2rem 0; text-align: right; font-size: 0.65rem; text-transform: uppercase;">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="diagnostics-tbody">
+                  <!-- dynamically updated on fetch -->
+                </tbody>
+              </table>
+            </div>
+          </details>
 
         <!-- Interactive Bilingual Activist Resource Directory -->
         <div class="resource-directory-card">
@@ -604,10 +632,19 @@
       "https://corsproxy.io/?url=" // CorsProxy.io Proxy
     ];
 
+    const diagnostics = {};
+    SOURCES.forEach(s => diagnostics[s.id] = { name: srcNameHtml(s.name), status: "PENDING", latency: 0 });
+
+    function srcNameHtml(name) {
+      return name;
+    }
+
     async function fetchWithFallback(url) {
+      // Dynamic upstream cache-busting to bypass aggressive CORS proxy caching
+      const cbUrl = url + (url.includes("?") ? "&" : "?") + "_cb=" + Date.now();
       for (let i = 0; i < PROXIES.length; i++) {
         try {
-          const fetchUrl = PROXIES[i] ? (PROXIES[i] + encodeURIComponent(url)) : url;
+          const fetchUrl = PROXIES[i] ? (PROXIES[i] + encodeURIComponent(cbUrl)) : cbUrl;
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 7000); // 7s timeout per attempt
           
@@ -625,20 +662,38 @@
     }
 
     async function fetchFeeds() {
+      const indicator = document.getElementById("sync-status-indicator");
+      if (indicator) {
+        indicator.innerHTML = `<span class="pulse-dot" style="background:hsl(38, 85%, 48%);"></span> Syncing...`;
+        indicator.style.color = "hsl(38, 85%, 48%)";
+      }
+
       // Pre-populate with regional news fallbacks
       allArticles = [...FEATURED_NEWS];
       
       const promises = SOURCES.map(async (src) => {
+        const start = Date.now();
         try {
           const text = await fetchWithFallback(src.url);
+          const latency = Date.now() - start;
+          
           const parser = new DOMParser();
           const xml = parser.parseFromString(text, "application/xml");
           
           // Verify XML parser errors
           const parserError = xml.querySelector("parsererror");
-          if (parserError) throw new Error("XML parsing syntax error");
+          if (parserError) {
+            diagnostics[src.id] = { name: src.name, status: "PARSE ERROR", latency };
+            throw new Error("XML parsing syntax error");
+          }
 
           const items = xml.querySelectorAll("item");
+          if (items.length === 0) {
+            diagnostics[src.id] = { name: src.name, status: "NO ITEMS", latency };
+          } else {
+            diagnostics[src.id] = { name: src.name, status: "OK", latency };
+          }
+          
           let parsed = [];
           
           items.forEach(item => {
@@ -668,6 +723,10 @@
           });
           return parsed.slice(0, 15); // limit to top 15 articles
         } catch (err) {
+          const latency = Date.now() - start;
+          if (!diagnostics[src.id] || diagnostics[src.id].status === "PENDING") {
+            diagnostics[src.id] = { name: src.name, status: "FAILED", latency };
+          }
           console.error(`Feed aggregator failed for ${src.name}:`, err.message);
           return [];
         }
@@ -684,6 +743,35 @@
         }
       });
       
+      if (indicator) {
+        indicator.innerHTML = `✔️ Live Dynamic`;
+        indicator.style.color = "hsl(var(--color-sky))";
+      }
+
+      // Render diagnostics table
+      const diagnosticsTbody = document.getElementById("diagnostics-tbody");
+      if (diagnosticsTbody) {
+        diagnosticsTbody.innerHTML = SOURCES.map(src => {
+          const diag = diagnostics[src.id] || { name: src.name, status: "UNKNOWN", latency: 0 };
+          const statusColor = diag.status === "OK" ? "hsl(var(--color-accent))" : "#ffb3b3";
+          return `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+              <td style="padding: 0.35rem 0; font-weight: 500; color: #fff;">${diag.name}</td>
+              <td style="padding: 0.35rem 0; text-align: right; color: ${statusColor}; font-weight: 700;">
+                ${diag.status} <span style="font-size:0.6rem; color:hsl(var(--text-muted)); font-weight:400;">(${diag.latency}ms)</span>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      // Update Last Refreshed label
+      const lastRefreshedEl = document.getElementById("last-refreshed-time");
+      if (lastRefreshedEl) {
+        const now = new Date();
+        lastRefreshedEl.textContent = `Last Refreshed: ${now.toLocaleTimeString()}`;
+      }
+
       // Initial Sort (Newest Date first)
       sortArticles();
       renderFeed();
@@ -985,6 +1073,19 @@
       if (e.key === "Escape" && drawer.classList.contains("active")) {
         closeDrawer();
       }
+    });
+
+    // Bind refresh feed button click event
+    document.getElementById("btn-refresh-feed")?.addEventListener("click", () => {
+      const refreshBtn = document.getElementById("btn-refresh-feed");
+      const refreshIcon = refreshBtn?.querySelector(".refresh-icon");
+      if (refreshIcon) refreshIcon.classList.add("spinning");
+      if (refreshBtn) refreshBtn.disabled = true;
+      
+      fetchFeeds().finally(() => {
+        if (refreshIcon) refreshIcon.classList.remove("spinning");
+        if (refreshBtn) refreshBtn.disabled = false;
+      });
     });
 
     // Fire RSS load loop on page initialize

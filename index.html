@@ -5,19 +5,30 @@
   <title>New Mexico Socialists – People over profit • La gente antes que las ganancias</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="New Mexico Socialists is a bilingual, youth-driven socialist organization organizing for land back, workers' rights, and justice across New Mexico." />
-  <link rel="canonical" href="https://newmexicosocialists.com" />
+  <link rel="canonical" href="https://nmsocialists.org/" />
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="New Mexico Socialists" />
   <meta property="og:description" content="Join a bilingual, community-rooted socialist movement in New Mexico. People over profit. La gente antes que las ganancias." />
-  <meta property="og:url" content="https://newmexicosocialists.com" />
-  <meta property="og:image" content="/assets/img/meme_1.png" />
+  <meta property="og:url" content="https://nmsocialists.org/" />
+  <meta property="og:image" content="assets/img/meme_1.png" />
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="New Mexico Socialists" />
   <meta name="twitter:description" content="Bilingual socialist organizing in New Mexico – youth, workers, and land back." />
-  <meta name="twitter:image" content="/assets/img/meme_1.png" />
+  <meta name="twitter:image" content="assets/img/meme_1.png" />
   <link rel="stylesheet" href="assets/css/styles.css" />
+  
+  <style>
+    /* In-page critical classes to ensure robust SPA rendering cache transitions */
+    .spa-view {
+      content-visibility: auto;
+      contain-intrinsic-size: 1px 1000px;
+    }
+    .spa-view:not(.active) {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -30,341 +41,1084 @@
         <p class="tagline">People over profit • La gente antes que las ganancias</p>
       </div>
     </div>
+    
+    <!-- Dynamic Responsive Navigation Header -->
     <nav class="site-nav">
-      <a href="index.html" id="nav-home" class="active">Home / Inicio</a>
-      <a href="index.html#about" id="nav-about">About / Nosotros</a>
-      <a href="nmnewsfeed.html" id="nav-news">News / Noticias</a>
-      <a href="art-showcase.html" id="nav-gallery">Gallery &amp; Map / Galería</a>
-      <a href="biblioteca-landing.html" id="nav-library">Biblioteca</a>
-      <a href="comrade_portal.html" id="nav-portal">Portal</a>
-      <a href="meta-brain.html" id="nav-metabrain">Meta Brain</a>
+      <a href="#home" id="nav-home" class="active">Home / Inicio</a>
+      <a href="#about" id="nav-about">About / Nosotros</a>
+      <a href="#news" id="nav-news">News / Noticias</a>
+      <a href="#gallery" id="nav-gallery">Gallery &amp; Map / Galería</a>
+      <a href="#library" id="nav-library">Biblioteca</a>
+      <a href="#metabrain" id="nav-metabrain">Meta Brain</a>
+      <a href="#donate" id="nav-donate">Donate / Donar</a>
+      <a href="#portal" id="nav-portal">Portal</a>
     </nav>
   </header>
 
+  <!-- Global Bilingual Toggle Controls -->
+  <div class="global-lang-bar">
+    <button class="lang-pill active" id="btn-lang-en">English</button>
+    <button class="lang-pill" id="btn-lang-es">Español</button>
+  </div>
+
   <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-text">
-        <h2>Another world is possible.</h2>
-        <p>
-          We are a bilingual, community-rooted socialist organization in New Mexico, 
-          organizing for living wages, land back, and real democracy in our workplaces and barrios.
-        </p>
-        <p class="hero-es">
-          Somos una organización socialista bilingüe y comunitaria en Nuevo México, 
-          que lucha por salarios dignos, devolución de la tierra y verdadera democracia 
-          en nuestros trabajos y vecindarios.
-        </p>
-        <div class="hero-actions">
-          <a href="#join" class="btn primary">Join the movement / Únete</a>
-          <a href="art-showcase.html" class="btn secondary">Art &amp; map / Galería</a>
-        </div>
-      </div>
-      
-      <div class="hero-art hero-art--text">
-        <div class="hero-art-inner">
-          <h3>Santa Fe • La lucha sigue</h3>
-          <p>
-            From the Río Grande to the Sangre de Cristo, workers, students, 
-            and elders are organizing for a future beyond capitalism.
+    <!-- ── SECTION: HOME ── -->
+    <section class="spa-view active" id="view-home">
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-text">
+          <h2 class="en-only">Another world is possible.</h2>
+          <h2 class="es-only">Otro mundo es posible.</h2>
+          
+          <p class="en-only">
+            We are a bilingual, community-rooted socialist organization in New Mexico, 
+            organizing for living wages, land back, and real democracy in our workplaces and barrios.
           </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about" class="section two-col">
-      <div>
-        <h3>About New Mexico Socialists</h3>
-        <p>
-          New Mexico Socialists is a grassroots formation linking socialist politics to local struggles: 
-          land grants, water rights, housing justice, and workers organizing across the state.
-        </p>
-        <p>
-          We draw from the legacy of Marx, Engels, Indigenous resistance, Land Grant traditions, and 
-          countless organizers who fought for a world beyond exploitation.
-        </p>
-      </div>
-      <div>
-        <h3>Acerca de New Mexico Socialists</h3>
-        <p>
-          New Mexico Socialists es una organización de base que conecta la política socialista con 
-          las luchas locales: mercedes de tierra, derechos de agua, justicia de vivienda y organización 
-          de l@s trabajador@s en todo el estado.
-        </p>
-        <p>
-          Nos inspiramos en el legado de Marx, Engels, la resistencia indígena, las mercedes de tierra 
-          y las luchas de innumerables organizador@s por un mundo más allá de la explotación.
-        </p>
-      </div>
-    </section>
-
-    <!-- JOIN -->
-    <section id="join" class="section join-section">
-      <h3>Join / Únete</h3>
-      <p>
-        Sign up to get plugged into meetings, study circles, actions, and mutual aid projects.
-        This form is wired to <strong>Netlify Forms</strong>, so submissions are stored automatically
-        in your Netlify dashboard (and can be forwarded to email, Zapier, Supabase, etc.).
-      </p>
-
-      <form id="join-form" class="card"
-            name="join"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field">
-        <input type="hidden" name="form-name" value="join" />
-        <p class="hidden">
-          <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
-        </p>
-
-        <div class="field">
-          <label for="name">Name / Nombre</label>
-          <input type="text" id="name" name="name" required />
-        </div>
-        <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required />
-        </div>
-        <div class="field">
-          <label for="city">City / Pueblo</label>
-          <input type="text" id="city" name="city" />
-        </div>
-        <div class="field">
-          <label for="language">Preferred language / Idioma preferido</label>
-          <select id="language" name="language">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="both">Both / Ambos</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="interests">How do you want to plug in? / ¿Cómo quieres participar?</label>
-          <textarea id="interests" name="interests" rows="3"
-            placeholder="Events, memes & design, political education, mutual aid, etc."></textarea>
-        </div>
-        <button type="submit" class="btn primary full-width">Submit / Enviar</button>
-        <p id="join-status" class="status-msg"></p>
-      </form>
-
-      <!-- Facebook Integration Deactivated
-      <div class="social-cta">
-        <h4>Follow &amp; Share</h4>
-        <p>
-          Connect on Facebook so you never miss events or new content. You can also share this site 
-          with one click.
-        </p>
-        <div class="social-buttons">
-          <a class="btn fb" href="https://www.facebook.com/profile.php?id=61584102062292" target="_blank" rel="noopener">
-            Visit our Facebook page
-          </a>
-          <a id="fb-share-link" class="btn secondary" href="#" target="_blank" rel="noopener">
-            Share this site on Facebook
-          </a>
-        </div>
-      </div>
-      -->
-    </section>
-
-    <!-- DONATE -->
-    <section id="donate" class="section donate-section">
-      <h3>Support Our Work / Apoya Nuestro Trabajo</h3>
-      <p>
-        Help us organize, educate, and build power in our communities. Your contribution supports 
-        study materials, event costs, mutual aid projects, and organizing infrastructure.
-      </p>
-      <p class="hero-es">
-        Ayúdanos a organizar, educar y construir poder en nuestras comunidades. Tu contribución 
-        apoya materiales de estudio, costos de eventos, proyectos de ayuda mutua e infraestructura organizativa.
-      </p>
-
-      <div class="donate-options">
-        <form id="pledge-form" class="donate-card card" method="POST">
-          <h4>💳 Pledge Contribution / Coordinar Contribución</h4>
-          <p style="margin-bottom: 1.25rem;">
-            We cannot process online payments directly yet. Enter your details below to pledge a secure contribution. Salvador Sena will reach out shortly to coordinate Venmo, Cash App, PayPal, or check details.
+          <p class="es-only">
+            Somos una organización socialista bilingüe y comunitaria en Nuevo México, 
+            que lucha por salarios dignos, devolución de la tierra y verdadera democracia 
+            en nuestros trabajos y vecindarios.
           </p>
-
-          <!-- Frequency Selector -->
-          <div class="pledge-frequency-selector">
-            <button type="button" class="freq-tab active" data-freq="one-time">One-Time / Una vez</button>
-            <button type="button" class="freq-tab" data-freq="monthly">Monthly / Mensual</button>
-            <input type="hidden" name="frequency" id="pledge-frequency" value="one-time" />
+          
+          <div class="hero-actions">
+            <a href="#join" class="btn primary">Join the movement / Únete</a>
+            <a href="#gallery" class="btn secondary">Art &amp; map / Galería</a>
           </div>
+        </div>
+        
+        <div class="hero-art hero-art--text">
+          <div class="hero-art-inner">
+            <h3 class="en-only">Santa Fe • The Struggle Continues</h3>
+            <h3 class="es-only">Santa Fe • La lucha sigue</h3>
+            <p class="en-only">
+              From the Río Grande to the Sangre de Cristo, workers, students, 
+              and elders are organizing for a future beyond capitalism.
+            </p>
+            <p class="es-only">
+              Desde el Río Grande hasta la Sangre de Cristo, l@s trabajadores, estudiantes 
+              y ancianos se organizan para un futuro más allá del capitalismo.
+            </p>
+          </div>
+        </div>
+      </section>
 
-          <!-- Platform Selector -->
+      <!-- JOIN / FORM -->
+      <section id="join" class="section join-section">
+        <h3 class="en-only">Join the Struggle</h3>
+        <h3 class="es-only">Únete a la Lucha</h3>
+        <p class="en-only">
+          Sign up to get plugged into meetings, study circles, actions, and mutual aid projects.
+          Your information will be securely registered with our regional coordinators.
+        </p>
+        <p class="es-only">
+          Regístrate para participar en reuniones, círculos de estudio, acciones y proyectos de ayuda mutua.
+          Tu información se registrará de forma segura con nuestros coordinadores regionales.
+        </p>
+
+        <form id="join-form" class="card" name="join" method="POST">
           <div class="field">
-            <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Payment Method / Método de Pago</label>
-            <div class="platform-grid">
-              <button type="button" class="platform-capsule" data-platform="venmo">
-                <span class="icon">📱</span>
-                <span>Venmo</span>
-              </button>
-              <button type="button" class="platform-capsule" data-platform="cashapp">
-                <span class="icon">💸</span>
-                <span>Cash App</span>
-              </button>
-              <button type="button" class="platform-capsule" data-platform="paypal">
-                <span class="icon">💳</span>
-                <span>PayPal</span>
-              </button>
-              <button type="button" class="platform-capsule" data-platform="check">
-                <span class="icon">✉️</span>
-                <span>Check</span>
-              </button>
-              <button type="button" class="platform-capsule" data-platform="other">
-                <span class="icon">🤝</span>
-                <span>Other</span>
-              </button>
-            </div>
-            <input type="hidden" name="platform" id="pledge-platform" value="" required />
+            <label for="name">Name / Nombre</label>
+            <input type="text" id="name" name="name" required />
           </div>
-
-          <!-- Amount Selector Group -->
-          <div class="field amount-selector-group">
-            <label style="font-weight: 700; margin-bottom: 0.25rem; display: block;">Pledge Amount / Cantidad de Contribución</label>
-            <div class="amount-presets">
-              <button type="button" class="amount-preset" data-amount="10">$10</button>
-              <button type="button" class="amount-preset" data-amount="25">$25</button>
-              <button type="button" class="amount-preset" data-amount="50">$50</button>
-              <button type="button" class="amount-preset" data-amount="100">$100</button>
-            </div>
-            <div class="custom-amount-wrapper">
-              <span class="currency-symbol">$</span>
-              <input type="number" id="pledge-amount" name="amount" min="1" step="any" placeholder="Custom Amount / Otra cantidad" required />
-            </div>
-          </div>
-
           <div class="field">
-            <label for="pledge-name">Name / Nombre</label>
-            <input type="text" id="pledge-name" name="name" placeholder="Your Name / Tu nombre" required />
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
           </div>
-
           <div class="field">
-            <label for="pledge-email">Email / Correo electrónico</label>
-            <input type="email" id="pledge-email" name="email" placeholder="you@example.com" required />
+            <label for="city">City / Pueblo</label>
+            <input type="text" id="city" name="city" />
           </div>
-
           <div class="field">
-            <label for="pledge-message">Message / Mensaje (Optional / Opcional)</label>
-            <textarea id="pledge-message" name="message" rows="3" placeholder="Solidarity note or specific coordination instructions..."></textarea>
+            <label for="language">Preferred language / Idioma preferido</label>
+            <select id="language" name="language">
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="both">Both / Ambos</option>
+            </select>
           </div>
-
-          <button type="submit" class="btn primary full-width">Send Pledge / Enviar Compromiso</button>
-          <p id="pledge-status" class="status-msg" style="margin-top: 1rem; text-align: center;"></p>
+          <div class="field">
+            <label for="interests">How do you want to plug in? / ¿Cómo quieres participar?</label>
+            <textarea id="interests" name="interests" rows="3" placeholder="Events, memes & design, political education, mutual aid, etc."></textarea>
+          </div>
+          <button type="submit" class="btn primary full-width">Submit / Enviar</button>
+          <p id="join-status" class="status-msg"></p>
         </form>
+      </section>
+    </section>
 
-        <div class="donate-card card">
-          <h4>📬 Mail a Check / Enviar un Cheque</h4>
-          <p>Prefer to send a check? Contact us for mailing address:</p>
-          <p style="margin-top:1rem;">
-            Email: <a href="mailto:salvadorsena@senacolectivo.com" style="color:hsl(var(--color-secondary));font-weight:600;">salvadorsena@senacolectivo.com</a>
-          </p>
-          <p class="hero-es" style="margin-top:1rem;">
-            ¿Prefieres enviar un cheque? Contáctanos para la dirección postal.
-          </p>
-        </div>
-
-        <div class="donate-card card">
-          <h4>🤝 In-Kind Support / Apoyo en Especie</h4>
+    <!-- ── SECTION: ABOUT ── -->
+    <section class="spa-view" id="view-about">
+      <section class="section two-col">
+        <div>
+          <h3>About New Mexico Socialists</h3>
           <p>
-            We also accept donations of materials, space for events, printing services, 
-            and other in-kind contributions. Get in touch to coordinate.
+            New Mexico Socialists is a grassroots formation linking socialist politics to local struggles: 
+            land grants, water rights, housing justice, and workers organizing across the state.
           </p>
-          <p class="hero-es" style="margin-top:1rem;">
-            También aceptamos donaciones de materiales, espacios para eventos, servicios de impresión 
-            y otras contribuciones en especie. Ponte en contacto para coordinar.
+          <p>
+            We draw from the legacy of Marx, Engels, Indigenous resistance, Land Grant traditions, and 
+            countless organizers who fought for a world beyond exploitation.
+          </p>
+          <p>
+            We are research-driven and community-rooted, providing bilingual political education and 
+            advocating for public commons and mutual aid networks.
           </p>
         </div>
-      </div>
+        <div>
+          <h3>Acerca de New Mexico Socialists</h3>
+          <p>
+            New Mexico Socialists es una organización de base que conecta la política socialista con 
+            las luchas locales: mercedes de tierra, derechos de agua, justicia de vivienda y organización 
+            de l@s trabajador@s en todo el estado.
+          </p>
+          <p>
+            Nos inspiramos en el legado de Marx, Engels, la resistencia indígena, las mercedes de tierra 
+            y las luchas de innumerables organizador@s por un mundo más allá de la explotación.
+          </p>
+          <p>
+            Nos basamos en la investigación y la comunidad, brindando educación política bilingüe y 
+            abogando por bienes comunes públicos y redes de ayuda mutua.
+          </p>
+        </div>
+      </section>
+    </section>
 
-      <div class="transparency-note">
-        <p>
-          <strong>Transparency / Transparencia:</strong> All funds are used directly for organizing activities. 
-          We maintain transparent records and can provide reports on request.
+    <!-- ── SECTION: NEWS ── -->
+    <section class="spa-view" id="view-news">
+      <section class="section" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+        <h3 class="en-only">✊ Leftist Feed Aggregator</h3>
+        <h3 class="es-only">✊ Agregador Obrera y Popular</h3>
+        <p class="en-only">
+          Bringing together community intelligence, labor organizing updates, and regional reports. 
+          Explore local and international socialist perspectives bilingually. Feeds are parsed live!
         </p>
+        <p class="es-only">
+          Uniendo la inteligencia comunitaria, actualizaciones sindicales y reportajes locales. 
+          Explora perspectivas socialistas e independientes en tiempo real de forma bilingüe.
+        </p>
+      </section>
+
+      <!-- GROUND NEWS DASHBOARD GRID -->
+      <div class="news-dashboard-grid">
+        <!-- Left Column: Search, Filters, and Articles Grid -->
+        <div class="feed-left-col">
+          <div class="feed-controls">
+            <div class="search-sort-bar">
+              <input type="text" id="feed-search" class="input-premium" placeholder="🔍 Search headlines or summaries... / Buscar noticias...">
+              <select id="feed-sort" class="select-premium">
+                <option value="newest">🗓️ Newest First</option>
+                <option value="oldest">🗓️ Oldest First</option>
+                <option value="pub-name">🔤 Sort by Publication</option>
+              </select>
+            </div>
+
+            <!-- Topic Filters -->
+            <div class="control-row">
+              <span class="row-label">Topic:</span>
+              <button class="chip active" data-filter-type="category" data-filter-value="all">All Topics</button>
+              <button class="chip" data-filter-type="category" data-filter-value="socialist">Socialist Action</button>
+              <button class="chip" data-filter-type="category" data-filter-value="labor">Labor &amp; Strikes</button>
+              <button class="chip" data-filter-type="category" data-filter-value="land">Land &amp; Water</button>
+              <button class="chip" data-filter-type="category" data-filter-value="local">Local NM</button>
+            </div>
+
+            <!-- Bias/Perspective Filters -->
+            <div class="control-row" style="margin-top:0.35rem;">
+              <span class="row-label">Bias Badge:</span>
+              <button class="chip active" data-filter-type="perspective" data-filter-value="all">All Bias</button>
+              <button class="chip" data-filter-type="perspective" data-filter-value="socialist">Socialist Organ</button>
+              <button class="chip" data-filter-type="perspective" data-filter-value="labor">Labor Advocacy</button>
+              <button class="chip" data-filter-type="perspective" data-filter-value="land">Land Defense</button>
+              <button class="chip" data-filter-type="perspective" data-filter-value="independent">NM Independent</button>
+            </div>
+          </div>
+
+          <!-- Live Feed Grid -->
+          <div id="feed-grid" class="news-grid"></div>
+        </div>
+
+        <!-- Right Column: Ground News Stats & Activist Directory -->
+        <div class="feed-right-col">
+          <!-- Breakdown Stats card -->
+          <div class="perspective-breakdown-card">
+            <div class="breakdown-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+              <div class="breakdown-title" style="margin-right:auto;">
+                📊 Perspective Analysis
+              </div>
+              <div style="display:flex; align-items:center; gap:0.4rem;">
+                <button id="btn-refresh-feed" class="btn tiny secondary" style="padding: 0.25rem 0.5rem; font-size: 0.7rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 0.3rem; height: 28px; line-height: 1; cursor: pointer;">
+                  <span class="refresh-icon" style="font-size:0.75rem;">🔄</span> <span class="btn-text">Refresh</span>
+                </button>
+                <span id="sync-status-indicator" class="bg-sync-badge" style="height: 28px; display: inline-flex; align-items: center;">
+                  <span class="pulse-dot" style="background:hsl(var(--color-secondary));"></span> Syncing
+                </span>
+                <span id="article-count-badge" style="font-family:var(--font-mono);font-size:0.7rem;color:hsl(var(--text-muted));font-weight:700;">
+                  Calculating...
+                </span>
+              </div>
+            </div>
+            <div id="last-refreshed-time" style="font-family:var(--font-mono); font-size:0.65rem; color:hsl(var(--text-muted)); margin-top:0.35rem; text-align:right; border-bottom:1px solid hsl(var(--border-light)); padding-bottom:0.35rem; margin-bottom:0.75rem;">
+              Last Refreshed: Never
+            </div>
+            
+            <div class="perspective-bar-container">
+              <div id="bar-socialist" class="seg-socialist" style="width: 0%;"></div>
+              <div id="bar-labor" class="seg-labor" style="width: 0%;"></div>
+              <div id="bar-land" class="seg-land" style="width: 0%;"></div>
+              <div id="bar-independent" class="seg-independent" style="width: 0%;"></div>
+            </div>
+            
+            <div class="segment-legends" style="margin-bottom:1rem;">
+              <div class="legend-item" style="color: hsl(var(--color-primary));">
+                <span class="legend-dot" style="background: hsl(var(--color-primary));"></span>
+                Socialist Organ: <span id="val-socialist">0%</span>
+              </div>
+              <div class="legend-item" style="color: hsl(var(--color-secondary));">
+                <span class="legend-dot" style="background: hsl(var(--color-secondary));"></span>
+                Labor Advocacy: <span id="val-labor">0%</span>
+              </div>
+              <div class="legend-item" style="color: #7dbb6a;">
+                <span class="legend-dot" style="background: #6b8f5e;"></span>
+                Land &amp; Commons: <span id="val-land">0%</span>
+              </div>
+              <div class="legend-item" style="color: hsl(var(--color-sky));">
+                <span class="legend-dot" style="background: hsl(var(--color-sky));"></span>
+                NM Independent: <span id="val-independent">0%</span>
+              </div>
+            </div>
+
+            <!-- Collapsible System Diagnostics Details Panel -->
+            <details class="system-diagnostics-details" style="background: hsla(12, 10%, 4%, 0.4); border: 1px solid hsl(var(--border-light)); border-radius: 8px; padding: 0.6rem 0.75rem;">
+              <summary style="font-family: var(--font-mono); font-size: 0.72rem; color: hsl(var(--color-secondary)); cursor: pointer; user-select: none; font-weight: 700; outline: none; list-style: none; display: flex; align-items: center; gap: 0.4rem;">
+                <span>⚙️</span> <span>System Diagnostics / Fuentes</span>
+              </summary>
+              <div style="margin-top: 0.6rem; font-size: 0.72rem; font-family: var(--font-mono); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;" id="diagnostics-table">
+                  <thead>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); color: hsl(var(--text-muted)); font-weight: 700;">
+                      <th style="padding: 0.2rem 0; font-size: 0.65rem; text-transform: uppercase;">Source</th>
+                      <th style="padding: 0.2rem 0; text-align: right; font-size: 0.65rem; text-transform: uppercase;">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="diagnostics-tbody">
+                    <!-- dynamically updated on fetch -->
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          </div>
+
+          <!-- Activist Directory -->
+          <div class="resource-directory-card">
+            <div class="resource-directory-title">
+              📂 Activist Resource Directory / Directorio
+            </div>
+            <p style="font-size: 0.8rem; color: hsl(var(--text-muted)); margin: 0 0 1rem 0; line-height: 1.5;">
+              Local networks and mutual aid groups active in labor organizing, water preservation, and land back struggles bilingually.
+            </p>
+            <div class="resource-list">
+              <div class="resource-item">
+                <div class="resource-item-header">
+                  <span class="resource-item-name">New Mexico Acequia Association</span>
+                  <span class="resource-item-tag">Land &amp; Water</span>
+                </div>
+                <p class="resource-item-desc">
+                  Defending traditional water rights, community ditch customs, and communal agricultural systems across NM.
+                  <br><span style="font-style: italic; font-size: 0.75rem;">Defendiendo los derechos tradicionales del agua y acequias comunes.</span>
+                </p>
+                <div class="resource-item-links">
+                  <a href="https://lasacequias.org" target="_blank" rel="noopener" class="resource-item-link">Website ↗</a>
+                </div>
+              </div>
+
+              <div class="resource-item">
+                <div class="resource-item-header">
+                  <span class="resource-item-name">Southwest Organizing Project (SWOP)</span>
+                  <span class="resource-item-tag">Social Justice</span>
+                </div>
+                <p class="resource-item-desc">
+                  Organizing communities of color in New Mexico to build systemic political and environmental justice power.
+                  <br><span style="font-style: italic; font-size: 0.75rem;">Organizando comunidades para la justicia social y ambiental en el suroeste.</span>
+                </p>
+                <div class="resource-item-links">
+                  <a href="https://www.swop.net" target="_blank" rel="noopener" class="resource-item-link">Website ↗</a>
+                </div>
+              </div>
+
+              <div class="resource-item">
+                <div class="resource-item-header">
+                  <span class="resource-item-name">UFCW Local 1564</span>
+                  <span class="resource-item-tag">Labor Unions</span>
+                </div>
+                <p class="resource-item-desc">
+                  Representing workers across grocery stores, packing facilities, and industrial job sites state-wide.
+                  <br><span style="font-style: italic; font-size: 0.75rem;">Sindicato que representa a trabajadores de tiendas y plantas de procesamiento.</span>
+                </p>
+                <div class="resource-item-links">
+                  <a href="https://www.ufcw1564.org" target="_blank" rel="noopener" class="resource-item-link">Website ↗</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- EDITORIAL STORYMAP & ART SHOWCASE TEASER -->
-    <section id="memes" class="section teaser-section">
-      <div class="card glass-card" style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:2.5rem; align-items:center; padding:3rem; border:1px solid hsla(var(--color-primary) / 0.2); box-shadow: var(--shadow-premium), 0 0 40px hsla(var(--color-primary) / 0.1); border-radius: var(--radius-lg); background: radial-gradient(circle at 100% 100%, hsla(var(--color-primary-glow)) 0%, hsla(var(--bg-surface) / 0.8) 70%);">
-        <div>
-          <span style="font-family:var(--font-mono); font-size:0.75rem; text-transform:uppercase; color:hsl(var(--color-secondary)); font-weight:700; letter-spacing:0.15em; display:block; margin-bottom:0.75rem;">✊ Flagship Interactive Spatial Portal</span>
-          <h3 style="font-family:var(--font-syne); font-size:2.2rem; line-height:1.15; margin-bottom:1rem; color:hsl(var(--text-primary));">The Living Storymap &amp; Revolutionary Art Showcase</h3>
-          <p style="font-size:1.05rem; line-height:1.65; margin-bottom:1.5rem; color:hsl(var(--text-primary));">
-            Explore the spatial history of working-class resistance, acequia commons water defenses, and labor strikes across New Mexico. 
-            Drop anonymous struggle pins on our interactive SVG map and customize bilingual activist poster templates in our integrated canvas graphics studio.
-          </p>
-          <p class="hero-es" style="font-size:0.95rem; line-height:1.6; margin-bottom:2rem; border-left: 2px solid hsl(var(--color-secondary)); padding-left:1rem; color:hsl(var(--text-muted)); font-style:italic;">
-            Explora la historia espacial de la resistencia de la clase trabajadora, la defensa de acequias comunitarias y huelgas laborales en Nuevo México. 
-            Coloca pines de lucha anónimos en nuestro mapa SVG interactivo y personaliza carteles activistas bilingües en nuestro estudio de posters.
-          </p>
-          <div style="display:flex; flex-wrap:wrap; gap:1rem;">
-            <a href="art-showcase.html" class="btn primary" style="padding:0.8rem 1.75rem; font-family:var(--font-syne); font-weight:700;">🗺️ Enter Storymap &amp; Art Studio / Entrar</a>
-            <a href="art-showcase.html#art-masonry-container" class="btn secondary" style="padding:0.8rem 1.75rem;">🎨 Browse Poster Templates</a>
+    <!-- ── SECTION: GALLERY & MAP (STORYMAP & STUDIO) ── -->
+    <section class="spa-view" id="view-gallery">
+      <div class="section" style="margin-top: 1rem; margin-bottom: 1.5rem; text-align: center;">
+        <h3 class="en-only">🗺️ Living Storymap &amp; Revolutionary Art Showcase</h3>
+        <h3 class="es-only">🗺️ Mapa de Luchas y Estudio de Carteles Revolucionarios</h3>
+        <p class="en-only" style="max-width: 800px; margin: 0 auto 1rem auto;">
+          Explore historical working-class actions, water defense campaigns, and community commons across New Mexico. 
+          Drop pins directly onto our interactive map, customize posters in the Canvas Studio, or browse templates below!
+        </p>
+        <p class="es-only" style="max-width: 800px; margin: 0 auto 1rem auto;">
+          Explora luchas históricas de la clase obrera, campañas de defensa de agua y tierras en Nuevo México.
+          Agrega pines directamente al mapa interactivo, edita carteles en el Estudio Canvas, o descarga plantillas abajo.
+        </p>
+        <button class="btn primary" id="trigger-studio-btn" style="font-family: var(--font-syne); font-weight:700;">
+          🎨 Launch Comrade Poster Studio / Abrir Estudio
+        </button>
+      </div>
+
+      <!-- LIVING STORYMAP & BLOG SIDEBAR LAYOUT -->
+      <div class="showcase-layout">
+        <!-- MAP PORTAL -->
+        <div class="storymap-card">
+          <!-- Interactive drop-pin hint -->
+          <button class="storymap-drop-hint" id="drop-pin-trigger-btn">
+            📍 Drop Struggle Pin on Map / Añadir Pin
+          </button>
+
+          <!-- Coordinate picker overlay hint -->
+          <div class="map-coordinate-picker-hint" id="coord-picker-overlay">
+            <h4 style="color: hsl(var(--color-secondary)); margin-bottom: 0.25rem; font-family: var(--font-syne);">🎯 Select Map Location / Selecciona Lugar</h4>
+            <p style="font-size: 0.8rem; color: #fff; margin:0;">
+              Click anywhere on the map outline to capture coordinates and place your pin.<br>
+              <small>Haz clic en el mapa para fijar tu pin de lucha.</small>
+            </p>
           </div>
-        </div>
-        <div style="position:relative; display:flex; justify-content:center; align-items:center;">
-          <div style="width:100%; aspect-ratio:1.1; background:#050505; border-radius:12px; border:1px solid hsl(var(--border-light)); display:flex; align-items:center; justify-content:center; padding:1rem; box-shadow:0 10px 30px rgba(0,0,0,0.6); overflow:hidden;">
-            <svg viewBox="0 0 200 200" style="width:100%; height:auto;">
-              <path fill="rgba(194, 96, 58, 0.08)" stroke="hsla(0, 0%, 100%, 0.12)" stroke-width="1" d="M 30 20 L 170 20 L 170 160 L 90 160 L 90 180 L 30 180 Z" />
-              <path fill="none" stroke="rgba(109, 189, 250, 0.25)" stroke-width="1.5" stroke-dasharray="1 2" d="M 100 20 C 100 50, 92 70, 92 100 C 92 130, 85 150, 80 180" />
-              <circle cx="102" cy="70" r="4" fill="hsl(355, 78%, 48%)" />
-              <circle cx="102" cy="70" r="10" fill="none" stroke="hsl(355, 78%, 48%)" stroke-width="0.5" opacity="0.6">
-                <animate attributeName="r" values="4;12;4" dur="3s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="95" cy="95" r="4" fill="hsl(38, 85%, 48%)" />
-              <circle cx="95" cy="95" r="10" fill="none" stroke="hsl(38, 85%, 48%)" stroke-width="0.5" opacity="0.6">
-                <animate attributeName="r" values="4;14;4" dur="2.5s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.8;0;0.8" dur="2.5s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="85" cy="150" r="3.5" fill="hsl(142, 45%, 42%)" />
-              <circle cx="85" cy="150" r="9" fill="none" stroke="hsl(142, 45%, 42%)" stroke-width="0.5" opacity="0.6">
-                <animate attributeName="r" values="3.5;11;3.5" dur="3.5s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.7;0;0.7" dur="3.5s" repeatCount="indefinite" />
-              </circle>
+
+          <!-- SVG Visual Map canvas -->
+          <div class="storymap-canvas-viewport" id="map-viewport">
+            <svg viewBox="0 0 600 600" class="storymap-svg" id="storymap-svg">
+              <g id="map-content">
+                <defs>
+                  <pattern id="grid-pattern" width="30" height="30" patternUnits="userSpaceOnUse">
+                    <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.015)" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+
+                <!-- Stylized Regional/County Borders of New Mexico -->
+                <path class="map-county" data-name="Northwest" d="M 60 50 L 200 50 L 200 240 L 60 240 Z" />
+                <path class="map-county" data-name="North-Central" d="M 200 50 L 360 50 L 360 240 L 200 240 Z" />
+                <path class="map-county" data-name="Northeast" d="M 360 50 L 540 50 L 540 240 L 360 240 Z" />
+                <path class="map-county" data-name="West-Central" d="M 60 240 L 200 240 L 200 380 L 60 380 Z" />
+                <path class="map-county" data-name="Central Valley" d="M 200 240 L 360 240 L 360 380 L 200 380 Z" />
+                <path class="map-county" data-name="East-Central" d="M 360 240 L 540 240 L 540 380 L 360 380 Z" />
+                <path class="map-county" data-name="Southwest" d="M 60 380 L 200 380 L 200 480 L 120 480 L 120 550 L 60 550 Z" />
+                <path class="map-county" data-name="South-Central" d="M 200 380 L 360 380 L 360 480 L 200 480 Z" />
+                <path class="map-county" data-name="Southeast" d="M 360 380 L 540 380 L 540 480 L 360 480 Z" />
+
+                <!-- River: Rio Grande -->
+                <path class="map-river" d="M 290 50 C 290 120, 275 160, 275 220 C 275 280, 260 330, 250 390 C 240 440, 242 460, 245 480" />
+
+                <!-- Mountain Ranges -->
+                <path class="map-mountain" d="M 310 70 L 320 90 L 315 100 L 330 120 L 325 130 L 340 155 L 330 170" />
+                <path class="map-mountain" d="M 265 440 L 272 455 L 268 462 L 278 472 L 273 478 L 285 490" />
+
+                <!-- Injected pins -->
+                <g id="pins-layer"></g>
+              </g>
             </svg>
           </div>
+
+          <!-- Category Legend Overlay -->
+          <div class="storymap-category-legend">
+            <div style="font-family: var(--font-mono); font-size: 0.65rem; color: hsl(var(--text-muted)); font-weight: 700; margin-bottom: 0.25rem;">
+              LEGEND &amp; FILTERS
+            </div>
+            <div class="map-legend-item active" data-category="all">
+              <span class="map-legend-dot" style="background: hsl(var(--color-primary));"></span>
+              <span>All Struggles / Todos</span>
+            </div>
+            <div class="map-legend-item" data-category="land">
+              <span class="map-legend-dot" style="background: hsl(var(--color-accent));"></span>
+              <span>Land &amp; Commons / Tierras</span>
+            </div>
+            <div class="map-legend-item" data-category="labor">
+              <span class="map-legend-dot" style="background: hsl(var(--color-primary));"></span>
+              <span>Labor &amp; Unions / Huelgas</span>
+            </div>
+            <div class="map-legend-item" data-category="art">
+              <span class="map-legend-dot" style="background: hsl(var(--color-secondary));"></span>
+              <span>Public Murals / Murales</span>
+            </div>
+            <div class="map-legend-item" data-category="mutual">
+              <span class="map-legend-dot" style="background: hsl(var(--color-sky));"></span>
+              <span>Mutual Aid &amp; Hubs / Apoyo</span>
+            </div>
+          </div>
+
+          <!-- HUD Zoom Controls -->
+          <div class="storymap-hud-controls">
+            <button class="hud-btn" id="hud-zoom-in" title="Zoom In">+</button>
+            <button class="hud-btn" id="hud-zoom-out" title="Zoom Out">-</button>
+            <button class="hud-btn" id="hud-reset" title="Reset View">⟲</button>
+          </div>
+        </div>
+
+        <!-- SIDEBAR: LIST OF STRUGGLES -->
+        <aside class="storymap-sidebar">
+          <div class="sidebar-tabs">
+            <button class="sidebar-tab-btn active" id="tab-stories-list" data-panel="panel-stories-list">
+              📂 Struggle List / Índice
+            </button>
+            <button class="sidebar-tab-btn" id="tab-pin-detail" data-panel="panel-pin-detail">
+              👁 Details / Detalles
+            </button>
+          </div>
+
+          <div class="sidebar-content-panel active" id="panel-stories-list">
+            <div class="sidebar-stories-scroll" id="sidebar-stories-container">
+              <!-- Dynamically rendered struggle list -->
+            </div>
+          </div>
+
+          <div class="sidebar-content-panel" id="panel-pin-detail">
+            <div class="sidebar-stories-scroll" id="active-pin-detail-container">
+              <div style="text-align: center; padding: 2rem; color: hsl(var(--text-muted)); font-size: 0.85rem;">
+                Select a struggle node on the map to display historical dossiers.<br>
+                <small>Selecciona un punto en el mapa para cargar su expediente histórico.</small>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- SUB-SECTION: BROWSE POSTER TEMPLATES -->
+      <section class="section" style="margin-top: 3rem;">
+        <h4 style="font-family:var(--font-syne); font-size:1.5rem; text-align:center; margin-bottom:1.5rem;">
+          🎨 Comrade Visual Archive &amp; Templates / Archivo de Carteles
+        </h4>
+        <div class="art-masonry" id="art-masonry-container">
+          <!-- High-fidelity cards grid with 12 preset templates -->
+          <div class="gallery-item card">
+            <img src="assets/img/meme_1.png" alt="Comrade Poster 1" />
+            <div class="gallery-info">
+              <h5>People Over Profit / La Gente Antes</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_1.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_1.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_2.png" alt="Comrade Poster 2" />
+            <div class="gallery-info">
+              <h5>Workers of New Mexico / Obreros de NM</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_2.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_2.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_3.png" alt="Comrade Poster 3" />
+            <div class="gallery-info">
+              <h5>Hanover Empire Zinc Strike 1950</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_3.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_3.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_4.png" alt="Comrade Poster 4" />
+            <div class="gallery-info">
+              <h5>Gallup Coal Strike 1933</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_4.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_4.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_5.png" alt="Comrade Poster 5" />
+            <div class="gallery-info">
+              <h5>Organize the Unorganized / Organizar</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_5.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_5.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_6.png" alt="Comrade Poster 6" />
+            <div class="gallery-info">
+              <h5>Land Back to Stewardship</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_6.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_6.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_7.png" alt="Comrade Poster 7" />
+            <div class="gallery-info">
+              <h5>Barelas Mutual Aid Commons</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_7.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_7.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_8.png" alt="Comrade Poster 8" />
+            <div class="gallery-info">
+              <h5>Socialism is Science / Ciencia</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_8.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_8.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_9.png" alt="Comrade Poster 9" />
+            <div class="gallery-info">
+              <h5>Water is a Commons / El Agua es Común</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_9.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_9.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_10.png" alt="Comrade Poster 10" />
+            <div class="gallery-info">
+              <h5>Organ Mountains Land Back</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_10.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_10.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_11.png" alt="Comrade Poster 11" />
+            <div class="gallery-info">
+              <h5>Solidarity with San Miguel del Vado</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_11.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_11.png">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-item card">
+            <img src="assets/img/meme_12.png" alt="Comrade Poster 12" />
+            <div class="gallery-info">
+              <h5>Taos Acequia Common Ditch System</h5>
+              <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+                <button class="btn secondary tiny js-view-meme" data-img="assets/img/meme_12.png">Edit / Editar</button>
+                <button class="btn tiny js-share-meme" data-img="assets/img/meme_12.png">Share</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ── SECTION: LIBRARY (BIBLIOTECA) ── -->
+    <section class="spa-view" id="view-library">
+      <section class="section" style="margin-top: 1rem; margin-bottom: 2rem;">
+        <h3 class="en-only">📚 La Biblioteca – Socialist Studies &amp; Commons Guides</h3>
+        <h3 class="es-only">📚 La Biblioteca – Círculos de Estudio y Guías Comunes</h3>
+        <p class="en-only">
+          Welcome to our bilingual publication catalog. Here, we analyze regional environmental struggles, 
+          historical strikes, and community agricultural designs through class-conscious research.
+        </p>
+        <p class="es-only">
+          Bienvenidos al catálogo bilingüe de La Biblioteca. Analizamos las luchas ambientales regionales, 
+          huelgas históricas y agricultura comunitaria desde una perspectiva de clase.
+        </p>
+      </section>
+
+      <!-- CARD GRAPHICS GRID FOR THE VOLUMES -->
+      <div class="biblioteca-grid">
+        <!-- Card 1: Volume 6 (May Day Strike) -->
+        <div class="bib-card card js-read-volume" data-volume="6">
+          <div class="bib-badge bg-primary">NEW</div>
+          <div class="bib-content">
+            <span class="bib-meta">Volume 06 · May Day 2026 · Special Issue</span>
+            <h4 class="bib-title">LAMA Day &amp; General Strike Analysis</h4>
+            <p class="bib-desc">
+              A comprehensive look at worker movements, strike logic, and why the New Mexico Socialists are attending LAMA Day in Santa Fe.
+            </p>
+          </div>
+          <div class="bib-footer">
+            <span>Read Volume ↗</span>
+            <span style="font-family:var(--font-mono);">PDF / HTML</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Volume 5 (Greenhouse) -->
+        <div class="bib-card card js-read-volume" data-volume="5">
+          <div class="bib-badge bg-accent">COMMONS R&amp;D</div>
+          <div class="bib-content">
+            <span class="bib-meta">Volume 05 · Compute Greenhouse R&amp;D</span>
+            <h4 class="bib-title">CCGS-C1: The People's Greenhouse Guide</h4>
+            <p class="bib-desc">
+              Full blueprints, material list, and thermal calculations for a high-desert, closed-loop greenhouse running on compute waste heat.
+            </p>
+          </div>
+          <div class="bib-footer">
+            <span>Read Volume ↗</span>
+            <span style="font-family:var(--font-mono);">PDF / HTML</span>
+          </div>
+        </div>
+
+        <!-- Catalog Volumes 1-4 Grid Cards (Static display templates) -->
+        <div class="bib-card card disabled-card">
+          <div class="bib-content">
+            <span class="bib-meta">Volume 04 · Land Grant Studies</span>
+            <h4 class="bib-title">San Miguel del Vado Communes</h4>
+            <p class="bib-desc">
+              Historical analysis of how Genízaro lands were stripped through Anglo legal cartels, and the seeds of resistance left behind.
+            </p>
+          </div>
+          <div class="bib-footer">
+            <span>Archive Locked / Archivo Cerrado</span>
+            <span>Vol. 04</span>
+          </div>
+        </div>
+
+        <div class="bib-card card disabled-card">
+          <div class="bib-content">
+            <span class="bib-meta">Volume 03 · Water Cartels</span>
+            <h4 class="bib-title">Acequia Defense vs. Corporate Ranching</h4>
+            <p class="bib-desc">
+              Case studies on community acequia water transfers in Taos County and struggles to protect water as a shared commons.
+            </p>
+          </div>
+          <div class="bib-footer">
+            <span>Archive Locked / Archivo Cerrado</span>
+            <span>Vol. 03</span>
+          </div>
+        </div>
+
+        <div class="bib-card card disabled-card">
+          <div class="bib-content">
+            <span class="bib-meta">Volume 02 · Imperialism in the Southwest</span>
+            <h4 class="bib-title">Copper Mining Strikes &amp; Border Labor</h4>
+            <p class="bib-desc">
+              Analyzing the dual-wage system, racial divisions, and radical labor unity in southern NM copper mines (1915–1960).
+            </p>
+          </div>
+          <div class="bib-footer">
+            <span>Archive Locked / Archivo Cerrado</span>
+            <span>Vol. 02</span>
+          </div>
+        </div>
+
+        <div class="bib-card card disabled-card">
+          <div class="bib-content">
+            <span class="bib-meta">Volume 01 · Foundations</span>
+            <h4 class="bib-title">Socialist Theory in High-Desert Barrios</h4>
+            <p class="bib-desc">
+              An introductory syllabus connecting foundational Marxist concepts to modern rural struggles in New Mexico.
+            </p>
+          </div>
+          <div class="bib-footer">
+            <span>Archive Locked / Archivo Cerrado</span>
+            <span>Vol. 01</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLLECTIVE PROFILES -->
+      <section class="section" style="margin-top: 3.5rem;">
+        <h4 style="font-family:var(--font-syne); font-size:1.35rem; text-align:center; margin-bottom:1.5rem;">
+          🤝 Regional Organizers &amp; Collectives / Colectivos Regionales
+        </h4>
+        <div class="profile-grid">
+          <div class="profile-card card">
+            <div class="profile-avatar">
+              <span>✊</span>
+            </div>
+            <h4>Sena's AI Colectivo</h4>
+            <p class="profile-title">Digital Commons &amp; Design R&amp;D</p>
+            <p class="profile-bio">
+              Developing open-source, serverless digital solutions, AI-powered bilinguality lookup engines, and activist design assets to support labor struggles.
+            </p>
+          </div>
+
+          <div class="profile-card card">
+            <div class="profile-avatar">
+              <span>🌾</span>
+            </div>
+            <h4>MILPA Greenhouse Group</h4>
+            <p class="profile-title">High-Desert Agro-ecology</p>
+            <p class="profile-bio">
+              A northern NM cooperative prototyping the Community Compute Greenhouse System (CCGS-C1), combining aquaponics with compute heat harvesting.
+            </p>
+          </div>
+
+          <div class="profile-card card">
+            <div class="profile-avatar">
+              <span>⚒️</span>
+            </div>
+            <h4>Santa Fe Labor Guild</h4>
+            <p class="profile-title">Union Drives &amp; Strike Logistics</p>
+            <p class="profile-bio">
+              Coordinating mutual aid networks, community kitchens, and strike support for administrative and service workers across Santa Fe County.
+            </p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ── SECTION: META BRAIN ── -->
+    <section class="spa-view" id="view-metabrain">
+      <div class="metabrain-header-block">
+        <h2 class="en-only">NUMARA Meta Brain Workspace</h2>
+        <h2 class="es-only">Espacio de Trabajo NUMARA Meta Brain</h2>
+        <p style="max-width: 650px; margin: 0 auto; color: hsl(var(--text-muted));" class="en-only">
+          Secure orchestration hub connecting Salvador Sena's Airtable Meta Brain database with live sandbox status graphs and verifiable local commit logs.
+        </p>
+        <p style="max-width: 650px; margin: 0 auto; color: hsl(var(--text-muted));" class="es-only">
+          Centro de orquestación seguro que conecta la base de datos Airtable Meta Brain de Salvador Sena con gráficos de estado y registros de confirmación locales.
+        </p>
+      </div>
+
+      <!-- DYNAMIC STATUS SYNC BAR -->
+      <div class="status-sync-bar">
+        <div class="status-indicator">
+          <div class="status-dot" id="sync-dot"></div>
+          <span id="sync-source-text">SYNCING KNOWLEDGE MATRIX...</span>
+        </div>
+        <div id="sync-timestamp" style="color: hsl(var(--text-muted));">TIMESTAMP: --</div>
+      </div>
+
+      <!-- GRID: GRAPH + CONTROLS -->
+      <div class="metabrain-grid">
+        <!-- GRAPH VIEWPORT CARD -->
+        <div class="sandbox-graph-card">
+          <div class="graph-title">
+            <h4 class="en-only">QC* Sandbox Process Graph</h4>
+            <h4 class="es-only">QC* Gráfico de Procesos en Arena</h4>
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: hsl(var(--color-accent)); font-weight: 700;">SANDBOX: ACTIVE</span>
+          </div>
+          
+          <div class="graph-viewport" id="graph-viewport-area">
+            <svg class="graph-svg" viewBox="0 0 500 400" id="sandbox-svg">
+              <defs>
+                <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+                  <path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(255,255,255,0.018)" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+
+              <!-- Edge connections -->
+              <line x1="250" y1="200" x2="130" y2="120" class="graph-edge" />
+              <line x1="250" y1="200" x2="370" y2="120" class="graph-edge" />
+              <line x1="250" y1="200" x2="130" y2="280" class="graph-edge" />
+              <line x1="250" y1="200" x2="370" y2="280" class="graph-edge" />
+              <line x1="130" y1="120" x2="370" y2="120" class="graph-edge" />
+              <line x1="130" y1="280" x2="370" y2="280" class="graph-edge" />
+
+              <!-- Nodes -->
+              <g class="graph-node" data-target="rec2" transform="translate(250, 200)">
+                <circle r="25" fill="hsla(var(--color-primary) / 0.2)" stroke="hsl(var(--color-primary))" stroke-width="2" />
+                <text y="5" font-family="var(--font-mono)" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">QC* CORE</text>
+              </g>
+              <g class="graph-node" data-target="rec1" transform="translate(130, 120)">
+                <circle r="20" fill="hsla(var(--color-secondary) / 0.15)" stroke="hsl(var(--color-secondary))" stroke-width="1.5" />
+                <text y="4" font-family="var(--font-mono)" font-size="8" fill="#fff" text-anchor="middle">NUMARA</text>
+              </g>
+              <g class="graph-node" data-target="rec5" transform="translate(370, 120)">
+                <circle r="20" fill="hsla(300, 65%, 55%, 0.15)" stroke="hsl(300, 65%, 55%)" stroke-width="1.5" />
+                <text y="4" font-family="var(--font-mono)" font-size="8" fill="#fff" text-anchor="middle">UOS</text>
+              </g>
+              <g class="graph-node" data-target="rec4" transform="translate(130, 280)">
+                <circle r="20" fill="hsla(var(--color-sky) / 0.15)" stroke="hsl(var(--color-sky))" stroke-width="1.5" />
+                <text y="4" font-family="var(--font-mono)" font-size="8" fill="#fff" text-anchor="middle">GIS</text>
+              </g>
+              <g class="graph-node" data-target="rec3" transform="translate(370, 280)">
+                <circle r="20" fill="hsla(var(--color-accent) / 0.15)" stroke="hsl(var(--color-accent))" stroke-width="1.5" />
+                <text y="4" font-family="var(--font-mono)" font-size="8" fill="#fff" text-anchor="middle">GRANTS</text>
+              </g>
+            </svg>
+          </div>
+
+          <div style="padding: 1rem; border-top: 1px solid hsl(var(--border-light)); background: rgba(255,255,255,0.01); display: flex; gap: 0.5rem; justify-content: space-between; align-items: center;">
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: hsl(var(--text-muted));" class="en-only">💡 Tip: Drag graph background, or click nodes to inspect</span>
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: hsl(var(--text-muted));" class="es-only">💡 Consejo: Haz clic en los nodos para inspeccionar</span>
+            <button class="btn secondary tiny" id="btn-reset-graph">Reset View</button>
+          </div>
+        </div>
+
+        <!-- FILTER CONTROLS & QUERY HUB -->
+        <div class="query-matrix-card">
+          <div class="feed-controls" style="margin-bottom: 0;">
+            <div class="search-row">
+              <input type="text" id="meta-search-input" placeholder="Search knowledge matrix, projects, tags... / Buscar...">
+              <button class="search-icon-btn">🔍</button>
+            </div>
+            
+            <div class="control-row" style="margin-top: 0.5rem;">
+              <span class="row-label">Domain Focus:</span>
+              <button class="chip active" data-cat="">All Domains</button>
+              <button class="chip" data-cat="Systems Architecture">Architecture</button>
+              <button class="chip" data-cat="Geospatial Science">Geospatial</button>
+              <button class="chip" data-cat="Civic">Civic Commons</button>
+              <button class="chip" data-cat="Creative">Creative</button>
+            </div>
+          </div>
+
+          <div id="query-meta-stats" style="font-family: var(--font-mono); font-size: 0.75rem; color: hsl(var(--color-secondary)); margin-bottom: 0.75rem; font-weight:700;">
+            Lattice search active. Sychronizing crystals...
+          </div>
+
+          <!-- Dynamic crystals cards grid -->
+          <div class="crystals-grid-scroll" id="crystals-grid"></div>
         </div>
       </div>
     </section>
 
-    <!-- RESOURCES -->
-    <section id="resources" class="section two-col">
-      <div>
-        <h3>Study &amp; Resources</h3>
-        <ul>
-          <li><a href="https://www.marxists.org/archive/marx/" target="_blank" rel="noopener">Marx &amp; Engels Archive (EN)</a></li>
-          <li><a href="https://www.marxists.org/espanol/m-e/index.htm" target="_blank" rel="noopener">Archivo Marx y Engels (ES)</a></li>
-          <li><a href="https://libcom.org/" target="_blank" rel="noopener">Libcom.org</a></li>
-          <li><a href="https://www.pslweb.org/" target="_blank" rel="noopener">Party for Socialism and Liberation (PSL)</a></li>
-          <li><a href="https://www.liberationnews.org/" target="_blank" rel="noopener">Liberation News</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Local Focus / Enfoque local</h3>
-        <p>
-          Build reading circles around topics like land grants, water rights, housing, and labor history in New Mexico.
-          Pair classic socialist texts with local struggles and invite elders, workers, and youth to share experience.
+    <!-- ── SECTION: DONATE ── -->
+    <section class="spa-view" id="view-donate">
+      <section class="section donate-section">
+        <h3 class="en-only">Support Our Work</h3>
+        <h3 class="es-only">Apoya Nuestro Trabajo</h3>
+        <p class="en-only">
+          Help us organize, educate, and build power in our communities. Your contribution supports 
+          study materials, event costs, mutual aid projects, and organizing infrastructure.
         </p>
-      </div>
+        <p class="es-only">
+          Ayúdanos a organizar, educar y construir poder en nuestras comunidades. Tu contribución 
+          apoya materiales de estudio, costos de eventos, proyectos de ayuda mutua e infraestructura organizativa.
+        </p>
+
+        <div class="donate-options">
+          <form id="pledge-form" class="donate-card card" method="POST">
+            <h4 class="en-only">💳 Secure Pledge Contribution</h4>
+            <h4 class="es-only">💳 Coordinar Contribución Solidaria</h4>
+            <p style="margin-bottom: 1.25rem; font-size:0.85rem;" class="en-only">
+              We process donations as manual offline pledges to protect your security. Enter your details, and Salvador Sena will reach out shortly to coordinate Venmo, Cash App, PayPal, or check details.
+            </p>
+            <p style="margin-bottom: 1.25rem; font-size:0.85rem;" class="es-only">
+              Procesamos las donaciones como compromisos manuales fuera de línea para proteger tu seguridad. Salvador Sena te contactará en breve para coordinar Venmo, Cash App, PayPal o cheques.
+            </p>
+
+            <!-- Frequency Selector -->
+            <div class="pledge-frequency-selector">
+              <button type="button" class="freq-tab active" data-freq="one-time">One-Time / Una vez</button>
+              <button type="button" class="freq-tab" data-freq="monthly">Monthly / Mensual</button>
+              <input type="hidden" name="frequency" id="pledge-frequency" value="one-time" />
+            </div>
+
+            <!-- Platform Selector -->
+            <div class="field">
+              <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Payment Method / Método de Pago</label>
+              <div class="platform-grid">
+                <button type="button" class="platform-capsule" data-platform="venmo">
+                  <span class="icon">📱</span>
+                  <span>Venmo</span>
+                </button>
+                <button type="button" class="platform-capsule" data-platform="cashapp">
+                  <span class="icon">💸</span>
+                  <span>Cash App</span>
+                </button>
+                <button type="button" class="platform-capsule" data-platform="paypal">
+                  <span class="icon">💳</span>
+                  <span>PayPal</span>
+                </button>
+                <button type="button" class="platform-capsule" data-platform="check">
+                  <span class="icon">✉️</span>
+                  <span>Check</span>
+                </button>
+                <button type="button" class="platform-capsule" data-platform="other">
+                  <span class="icon">🤝</span>
+                  <span>Other</span>
+                </button>
+              </div>
+              <input type="hidden" name="platform" id="pledge-platform" value="" required />
+            </div>
+
+            <!-- Amount Selector Group -->
+            <div class="field amount-selector-group">
+              <label style="font-weight: 700; margin-bottom: 0.25rem; display: block;">Pledge Amount / Cantidad de Contribución</label>
+              <div class="amount-presets">
+                <button type="button" class="amount-preset" data-amount="10">$10</button>
+                <button type="button" class="amount-preset" data-amount="25">$25</button>
+                <button type="button" class="amount-preset" data-amount="50">$50</button>
+                <button type="button" class="amount-preset" data-amount="100">$100</button>
+              </div>
+              <div class="custom-amount-wrapper">
+                <span class="currency-symbol">$</span>
+                <input type="number" id="pledge-amount" name="amount" min="1" step="any" placeholder="Custom Amount / Otra cantidad" required />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="pledge-name">Name / Nombre</label>
+              <input type="text" id="pledge-name" name="name" placeholder="Your Name / Tu nombre" required />
+            </div>
+
+            <div class="field">
+              <label for="pledge-email">Email / Correo electrónico</label>
+              <input type="email" id="pledge-email" name="email" placeholder="you@example.com" required />
+            </div>
+
+            <div class="field">
+              <label for="pledge-message">Message / Mensaje (Optional / Opcional)</label>
+              <textarea id="pledge-message" name="message" rows="3" placeholder="Solidarity note or coordination instructions..."></textarea>
+            </div>
+
+            <button type="submit" class="btn primary full-width">Send Pledge / Enviar Compromiso</button>
+            <p id="pledge-status" class="status-msg" style="margin-top: 1rem; text-align: center;"></p>
+          </form>
+
+          <div class="donate-card card">
+            <h4>📬 Mail a Check / Enviar un Cheque</h4>
+            <p>Prefer to send a check? Contact us for mailing address:</p>
+            <p style="margin-top:1rem;">
+              Email: <a href="mailto:salvadorsena@senacolectivo.com" style="color:hsl(var(--color-secondary));font-weight:600;">salvadorsena@senacolectivo.com</a>
+            </p>
+            <p class="es-only" style="margin-top:1rem;">
+              ¿Prefieres enviar un cheque? Contáctanos para recibir la dirección postal.
+            </p>
+          </div>
+
+          <div class="donate-card card">
+            <h4>🤝 In-Kind Support / Apoyo en Especie</h4>
+            <p>
+              We also accept donations of materials, space for events, printing services, 
+              and other in-kind contributions. Get in touch to coordinate.
+            </p>
+            <p class="es-only" style="margin-top:1rem;">
+              También aceptamos donaciones de materiales, espacios para eventos, servicios de imprenta 
+              y otras contribuciones. Contáctanos.
+            </p>
+          </div>
+        </div>
+      </section>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="section contact">
-      <h3>Contact</h3>
-      <p>Email: <a href="mailto:salvadorsena@senacolectivo.com" style="color:hsl(var(--color-secondary));font-weight:600;">salvadorsena@senacolectivo.com</a></p>
-      <p style="margin-top:1rem;">Signal / WhatsApp and other secure channels can be shared after you connect via email or in person.</p>
+    <!-- ── SECTION: PORTAL (ADMIN OUTREACH) ── -->
+    <section class="spa-view" id="view-portal">
+      <section class="section" style="margin-top: 1rem; margin-bottom: 1rem;">
+        <h3 style="color: hsl(var(--color-secondary));">🛠️ Comrade Administrative Control Center</h3>
+        <p>
+          Welcome, Salvador! Manage API integrations, configure credentials securely, 
+          and track local contact signups, pledges, and storymap pins.
+        </p>
+      </section>
+
+      <div class="portal-container">
+        <!-- SIDEBAR -->
+        <aside class="portal-sidebar">
+          <button class="portal-nav-btn active" data-target="panel-dash">📊 Overview Dashboard</button>
+          <button class="portal-nav-btn" data-target="panel-forms">📬 Contact Signups</button>
+          <button class="portal-nav-btn" data-target="panel-pledges">💳 Offline Pledges</button>
+          <button class="portal-nav-btn" data-target="panel-pins">📍 Storymap Pins</button>
+          <button class="portal-nav-btn" data-target="panel-settings">⚙ Credentials Config</button>
+        </aside>
+
+        <!-- CONTENT PANELS -->
+        <div class="portal-content">
+          <!-- PANEL: OVERVIEW -->
+          <div id="panel-dash" class="portal-tab-panel active">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-val" id="dash-signups-count">0</div>
+                <div class="stat-label">Comrade Signups</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-val" id="dash-pledges-count">0</div>
+                <div class="stat-label">Offline Pledges</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-val" id="dash-pins-count">0</div>
+                <div class="stat-label">Custom Map Pins</div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:1.5rem;">
+              <h4>✊ Browser Sandboxed Storage Active</h4>
+              <p style="margin-top: 0.5rem; line-height: 1.6; font-size: 0.9rem;">
+                All credentials, signups, pledges, and custom storymap nodes are cached strictly in your browser's private local database (`localStorage`). This respects offline capability, prevents cloud credit burn, and ensures complete cyber integrity.
+              </p>
+            </div>
+          </div>
+
+          <!-- PANEL: SIGNUPS -->
+          <div id="panel-forms" class="portal-tab-panel">
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h4>📬 Comrade Signups Capped Log</h4>
+                <button class="btn secondary tiny" id="btn-clear-signups">Clear Signups</button>
+              </div>
+              <div class="crystals-grid-scroll" id="portal-signups-list" style="max-height: 300px; overflow-y:auto; font-size:0.85rem; border:1px solid hsl(var(--border-light)); padding:0.5rem; border-radius:6px; background:#050505;"></div>
+            </div>
+          </div>
+
+          <!-- PANEL: PLEDGES -->
+          <div id="panel-pledges" class="portal-tab-panel">
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h4>💳 Solidarity Pledges Received</h4>
+                <button class="btn secondary tiny" id="btn-clear-pledges">Clear Pledges</button>
+              </div>
+              <div class="crystals-grid-scroll" id="portal-pledges-list" style="max-height: 300px; overflow-y:auto; font-size:0.85rem; border:1px solid hsl(var(--border-light)); padding:0.5rem; border-radius:6px; background:#050505;"></div>
+            </div>
+          </div>
+
+          <!-- PANEL: PINS -->
+          <div id="panel-pins" class="portal-tab-panel">
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <h4>📍 Custom Storymap Pins Added</h4>
+                <button class="btn secondary tiny" id="btn-clear-pins">Clear Custom Pins</button>
+              </div>
+              <div class="crystals-grid-scroll" id="portal-pins-list" style="max-height: 300px; overflow-y:auto; font-size:0.85rem; border:1px solid hsl(var(--border-light)); padding:0.5rem; border-radius:6px; background:#050505;"></div>
+            </div>
+          </div>
+
+          <!-- PANEL: SETTINGS -->
+          <div id="panel-settings" class="portal-tab-panel">
+            <div class="card">
+              <h4>⚙ Portal Credentials &amp; API Setup</h4>
+              <p style="font-size:0.85rem; color:hsl(var(--text-muted)); margin-bottom:1.25rem;">
+                Set up local access tokens or database identifiers used to sync bulletins and publish memes directly to your platforms.
+              </p>
+              
+              <div class="field">
+                <label>Facebook Page ID</label>
+                <input type="text" id="setting-fb-page-id" class="input-premium" placeholder="e.g. 61584102062292">
+              </div>
+              <div class="field">
+                <label>Facebook Page Access Token</label>
+                <input type="password" id="setting-fb-token" class="input-premium" placeholder="EAAGx...">
+              </div>
+              <div class="field">
+                <label>Airtable Base API ID (Optional)</label>
+                <input type="text" id="setting-airtable-id" class="input-premium" placeholder="appXyz123...">
+              </div>
+              <button class="btn primary tiny" id="btn-save-credentials">Save Credentials</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>&copy; 2026 New Mexico Socialists. Built for Netlify static hosting. Designed by Salvador Sena.</p>
+    <p>&copy; 2026 New Mexico Socialists. Designed by Salvador Sena.</p>
   </footer>
 
-  <!-- Comrade Meme Studio Lightbox Modal -->
+  <!-- ── MODAL: COMRADE MEME / POSTER STUDIO ── -->
   <div id="meme-modal" class="meme-modal" aria-hidden="true">
     <div class="meme-modal-backdrop"></div>
     <div class="meme-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="meme-modal-title">
@@ -375,14 +1129,13 @@
       </h3>
       
       <div class="meme-modal-body" style="display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;align-items:start;">
-        <!-- Canvas viewport -->
+        <!-- Canvas Viewport -->
         <div class="canvas-container" style="background:#050505;border:1px solid hsl(var(--border-light));border-radius:12px;padding:0.5rem;display:flex;align-items:center;justify-content:center;aspect-ratio:1;">
           <canvas id="meme-canvas" style="max-width:100%;height:auto;border-radius:8px;"></canvas>
         </div>
         
         <!-- Controls form -->
         <div class="meme-controls-form" style="display:flex;flex-direction:column;gap:0.75rem;">
-          <!-- Custom image upload option -->
           <div class="field">
             <label style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;font-weight:600;">
               <span>1. Base Image / Imagen Base</span>
@@ -450,7 +1203,7 @@
             </label>
           </div>
 
-          <!-- AI Image Generator Field -->
+          <!-- AI Generator -->
           <div style="border-top:1px solid hsl(var(--border-light));padding-top:0.6rem;margin-top:0.4rem;display:flex;flex-direction:column;gap:0.4rem;">
             <label style="font-size:0.8rem;font-weight:600;color:hsl(var(--color-secondary));display:flex;align-items:center;gap:0.4rem;">
               <span>🤖 AI Image Generator / Generar con IA</span>
@@ -462,9 +1215,8 @@
             <span id="meme-ai-status" class="status-msg" style="font-size:0.7rem;margin:0;color:hsl(var(--text-muted));"></span>
           </div>
           
-          <div style="display:none;flex-direction:column;gap:0.5rem;margin-top:0.4rem;border-top:1px solid hsl(var(--border-light));padding-top:0.6rem;">
+          <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.4rem;border-top:1px solid hsl(var(--border-light));padding-top:0.6rem;">
             <button type="button" id="fb-post-btn" class="btn primary full-width tiny">Post directly to Facebook Page</button>
-            <button type="button" id="fb-settings-btn" class="btn secondary full-width tiny">⚙ Facebook Credentials Settings</button>
             <span id="fb-post-status" class="status-msg" style="text-align:center;font-size:0.75rem;"></span>
           </div>
         </div>
@@ -479,6 +1231,145 @@
         </div>
         <span id="meme-copy-status" class="status-msg" style="margin:0;"></span>
       </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: MOBILE SAVE OVERLAY ── -->
+  <div id="mobile-save-modal" class="meme-modal" aria-hidden="true">
+    <div class="meme-modal-backdrop" id="mobile-save-backdrop"></div>
+    <div class="meme-modal-dialog" role="dialog" aria-modal="true" style="max-width: 500px; width: 90%; text-align: center; backdrop-filter: blur(20px);">
+      <button type="button" class="meme-modal-close" id="mobile-save-close-btn">&times;</button>
+      
+      <h3 style="margin-bottom:0.5rem;font-size:1.3rem;color:hsl(var(--color-secondary));">
+        ✊ Save Comrade Poster / Guardar
+      </h3>
+      <p style="font-size:0.8rem; color:hsl(var(--text-muted)); margin-bottom:1rem; line-height: 1.4;">
+        <strong>Long-press</strong> the image below to save it directly to your photo library!
+        <br>
+        <strong>¡Mantén presionada</strong> la imagen de abajo para guardarla en tus fotos!
+      </p>
+      
+      <div style="background:#000; padding:0.5rem; border-radius:12px; border:1px solid hsl(var(--border-light)); display:inline-block; max-width:100%; margin-bottom:1rem;">
+        <img id="mobile-save-img" style="max-width:100%; height:auto; border-radius:8px; display:block;" alt="Comrade Meme">
+      </div>
+      
+      <div>
+        <button type="button" id="mobile-save-btn-close" class="btn secondary tiny" style="width:100%;">Close / Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: PIN SUBMISSION ON MAP ── -->
+  <div id="pin-modal" class="meme-modal" aria-hidden="true">
+    <div class="meme-modal-backdrop" id="pin-modal-backdrop"></div>
+    <div class="meme-modal-dialog" role="dialog" aria-modal="true" style="max-width: 600px; width: 90%;">
+      <button type="button" class="meme-modal-close" id="pin-modal-close-btn">&times;</button>
+      
+      <h3 style="margin-bottom:0.75rem;font-size:1.35rem;color:hsl(var(--color-secondary));font-family:var(--font-syne);display:flex;align-items:center;gap:0.5rem;">
+        📍 Pin Your Poster &amp; Struggle to the Map
+      </h3>
+      
+      <form id="storymap-pins-form" class="meme-controls-form" style="display:flex;flex-direction:column;gap:0.8rem;text-align:left;">
+        <div class="pin-form-grid">
+          <div class="field">
+            <label style="display:flex;justify-content:space-between;align-items:center;">
+              <span>Contributor / Colaborador</span>
+              <label style="font-size:0.72rem;display:inline-flex;align-items:center;gap:0.25rem;cursor:pointer;margin:0;text-transform:none;">
+                <input type="checkbox" id="form-pin-anonymous" checked style="width:auto;margin:0;"> Anonymous
+              </label>
+            </label>
+            <input type="text" class="input-premium" id="form-pin-name" name="name" value="Anonymous" placeholder="Name or collective">
+          </div>
+
+          <div class="field">
+            <label>Struggle Category / Categoría</label>
+            <select class="select-premium" id="form-pin-category" name="category" required>
+              <option value="land">Land &amp; Commons / Devolución de Tierras</option>
+              <option value="labor">Labor Struggles / Huelgas y Sindicatos</option>
+              <option value="art">Public Murals &amp; Revolutionary Art</option>
+              <option value="mutual">Mutual Aid, Commons &amp; Hubs</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Title of Struggle (English) / Título del Pin</label>
+          <input type="text" class="input-premium" id="form-pin-title-en" name="title-en" placeholder="e.g. Acequia Water Defense Campaign" required>
+        </div>
+
+        <div class="field">
+          <label>Title in Spanish / Título en Español</label>
+          <input type="text" class="input-premium" id="form-pin-title-es" name="title-es" placeholder="e.g. Campaña de Defensa de Aguas de Acequia" required>
+        </div>
+
+        <div class="field">
+          <label>Story / Description of Struggle (English)</label>
+          <textarea class="textarea-premium" id="form-pin-story-en" name="story-en" rows="3" placeholder="Explain the history, campaign, or background..." required></textarea>
+        </div>
+
+        <div class="field">
+          <label>Story in Spanish / Historia en Español</label>
+          <textarea class="textarea-premium" id="form-pin-story-es" name="story-es" rows="3" placeholder="Explica el contexto o historia en español..." required></textarea>
+        </div>
+
+        <!-- Coordinates row -->
+        <div class="pin-form-grid">
+          <div class="field">
+            <label>Coordinates / Selección de Lugar</label>
+            <select class="select-premium" id="form-pin-preset" name="preset-location">
+              <option value="custom">-- Custom Coordinates / Coordenadas --</option>
+              <option value="taos">Taos [320, 110]</option>
+              <option value="santafe">Santa Fe [300, 200]</option>
+              <option value="albuquerque">Albuquerque [280, 280]</option>
+              <option value="gallup">Gallup [90, 220]</option>
+              <option value="lascruces">Las Cruces [250, 460]</option>
+              <option value="carlsbad">Carlsbad [460, 450]</option>
+              <option value="silvercity">Silver City [110, 420]</option>
+            </select>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+            <div class="field">
+              <label>X-Coordinate</label>
+              <input type="number" class="input-premium" id="form-pin-x" name="coordinate-x" required min="50" max="550" value="280">
+            </div>
+            <div class="field">
+              <label>Y-Coordinate</label>
+              <input type="number" class="input-premium" id="form-pin-y" name="coordinate-y" required min="50" max="550" value="280">
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+          <button type="submit" class="btn primary full-width" style="height:40px;">📌 Submit Pin / Publicar Pin</button>
+          <button type="button" class="btn secondary" id="btn-cancel-pin" style="height:40px;">Cancel</button>
+        </div>
+        <p id="pin-form-status" class="status-msg" style="text-align:center;font-size:0.85rem;margin:0;"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── OVERLAY drawer: KNOWLEDGE CRYSTS DETAILS ── -->
+  <div class="detail-drawer-backdrop" id="detail-drawer-backdrop"></div>
+  <div class="crystal-detail-drawer" id="crystal-detail-drawer">
+    <button type="button" class="btn-close-drawer" id="btn-close-drawer">&times;</button>
+    <div id="drawer-content-area" style="padding: 1.5rem 0;"></div>
+  </div>
+
+  <!-- ── OVERLAY drawer: BILINGUAL BIBLIOTECA VOLUME READER ── -->
+  <div class="detail-drawer-backdrop" id="reader-backdrop"></div>
+  <div class="crystal-detail-drawer" id="book-reader-overlay" style="max-width:800px; width:100%; height:90vh; border-radius:20px 20px 0 0; background: hsl(12, 18%, 6%); border-top:1px solid hsla(var(--color-primary) / 0.3);">
+    <button type="button" class="btn-close-drawer" id="btn-close-reader" style="font-size: 2.2rem; top: 1.25rem; right: 1.25rem;">&times;</button>
+    
+    <!-- Language toggle specifically inside reader -->
+    <div style="position:absolute; top: 1.5rem; left: 1.5rem; display:flex; gap:0.5rem; z-index:100;">
+      <button class="chip active" id="reader-lang-en">EN</button>
+      <button class="chip" id="reader-lang-es">ES</button>
+    </div>
+
+    <!-- Scrollable full-text pane -->
+    <div class="reader-scroll-pane" id="reader-scroll-content" style="padding:4rem 2rem 2rem 2rem; overflow-y:auto; height:100%; box-sizing:border-box;">
+      <!-- Renders bilingually in-page -->
     </div>
   </div>
 

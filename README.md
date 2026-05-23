@@ -1,109 +1,111 @@
+# New Mexico Socialists – Website Portal
 
-# New Mexico Socialists – Website
+A modern, high-performance, bilingual (English/Spanish) web application and revolutionary portal for the **New Mexico Socialists** organization. This portal is built on a clean, robust **Cloudflare Pages Serverless Architecture** that connects directly to serverless functions, Airtable, and Brevo (Sendinblue) email services.
 
-A bilingual (English/Spanish) website for New Mexico Socialists, featuring:
+## Features
 
-- **Join form** with PHP backend and MySQL database
-- **19 memes and posters** for download and sharing
-- **Interactive gallery** with view, download, and Facebook share options
-- **Facebook page integration**
-- **Resource links** for socialist education and organizing
+- ✊ **Join the Movement**: Bilingual, validated signup form connected to regional coordinator databases.
+- 💳 **Pledge Contribution System**: Secure, serverless proxy to pledge Venmo, Cash App, PayPal, or check contributions, triggering direct email coordination and Airtable database synchronization.
+- 🎨 **Activist Canvas Studio**: Interactive bilingual activist poster generator that allows custom image uploads, slogan customization, typography layout options, and download capabilities.
+- 🗺️ **Living Struggle Storymap**: Interactive spatial SVG mapping of historical and contemporary struggles across New Mexico with local custom coordinate plotting.
+- 📰 **Regional News Feed**: High-performance regional media aggregator showcasing socialist literature and labor updates.
+- 🧠 **NUMARA Meta Brain**: Administrative sandbox knowledge lattice displaying operational nodes and git verification.
 
-## Technology Stack
+---
 
-- HTML5/CSS3/JavaScript (vanilla)
-- PHP backend for form processing
-- MySQL database for form submissions
-- IONOS hosting
+## Technical Stack & Architecture
 
-## Deployment
+- **Front-end**: Semantic HTML5, Vanilla CSS3, custom typography (Space Grotesk, Syne, Outfit, DM Mono), and modular ES6 JavaScript.
+- **Serverless API**: Cloudflare Pages Functions (Edge-running V8 serverless environments under the `/functions` directory).
+- **External Databases & API integrations**:
+  - **Airtable**: Secure Private Access Token integration to register contribution pledges.
+  - **Brevo API**: Dynamic SMTP transaction service to trigger coordinator alerts and bilingual comrade thank-you auto-replies.
+  - **Discord/Slack Webhooks**: Optional real-time notification alerts for coordinate workflows.
+  - **Cloudflare D1**: Optional serverless SQL layer bound directly to local/live state.
 
-This site uses **automated deployment** via GitHub Actions to IONOS hosting.
+---
 
-### Quick Start
+## Local Development & Sandbox Testing
 
-1. Push to `netlify-working-backup` branch
-2. GitHub Actions automatically deploys to IONOS
-3. Site updates at https://newmexicosocialists.org
+This project uses the official **Cloudflare Wrangler CLI** to simulate serverless Pages Functions locally.
 
-### Manual Deployment
+### Prerequisites
 
-Go to: **Actions** → **Deploy NM Socialists to IONOS** → **Run workflow**
+Ensure you have **Node.js** (v18+) and `npm` installed.
 
-### Setup (One-Time)
+### 1. Install Dependencies
+```bash
+npm install
+```
 
-See **[IONOS-API-DEPLOYMENT.md](IONOS-API-DEPLOYMENT.md)** for complete setup instructions including:
-- How to configure GitHub Secrets
-- Database setup on IONOS
-- FTP/SFTP credentials
-- Local development environment
+### 2. Run Local Serverless Environment
+Start the development server with local serverless API bindings:
+```bash
+npx wrangler pages dev .
+```
+This boots a high-fidelity local emulation of Cloudflare Pages on `http://localhost:8788/` with functions in `/functions` fully functional and interactive!
 
-### Local Development
+### 3. Configure Local Secret Bindings
+To test Airtable and Brevo services locally without committing credentials:
+1. Create a `wrangler.toml` or define environment variables locally:
+   ```bash
+   npx wrangler pages dev . --binding AIRTABLE_PAT="your_token" --binding AIRTABLE_BASE_ID="your_base" --binding BREVO_API_KEY="your_key"
+   ```
 
-1. Copy `.env.example` to `.env`
-2. Update with your local database credentials
-3. Never commit `.env` file (it's in `.gitignore`)
-4. Run: `php -S localhost:8000`
+---
 
-### Legacy Manual Deployment
+## Environment Variables Configuration
 
-For manual deployment without GitHub Actions, see [IONOS-DEPLOYMENT.md](IONOS-DEPLOYMENT.md).
+When deploying this project to **Cloudflare Pages**, you must configure the following Environment Variables in the **Cloudflare Pages Dashboard** under **Settings -> Environment variables**:
 
-## Form Features
+| Variable Name | Description | Example |
+| :--- | :--- | :--- |
+| `AIRTABLE_PAT` | Airtable Personal Access Token (with schema.writes, data.records:write permissions) | `pat.xxxxxx...` |
+| `AIRTABLE_BASE_ID` | Airtable Base ID housing active tables | `appXXXXXXXXX` |
+| `AIRTABLE_PLEDGES_TABLE_NAME` | Name of the table storing contribution pledges | `Pledges` |
+| `BREVO_API_KEY` | SMTP transaction API key from your Brevo account | `xkeysib-xxxxxx...` |
+| `WEBHOOK_URL` | Optional Discord or Slack webhook URL for alerts | `https://discord.com/api/webhooks/...` |
 
-The join form collects:
-- Name (required)
-- Email (required)
-- City (optional)
-- Preferred language: English, Español, or Both
-- Interests/how to participate (optional)
+---
 
-Submissions are:
-- Stored in MySQL database with timestamp and IP address
-- Sent via email to xava@newmexicosocialists.org
-- Validated for security (SQL injection prevention, XSS protection)
-
-## File Structure
+## Directory Layout
 
 ```
 /
-├── .github/
-│   └── workflows/
-│       └── deploy-ionos.yml    # GitHub Actions deployment workflow
-├── scripts/
-│   ├── .htaccess.template      # Template for Apache environment variables
-│   └── deploy-check.sh         # Post-deployment verification script
-├── index.html                  # Main website page
-├── submit-form.php             # Form submission handler (uses environment variables)
-├── database-schema.sql         # MySQL table structure (import via phpMyAdmin)
-├── .env.example                # Template for local development
-├── .gitignore                  # Prevents committing secrets
-├── IONOS-API-DEPLOYMENT.md     # Automated deployment guide
-├── IONOS-DEPLOYMENT.md         # Legacy manual deployment guide
-├── README.md                   # This file
-└── assets/
-    ├── css/
-    │   └── styles.css          # Site styling
-    ├── js/
-    │   └── main.js             # JavaScript (form handling, gallery, Facebook share)
-    └── img/
-        ├── meme_1.png          # 19 meme images
-        ├── meme_2.png
-        └── ...
-        └── meme_19.png
+├── assets/                     # Premium frontend styling and assets
+│   ├── css/
+│   │   └── styles.css          # Core CSS stylesheet
+│   ├── js/
+│   │   └── main.js             # Main frontend script (Canvas engine, API forms)
+│   └── img/                    # Imagery assets and posters
+├── functions/                  # Cloudflare Pages Serverless Functions (API Layer)
+│   └── api/
+│       ├── airtable.js         # Airtable dashboard connector
+│       ├── generate-image.js   # Serverless AI image helper
+│       ├── join.js             # Form handler for #join-form
+│       └── pledge.js           # Form handler for #pledge-form
+├── index.html                  # Homepage (Hero, About, Join, Donate, Teasers)
+├── art-showcase.html           # Interactive Storymap, Poster Studio, and Gallery
+├── biblioteca-landing.html     # Bilingual research publication landing page
+├── biblioteca-lama-day.html    # Special edition biblioteca publication
+├── ccgs_natgeo_paper.html      # People's Greenhouse research paper
+├── comrade_portal.html         # Comrade Portal control center & local sandbox
+├── meta-brain.html             # NUMARA Meta Brain knowledge lattice
+├── nmnewsfeed.html             # Regional Leftist newsfeed aggregator
+├── package.json                # Project dependencies and script declarations
+└── README.md                   # This documentation
 ```
+
+---
 
 ## Domain & Contact
 
-- Website: https://newmexicosocialists.com
-- Email: xava@newmexicosocialists.org
-- Facebook: https://www.facebook.com/profile.php?id=61584102062292
+- **Production URL**: [https://nmsocialists.org/](https://nmsocialists.org/)
+- **Contact Coordinator**: [salvadorsena@senacolectivo.com](mailto:salvadorsena@senacolectivo.com)
+- **Official Facebook**: [https://www.facebook.com/profile.php?id=61584102062292](https://www.facebook.com/profile.php?id=61584102062292)
+
+---
 
 ## License
 
-Content and code created for New Mexico Socialists organizing work.
-
-
-# Automated IONOS Deployment - Live!
-# Fixed SFTP credentials - deploying now!
-# SFTP credentials fixed - deploying to IONOS
+Content, graphic assets, and code created for New Mexico Socialists organizing work.

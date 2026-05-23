@@ -5,6 +5,12 @@
   <title>Revolutionary Art &amp; Living Storymap • New Mexico Socialists</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Explore New Mexico's history of labor, land, and community resistance through an interactive spatial storymap and bilingual revolutionary art showcase.">
+  <link rel="canonical" href="https://nmsocialists.org/art-showcase.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Revolutionary Art &amp; Living Storymap • New Mexico Socialists" />
+  <meta property="og:description" content="Explore New Mexico's history of labor, land, and community resistance through an interactive spatial storymap and bilingual revolutionary art showcase." />
+  <meta property="og:url" content="https://nmsocialists.org/art-showcase.html" />
   <link rel="stylesheet" href="assets/css/styles.css">
   <style>
     /* Inline showcase page overrides & specific utilities */
@@ -228,7 +234,7 @@
       <a href="nmnewsfeed.html" id="nav-news">News / Noticias</a>
       <a href="art-showcase.html" id="nav-gallery" class="active">Gallery &amp; Map / Galería</a>
       <a href="biblioteca-landing.html" id="nav-library">Biblioteca</a>
-      <a href="comrade_portal.html" id="nav-portal">Portal</a>
+      <a href="index.html#portal" id="nav-portal">Portal</a>
       <a href="meta-brain.html" id="nav-metabrain">Meta Brain</a>
     </nav>
   </header>
@@ -535,6 +541,31 @@
     </div>
   </div>
 
+  <!-- ── MODAL: MOBILE SAVE OVERLAY ── -->
+  <div id="mobile-save-modal" class="meme-modal" aria-hidden="true">
+    <div class="meme-modal-backdrop" id="mobile-save-backdrop"></div>
+    <div class="meme-modal-dialog" role="dialog" aria-modal="true" style="max-width: 500px; width: 90%; text-align: center; backdrop-filter: blur(20px);">
+      <button type="button" class="meme-modal-close" id="mobile-save-close-btn">&times;</button>
+      
+      <h3 style="margin-bottom:0.5rem;font-size:1.3rem;color:hsl(var(--color-secondary));">
+        ✊ Save Comrade Poster / Guardar
+      </h3>
+      <p style="font-size:0.8rem; color:hsl(var(--text-muted)); margin-bottom:1rem; line-height: 1.4;">
+        <strong>Long-press</strong> the image below to save it directly to your photo library!
+        <br>
+        <strong>¡Mantén presionada</strong> la imagen de abajo para guardarla en tus fotos!
+      </p>
+      
+      <div style="background:#000; padding:0.5rem; border-radius:12px; border:1px solid hsl(var(--border-light)); display:inline-block; max-width:100%; margin-bottom:1rem;">
+        <img id="mobile-save-img" style="max-width:100%; height:auto; border-radius:8px; display:block;" alt="Comrade Meme">
+      </div>
+      
+      <div>
+        <button type="button" id="mobile-save-btn-close" class="btn secondary tiny" style="width:100%;">Close / Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- DROPPING PIN FORMS MODAL DRAWER -->
   <div id="pin-submission-modal" class="meme-modal" aria-hidden="true">
     <div class="meme-modal-backdrop" id="pin-modal-backdrop"></div>
@@ -545,17 +576,12 @@
         📍 Pin Your Poster &amp; Struggle to the Map
       </h3>
       
-      <!-- Form for Netlify Submission and Local Storage Storage -->
+      <!-- Form for local submission and Local Storage caching -->
       <form id="storymap-pins-form" 
             name="storymap-pin-submission" 
             method="POST" 
-            data-netlify="true" 
-            netlify-honeypot="bot-field"
             class="meme-controls-form"
             style="display:flex;flex-direction:column;gap:0.8rem;text-align:left;">
-        
-        <input type="hidden" name="form-name" value="storymap-pin-submission">
-        <p style="display:none;"><input name="bot-field"></p>
 
         <!-- Hidden canvas artwork data representation field -->
         <input type="hidden" id="form-pin-image-data" name="image-data">
@@ -632,7 +658,7 @@
 
         <div style="background:rgba(255,255,255,0.02);border:1px solid hsl(var(--border-light));border-radius:8px;padding:0.75rem;margin-top:0.25rem;">
           <p style="font-size:0.78rem;color:hsl(var(--text-muted));line-height:1.55;">
-            💡 <strong>Moderation Note:</strong> Your pinned struggle poster will immediately appear in your browser local storage cache so you can verify it. It is also pushed securely to Netlify Forms for admin approval before showing globally.
+            💡 <strong>Moderation Note:</strong> Your pinned struggle poster will immediately appear in your browser local storage cache so you can verify it on the map.
           </p>
         </div>
 
@@ -655,17 +681,12 @@
         ✊ Submit Revolutionary Comrade Art
       </h3>
       
-      <!-- Form for Netlify Submission and Local Storage Caching -->
+      <!-- Form for local submission and Local Storage Caching -->
       <form id="comrade-art-form" 
             name="comrade-art-contribution" 
             method="POST" 
-            data-netlify="true" 
-            netlify-honeypot="bot-field"
             class="meme-controls-form"
             style="display:flex;flex-direction:column;gap:0.8rem;text-align:left;">
-        
-        <input type="hidden" name="form-name" value="comrade-art-contribution">
-        <p style="display:none;"><input name="bot-field"></p>
 
         <!-- Hidden art data representation field -->
         <input type="hidden" id="form-art-image-data" name="image-data">
@@ -709,7 +730,7 @@
 
         <div style="background:rgba(255,255,255,0.02);border:1px solid hsl(var(--border-light));border-radius:8px;padding:0.75rem;margin-top:0.25rem;">
           <p style="font-size:0.78rem;color:hsl(var(--text-muted));line-height:1.55;">
-            💡 <strong>Moderation Note:</strong> Your contribution will immediately appear in your browser local storage cache so you can verify it in the "Comrade Art Gallery" tab. It is also pushed securely to Netlify Forms for admin approval.
+            💡 <strong>Moderation Note:</strong> Your contribution will immediately appear in your browser local storage cache so you can verify it in the "Comrade Art Gallery" tab.
           </p>
         </div>
 
@@ -723,7 +744,7 @@
   </div>
 
   <footer class="site-footer">
-    <p>&copy; 2026 New Mexico Socialists. Built for Netlify static hosting. Designed by Salvador Sena.</p>
+    <p>&copy; 2026 New Mexico Socialists. Designed by Salvador Sena.</p>
   </footer>
 
   <!-- SCRIPT -->
@@ -1338,45 +1359,19 @@
             console.error("Local art caching error:", err);
           }
 
-          // Submit Netlify Form
-          const formData = new FormData(comradeArtForm);
-          formData.set("name", contributorName);
-          formData.set("image-data", base64Data);
+          // Cache and publish artwork locally
+          statusEl.textContent = "Artwork submitted successfully! ✊ / ¡Arte publicado!";
+          statusEl.style.color = "#77e89f";
 
-          try {
-            const bodyPayload = new URLSearchParams(formData).toString();
-            await fetch("/", {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body: bodyPayload
-            });
-
-            statusEl.textContent = "Artwork submitted successfully! ✊ / ¡Arte publicado!";
-            statusEl.style.color = "#77e89f";
-
-            setTimeout(() => {
-              closeArtModal();
-              renderGallery();
-              comradeArtForm.reset();
-              artAnonCheckbox.checked = true;
-              artNameInput.value = "Anonymous";
-              artNameInput.setAttribute("disabled", "true");
-              statusEl.textContent = "";
-            }, 1200);
-          } catch (err) {
-            console.error("Netlify submit error:", err);
-            statusEl.textContent = "Saved locally to browser cache. / Guardado en caché local.";
-            statusEl.style.color = "#ffb3b3";
-            setTimeout(() => {
-              closeArtModal();
-              renderGallery();
-              comradeArtForm.reset();
-              artAnonCheckbox.checked = true;
-              artNameInput.value = "Anonymous";
-              artNameInput.setAttribute("disabled", "true");
-              statusEl.textContent = "";
-            }, 1500);
-          }
+          setTimeout(() => {
+            closeArtModal();
+            renderGallery();
+            comradeArtForm.reset();
+            artAnonCheckbox.checked = true;
+            artNameInput.value = "Anonymous";
+            artNameInput.setAttribute("disabled", "true");
+            statusEl.textContent = "";
+          }, 1200);
         };
         reader.readAsDataURL(file);
       });
@@ -1690,7 +1685,7 @@
               let captionText = "✊ Posted via NM Socialists Revolutionary Art Portal!\n";
               if (memeTopText && memeTopText.value) captionText += `\n"${memeTopText.value.toUpperCase()}"`;
               if (memeBottomText && memeBottomText.value) captionText += `\n"${memeBottomText.value.toUpperCase()}"`;
-              captionText += "\n\nJoin the movement at newmexicosocialists.com";
+              captionText += "\n\nJoin the movement at nmsocialists.org";
               
               formData.append("message", captionText);
 
@@ -1734,20 +1729,82 @@
         });
       }
 
-      modalShare.addEventListener("click", async () => {
-        const url = modalShare.dataset.shareUrl;
-        if (!url) return;
-        if (navigator.share) {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const mobileSaveModal = document.getElementById("mobile-save-modal");
+      const mobileSaveCloseBtn = document.getElementById("mobile-save-close-btn");
+      const mobileSaveBackdrop = document.getElementById("mobile-save-backdrop");
+      const mobileSaveBtnClose = document.getElementById("mobile-save-btn-close");
+      const mobileSaveImg = document.getElementById("mobile-save-img");
+
+      function closeMobileSaveModal() {
+        mobileSaveModal?.classList.remove("active");
+        mobileSaveModal?.setAttribute("aria-hidden", "true");
+      }
+
+      mobileSaveCloseBtn?.addEventListener("click", closeMobileSaveModal);
+      mobileSaveBackdrop?.addEventListener("click", closeMobileSaveModal);
+      mobileSaveBtnClose?.addEventListener("click", closeMobileSaveModal);
+
+      modalDownload.addEventListener("click", (e) => {
+        if (isMobile) {
+          e.preventDefault();
+          let dataUrl;
           try {
-            await navigator.share({
-              title: 'New Mexico Socialists Revolutionary Art',
-              text: 'Check out this revolutionary art poster from New Mexico Socialists!',
-              url: url
-            });
+            dataUrl = memeCanvas.toDataURL("image/png");
           } catch (err) {
-            console.log("Web Share cancelled or failed", err);
+            dataUrl = activeTemplateSrc;
+          }
+          if (mobileSaveImg) mobileSaveImg.src = dataUrl;
+          mobileSaveModal?.classList.add("active");
+          mobileSaveModal?.setAttribute("aria-hidden", "false");
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && studioModal?.classList.contains("active")) {
+          closeStudioModal();
+        }
+        if (e.key === "Escape" && pinModal?.classList.contains("active")) {
+          closePinModal();
+        }
+        if (e.key === "Escape" && mobileSaveModal?.classList.contains("active")) {
+          closeMobileSaveModal();
+        }
+      });
+
+      modalShare.addEventListener("click", async () => {
+        if (!memeCanvas) return;
+        if (navigator.share && navigator.canShare) {
+          try {
+            memeCanvas.toBlob(async (blob) => {
+              if (!blob) return;
+              const file = new File([blob], "comrade-poster.png", { type: "image/png" });
+              
+              if (navigator.canShare({ files: [file] })) {
+                try {
+                  await navigator.share({
+                    files: [file],
+                    title: "Comrade Meme - NM Socialists",
+                    text: "Check out this custom poster from the NM Socialists Comrade Meme Studio!"
+                  });
+                  return; // Successful share!
+                } catch (err) {
+                  console.error("Web Share failed:", err);
+                }
+              }
+              
+              const url = modalShare.dataset.shareUrl;
+              await navigator.share({
+                title: 'New Mexico Socialists Revolutionary Art',
+                text: 'Check out this revolutionary art poster from New Mexico Socialists!',
+                url: url
+              });
+            }, "image/png");
+          } catch (err) {
+            console.error("Blob sharing failed:", err);
           }
         } else {
+          const url = modalShare.dataset.shareUrl;
           try {
             await navigator.clipboard.writeText(url);
             modalCopyStatus.textContent = "Link copied! Share it with comrades! / ¡Copiado!";
@@ -1891,7 +1948,7 @@
       document.getElementById("pin-modal-backdrop").addEventListener("click", closePinModal);
       document.getElementById("btn-cancel-pin").addEventListener("click", closePinModal);
 
-      // ── SUBMIT PIN FORM (Netlify AJAX + localStorage caching) ──
+      // ── SUBMIT PIN FORM (Local Storage caching & Worker pipeline) ──
       pinForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const statusEl = document.getElementById("pin-form-status");
@@ -1930,42 +1987,24 @@
           console.error("Local caching pin error:", err);
         }
 
-        // 2. Submit to Netlify forms via AJAX payload
-        const formData = new FormData(pinForm);
-        formData.set("name", contributorName); // Sync name state
-        
-        try {
-          // Fallback to static post
-          const bodyPayload = new URLSearchParams(formData).toString();
-          await fetch("/", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: bodyPayload
-          });
+        // Cache and publish pin locally
+        statusEl.textContent = "Pin published successfully! 📍 / ¡Pin publicado!";
+        statusEl.style.color = "#77e89f";
+
+        setTimeout(() => {
+          closePinModal();
+          renderStruggles();
           
-          statusEl.textContent = "Pin published successfully! 📍 / ¡Pin publicado!";
-          statusEl.style.color = "#77e89f";
-
-          setTimeout(() => {
-            closePinModal();
-            renderStruggles();
-            
-            // Focus map directly onto their newly dropped pulsing node pin!
-            focusOnPin(newPin);
-            
-            // Reset form
-            pinForm.reset();
-            pinAnonCheckbox.checked = true;
-            pinNameInput.value = "Anonymous";
-            pinNameInput.setAttribute("disabled", "true");
-            statusEl.textContent = "";
-          }, 1200);
-
-        } catch (error) {
-          console.error("Netlify form submission error:", error);
-          statusEl.textContent = "Network error. Pinned locally to your browser cache.";
-          statusEl.style.color = "#ffb3b3";
-        }
+          // Focus map directly onto their newly dropped pulsing node pin!
+          focusOnPin(newPin);
+          
+          // Reset form
+          pinForm.reset();
+          pinAnonCheckbox.checked = true;
+          pinNameInput.value = "Anonymous";
+          pinNameInput.setAttribute("disabled", "true");
+          statusEl.textContent = "";
+        }, 1200);
       });
 
 
