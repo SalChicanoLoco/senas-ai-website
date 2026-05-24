@@ -1,0 +1,23 @@
+# Global security headers & redirect prevention (HSTS)
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# Prevent caching of index and sub-HTML pages so updates deploy immediately
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Long-term aggressive caching for stylesheet assets
+/assets/css/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Long-term aggressive caching for JavaScript assets
+/assets/js/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Long-term aggressive caching for image assets (Memes, TPU overlays, graphics)
+/assets/img/*
+  Cache-Control: public, max-age=31536000, immutable
