@@ -901,84 +901,68 @@
         </p>
 
         <div class="donate-options">
-          <form id="pledge-form" class="donate-card card" method="POST">
-            <h4 class="en-only">💳 Secure Pledge Contribution</h4>
-            <h4 class="es-only">💳 Coordinar Contribución Solidaria</h4>
-            <p style="margin-bottom: 1.25rem; font-size:0.85rem;" class="en-only">
-              We process donations as manual offline pledges to protect your security. Enter your details, and Salvador Sena will reach out shortly to coordinate Venmo, Cash App, PayPal, or check details.
+          <div class="donate-card card primary-support-card">
+            <h4 class="en-only">✊ Solidarity Funding &amp; Creator Support</h4>
+            <h4 class="es-only">✊ Financiamiento Solidario y Apoyo al Creador</h4>
+            
+            <!-- IRS Stall Notice -->
+            <div class="warning-callout">
+              <span class="warning-icon">⚠️</span>
+              <div class="warning-text">
+                <p class="en-only" style="margin: 0; font-size: 0.8rem; line-height: 1.5; font-weight: 600;">
+                  <strong>IRS Bank Processing Stall:</strong> Our official 501(c)(3) banking accounts are temporarily delayed due to IRS non-profit processing queues. To keep our movement active—covering flyer printing, meeting space rentals, and server maintenance out-of-pocket—please route support directly to our lead developer and organizer, <strong>Salvador Sena</strong>.
+                </p>
+                <p class="es-only" style="margin: 0; font-size: 0.8rem; line-height: 1.5; font-weight: 600;">
+                  <strong>Retraso en el IRS y Cuentas Bancarias:</strong> Nuestras cuentas bancarias oficiales 501(c)(3) están demoradas temporalmente por los tiempos de procesamiento del IRS. Para mantener activa la lucha (cubriendo folletos bilingües, alquiler de espacios y servidores), envía tu apoyo directamente a nuestro organizador y desarrollador, <strong>Salvador Sena</strong>.
+                </p>
+              </div>
+            </div>
+
+            <p class="en-only" style="margin: 1.25rem 0; font-size: 0.88rem; line-height: 1.6;">
+              Select a payment channel below to support Salvador directly. Your support powers grassroot organizing across Nuevo México!
             </p>
-            <p style="margin-bottom: 1.25rem; font-size:0.85rem;" class="es-only">
-              Procesamos las donaciones como compromisos manuales fuera de línea para proteger tu seguridad. Salvador Sena te contactará en breve para coordinar Venmo, Cash App, PayPal o cheques.
+            <p class="es-only" style="margin: 1.25rem 0; font-size: 0.88rem; line-height: 1.6;">
+              Selecciona un canal de pago a continuación para apoyar directamente a Salvador. ¡Tu solidaridad impulsa la organización de base en Nuevo México!
             </p>
 
-            <!-- Frequency Selector -->
-            <div class="pledge-frequency-selector">
-              <button type="button" class="freq-tab active" data-freq="one-time">One-Time / Una vez</button>
-              <button type="button" class="freq-tab" data-freq="monthly">Monthly / Mensual</button>
-              <input type="hidden" name="frequency" id="pledge-frequency" value="one-time" />
+            <div class="payment-channels-grid">
+              <!-- CASH APP -->
+              <a href="https://cash.app/$SalvadorSena" target="_blank" rel="noopener noreferrer" class="payment-capsule btn-cashapp" data-platform="cashapp">
+                <svg class="payment-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <div class="payment-text">
+                  <span class="payment-title">Cash App</span>
+                  <span class="payment-handle">$SalvadorSena</span>
+                </div>
+              </a>
+
+              <!-- VENMO -->
+              <a href="https://venmo.com/Salvador-sena-1" target="_blank" rel="noopener noreferrer" class="payment-capsule btn-venmo" data-platform="venmo">
+                <svg class="payment-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.6 3h-3.8l-5.6 13.2L6.8 3H3l7.6 18h3.8L19.6 3z"/>
+                </svg>
+                <div class="payment-text">
+                  <span class="payment-title">Venmo</span>
+                  <span class="payment-handle">@Salvador-sena-1</span>
+                </div>
+              </a>
+
+              <!-- PAYPAL -->
+              <a href="https://paypal.me/SalvadorSena781" target="_blank" rel="noopener noreferrer" class="payment-capsule btn-paypal" data-platform="paypal">
+                <svg class="payment-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 7.5c0 .3-.1.7-.2 1-.5 2-1.8 3.5-3.8 4.2-.7.2-1.5.3-2.3.3h-2.1c-.4 0-.7.3-.8.7L9.4 20c0 .3-.3.5-.6.5H5.2c-.3 0-.5-.3-.4-.6l3-15c.1-.4.4-.7.8-.7h6.6c1.1 0 2.1.2 3 .7.9.5 1.4 1.2 1.6 2.1.1.2.2.5.2.8z"/>
+                </svg>
+                <div class="payment-text">
+                  <span class="payment-title">PayPal</span>
+                  <span class="payment-handle">@SalvadorSena781</span>
+                </div>
+              </a>
             </div>
 
-            <!-- Platform Selector -->
-            <div class="field">
-              <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Payment Method / Método de Pago</label>
-              <div class="platform-grid">
-                <button type="button" class="platform-capsule" data-platform="venmo">
-                  <span class="icon">📱</span>
-                  <span>Venmo</span>
-                </button>
-                <button type="button" class="platform-capsule" data-platform="cashapp">
-                  <span class="icon">💸</span>
-                  <span>Cash App</span>
-                </button>
-                <button type="button" class="platform-capsule" data-platform="paypal">
-                  <span class="icon">💳</span>
-                  <span>PayPal</span>
-                </button>
-                <button type="button" class="platform-capsule" data-platform="check">
-                  <span class="icon">✉️</span>
-                  <span>Check</span>
-                </button>
-                <button type="button" class="platform-capsule" data-platform="other">
-                  <span class="icon">🤝</span>
-                  <span>Other</span>
-                </button>
-              </div>
-              <input type="hidden" name="platform" id="pledge-platform" value="" required />
-            </div>
-
-            <!-- Amount Selector Group -->
-            <div class="field amount-selector-group">
-              <label style="font-weight: 700; margin-bottom: 0.25rem; display: block;">Pledge Amount / Cantidad de Contribución</label>
-              <div class="amount-presets">
-                <button type="button" class="amount-preset" data-amount="10">$10</button>
-                <button type="button" class="amount-preset" data-amount="25">$25</button>
-                <button type="button" class="amount-preset" data-amount="50">$50</button>
-                <button type="button" class="amount-preset" data-amount="100">$100</button>
-              </div>
-              <div class="custom-amount-wrapper">
-                <span class="currency-symbol">$</span>
-                <input type="number" id="pledge-amount" name="amount" min="1" step="any" placeholder="Custom Amount / Otra cantidad" required />
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="pledge-name">Name / Nombre</label>
-              <input type="text" id="pledge-name" name="name" placeholder="Your Name / Tu nombre" required />
-            </div>
-
-            <div class="field">
-              <label for="pledge-email">Email / Correo electrónico</label>
-              <input type="email" id="pledge-email" name="email" placeholder="you@example.com" required />
-            </div>
-
-            <div class="field">
-              <label for="pledge-message">Message / Mensaje (Optional / Opcional)</label>
-              <textarea id="pledge-message" name="message" rows="3" placeholder="Solidarity note or coordination instructions..."></textarea>
-            </div>
-
-            <button type="submit" class="btn primary full-width">Send Pledge / Enviar Compromiso</button>
-            <p id="pledge-status" class="status-msg" style="margin-top: 1rem; text-align: center;"></p>
-          </form>
+            <p id="pledge-status" class="status-msg" style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: hsl(var(--color-sky)); display: none;"></p>
+          </div>
 
           <div class="donate-card card">
             <h4>📬 Mail a Check / Enviar un Cheque</h4>
@@ -1021,7 +1005,7 @@
         <aside class="portal-sidebar">
           <button class="portal-nav-btn active" data-target="panel-dash">📊 Overview Dashboard</button>
           <button class="portal-nav-btn" data-target="panel-forms">📬 Contact Signups</button>
-          <button class="portal-nav-btn" data-target="panel-pledges">💳 Offline Pledges</button>
+          <button class="portal-nav-btn" data-target="panel-pledges">💳 Creator Support Log</button>
           <button class="portal-nav-btn" data-target="panel-pins">📍 Storymap Pins</button>
           <button class="portal-nav-btn" data-target="panel-settings">⚙ Credentials Config</button>
         </aside>
@@ -1037,7 +1021,7 @@
               </div>
               <div class="stat-card">
                 <div class="stat-val" id="dash-pledges-count">0</div>
-                <div class="stat-label">Offline Pledges</div>
+                <div class="stat-label">Donation Support Clicks</div>
               </div>
               <div class="stat-card">
                 <div class="stat-val" id="dash-pins-count">0</div>
@@ -1048,7 +1032,7 @@
             <div class="card" style="margin-top:1.5rem;">
               <h4>✊ Browser Sandboxed Storage Active</h4>
               <p style="margin-top: 0.5rem; line-height: 1.6; font-size: 0.9rem;">
-                All credentials, signups, pledges, and custom storymap nodes are cached strictly in your browser's private local database (`localStorage`). This respects offline capability, prevents cloud credit burn, and ensures complete cyber integrity.
+                All credentials, signups, direct contribution clicks, and custom storymap nodes are cached strictly in your browser's private local database (`localStorage`). This respects offline capability, prevents cloud credit burn, and ensures complete cyber integrity.
               </p>
             </div>
           </div>
@@ -1064,12 +1048,12 @@
             </div>
           </div>
 
-          <!-- PANEL: PLEDGES -->
+          <!-- PANEL: CREATOR SUPPORT PORTAL CLICKS -->
           <div id="panel-pledges" class="portal-tab-panel">
             <div class="card">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                <h4>💳 Solidarity Pledges Received</h4>
-                <button class="btn secondary tiny" id="btn-clear-pledges">Clear Pledges</button>
+                <h4>💳 Creator Donation Channels Click Log</h4>
+                <button class="btn secondary tiny" id="btn-clear-pledges">Clear Clicks Log</button>
               </div>
               <div class="crystals-grid-scroll" id="portal-pledges-list" style="max-height: 300px; overflow-y:auto; font-size:0.85rem; border:1px solid hsl(var(--border-light)); padding:0.5rem; border-radius:6px; background:#050505;"></div>
             </div>

@@ -1445,134 +1445,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // B. Solidarity offline pledges system
-  const pledgeForm = document.getElementById("pledge-form");
+  // B. Solidarity direct creator payment click tracking
   const pledgeStatus = document.getElementById("pledge-status");
-  const frequencyInput = document.getElementById("pledge-frequency");
-  const platformInput = document.getElementById("pledge-platform");
-  const amountInput = document.getElementById("pledge-amount");
-
-  // Toggle frequency buttons
-  pledgeForm?.querySelectorAll(".freq-tab").forEach(btn => {
-    btn.addEventListener("click", () => {
-      pledgeForm.querySelectorAll(".freq-tab").forEach(t => t.classList.remove("active"));
-      btn.classList.add("active");
-      if (frequencyInput) frequencyInput.value = btn.dataset.freq;
-    });
-  });
-
-  // Toggle platform buttons
-  pledgeForm?.querySelectorAll(".platform-capsule").forEach(btn => {
-    btn.addEventListener("click", () => {
-      pledgeForm.querySelectorAll(".platform-capsule").forEach(p => p.classList.remove("active"));
-      btn.classList.add("active");
-      if (platformInput) platformInput.value = btn.dataset.platform;
-    });
-  });
-
-  // Toggle preset amount buttons
-  pledgeForm?.querySelectorAll(".amount-preset").forEach(btn => {
-    btn.addEventListener("click", () => {
-      pledgeForm.querySelectorAll(".amount-preset").forEach(p => p.classList.remove("active"));
-      btn.classList.add("active");
-      if (amountInput) amountInput.value = btn.dataset.amount;
-    });
-  });
-
-  // Reset preset button if user types custom amount
-  amountInput?.addEventListener("input", () => {
-    pledgeForm?.querySelectorAll(".amount-preset").forEach(p => p.classList.remove("active"));
-  });
-
-  pledgeForm?.addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    if (!platformInput || !platformInput.value) {
-      if (pledgeStatus) {
-        pledgeStatus.textContent = "Please select a payment method / Elige un método de pago";
-        pledgeStatus.style.color = "#ffb3b3";
-      }
-      return;
-    }
-
-    if (pledgeStatus) {
-      pledgeStatus.textContent = "Registering pledge / Registrando compromiso...";
-      pledgeStatus.style.color = "hsl(38, 85%, 48%)";
-    }
-
-    const payload = {
-      name: document.getElementById("pledge-name").value.trim(),
-      email: document.getElementById("pledge-email").value.trim(),
-      amount: parseFloat(amountInput.value),
-      frequency: frequencyInput ? frequencyInput.value : "one-time",
-      platform: platformInput.value,
-      message: document.getElementById("pledge-message").value.trim(),
-      timestamp: new Date().toISOString()
-    };
-
-    // 1. Cache strictly in Local Storage
-    try {
-      const cached = JSON.parse(localStorage.getItem("local_comrade_pledges") || "[]");
-      cached.push(payload);
-      localStorage.setItem("local_comrade_pledges", JSON.stringify(cached));
-    } catch(err) {
-      console.error("Local pledges storage fail:", err);
-    }
-
-    // 2. Refresh Portal list
-    renderPortalLists();
-
-    // 3. Try server POST with fallback mailto triggers
-    try {
-      const response = await fetch("/api/pledge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+  document.querySelectorAll(".payment-capsule").forEach(capsule => {
+    capsule.addEventListener("click", function() {
+      const platform = this.dataset.platform;
       
-      const result = await response.json();
-      if (response.ok) {
-        if (pledgeStatus) {
-          pledgeStatus.textContent = result.message || "Pledge coordinated! Salvador Sena will reach out soon.";
-          pledgeStatus.style.color = "hsl(var(--color-sky))";
-        }
-        pledgeForm.reset();
-        // Reset classes
-        pledgeForm.querySelectorAll(".freq-tab").forEach(t => t.classList.remove("active"));
-        pledgeForm.querySelectorAll(".platform-capsule").forEach(t => t.classList.remove("active"));
-        pledgeForm.querySelectorAll(".amount-preset").forEach(t => t.classList.remove("active"));
-        pledgeForm.querySelectorAll(".freq-tab")[0].classList.add("active");
-        if (frequencyInput) frequencyInput.value = "one-time";
-      } else {
-        throw new Error(result.message || "Pledge sync failed");
-      }
-    } catch(err) {
-      // Trigger a direct mailto coordinator to Salvador Sena securely as credit-safe fallback
-      const mailSubject = encodeURIComponent(`[NM Socialists Pledge] Contribution: $${payload.amount} via ${payload.platform}`);
-      const mailBody = encodeURIComponent(
-        `Comrade coordinator Salvador Sena,\n\n` +
-        `I would like to finalize my solidarity offline pledge of $${payload.amount} (${payload.frequency}) via ${payload.platform}.\n\n` +
-        `Contributor Details:\n` +
-        `- Name: ${payload.name}\n` +
-        `- Email: ${payload.email}\n` +
-        `- Note: ${payload.message || "None"}\n\n` +
-        `Please reach out to coordinate Venmo/PayPal or cash details.\n\n` +
-        `In solidarity,\n${payload.name}`
-      );
-      
-      window.location.href = `mailto:salvadorsena@senacolectivo.com?subject=${mailSubject}&body=${mailBody}`;
+      const payload = {
+        name: "Anonymous Comrade",
+        email: "direct-support-click@nmsocialists.org",
+        amount: 0, // Mark as direct link support click
+        frequency: "one-time",
+        platform: platform,
+        message: `Clicked direct personal support link for ${platform.toUpperCase()}`,
+        timestamp: new Date().toISOString()
+      };
 
+      // 1. Cache click locally in Local Storage
+      try {
+        const cached = JSON.parse(localStorage.getItem("local_comrade_pledges") || "[]");
+        cached.push(payload);
+        localStorage.setItem("local_comrade_pledges", JSON.stringify(cached));
+      } catch(err) {
+        console.error("Local contribution log fail:", err);
+      }
+
+      // 2. Refresh Portal list
+      renderPortalLists();
+
+      // 3. Show micro-interaction bilingual feedback
       if (pledgeStatus) {
-        pledgeStatus.textContent = "Offline Mailer Triggered! Securely registered in browser storage.";
+        pledgeStatus.style.display = "block";
+        pledgeStatus.textContent = `Launching ${platform.toUpperCase()}... Thank you for your support! / ¡Abriendo ${platform.toUpperCase()}... ¡Gracias por tu apoyo!`;
         pledgeStatus.style.color = "hsl(var(--color-sky))";
+        setTimeout(() => {
+          pledgeStatus.style.display = "none";
+        }, 5000);
       }
-      pledgeForm.reset();
-      pledgeForm.querySelectorAll(".freq-tab").forEach(t => t.classList.remove("active"));
-      pledgeForm.querySelectorAll(".platform-capsule").forEach(t => t.classList.remove("active"));
-      pledgeForm.querySelectorAll(".amount-preset").forEach(t => t.classList.remove("active"));
-      pledgeForm.querySelectorAll(".freq-tab")[0].classList.add("active");
-      if (frequencyInput) frequencyInput.value = "one-time";
-    }
+    });
   });
 
 
@@ -1645,18 +1555,25 @@ document.addEventListener("DOMContentLoaded", () => {
     // Render Solidarity Pledges list
     if (listPledges) {
       if (pledges.length === 0) {
-        listPledges.innerHTML = `<div style="padding:1rem; text-align:center; color:hsl(var(--text-muted));">No pledges locally coordinated.</div>`;
+        listPledges.innerHTML = `<div style="padding:1rem; text-align:center; color:hsl(var(--text-muted));">No direct support link clicks logged.</div>`;
       } else {
-        listPledges.innerHTML = pledges.map((p, i) => `
-          <div style="border-bottom:1px solid hsl(var(--border-light)); padding:0.5rem 0; font-family:var(--font-mono); display:flex; justify-content:space-between; align-items:start;">
-            <div>
-              <div style="font-weight:700; color:hsl(var(--color-secondary));">${i+1}. Pledge $${p.amount} (${p.frequency})</div>
-              <div style="color:#fff; font-size:0.78rem;">${p.name} &lt;${p.email}&gt; · Method: ${p.platform}</div>
-              ${p.message ? `<div style="color:hsl(var(--text-muted)); font-size:0.72rem; margin-top:0.2rem;">Note: "${p.message}"</div>` : ""}
+        listPledges.innerHTML = pledges.map((p, i) => {
+          const isClickLog = (p.amount === 0);
+          return `
+            <div style="border-bottom:1px solid hsl(var(--border-light)); padding:0.5rem 0; font-family:var(--font-mono); display:flex; justify-content:space-between; align-items:start;">
+              <div>
+                <div style="font-weight:700; color:hsl(var(--color-secondary));">
+                  ${i+1}. ${isClickLog ? `Launched ${p.platform.toUpperCase()} Portal` : `Pledge $${p.amount} (${p.frequency})`}
+                </div>
+                <div style="color:#fff; font-size:0.78rem;">
+                  ${isClickLog ? `Anonymous Comrade · Platform: ${p.platform}` : `${p.name} &lt;${p.email}&gt; · Method: ${p.platform}`}
+                </div>
+                ${p.message ? `<div style="color:hsl(var(--text-muted)); font-size:0.72rem; margin-top:0.2rem;">Action: "${p.message}"</div>` : ""}
+              </div>
+              <span style="font-size:0.7rem; color:hsl(var(--text-muted));">${new Date(p.timestamp).toLocaleString()}</span>
             </div>
-            <span style="font-size:0.7rem; color:hsl(var(--text-muted));">${new Date(p.timestamp).toLocaleString()}</span>
-          </div>
-        `).join("");
+          `;
+        }).join("");
       }
     }
 

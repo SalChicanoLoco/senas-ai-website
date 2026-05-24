@@ -1551,13 +1551,23 @@ main {
     padding: 1rem 1.5rem;
   }
   .site-nav {
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    width: 100%;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 0.5rem !important;
+    padding-bottom: 0.4rem !important;
+    width: 100% !important;
+    scrollbar-width: none !important; /* Hide scrollbars for Firefox */
+  }
+  .site-nav::-webkit-scrollbar {
+    display: none !important; /* Hide scrollbars for Chrome/Safari */
   }
   .site-nav a {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.68rem;
+    flex: 0 0 auto !important;
+    padding: 0.45rem 0.8rem !important;
+    font-size: 0.72rem !important;
+    border-radius: var(--radius-pill) !important;
   }
   .section {
     padding: 2rem 1.5rem;
@@ -2147,4 +2157,121 @@ main {
 .reader-modal-body li {
   margin-bottom: 0.5rem;
 }
+}
+
+/* ── WARNING CALLOUT (IRS PAPERWORK STALL BANNERS) ── */
+.warning-callout {
+  display: flex;
+  gap: 0.85rem;
+  background: hsla(38, 90%, 50%, 0.08) !important;
+  border: 1px solid hsla(38, 90%, 50%, 0.3) !important;
+  padding: 0.85rem 1.15rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  align-items: flex-start;
+  text-align: left;
+}
+
+.warning-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+/* ── SOLIDARITY PAYMENT PORTALS ── */
+.payment-channels-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.payment-capsule {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  padding: 0.95rem 1.25rem;
+  border-radius: var(--radius-card);
+  text-decoration: none;
+  background: hsla(var(--bg-base) / 0.7);
+  border: 1px solid hsla(var(--text-primary) / 0.08);
+  color: hsl(var(--text-primary));
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: all var(--transition-smooth);
+  cursor: pointer;
+}
+
+.payment-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  stroke-width: 2.2px;
+  transition: transform var(--transition-smooth), color var(--transition-smooth);
+}
+
+.payment-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: left;
+}
+
+.payment-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.payment-handle {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: hsl(var(--text-muted));
+}
+
+/* BRAND COLOR INJECTIONS WITH GLOWS */
+.btn-cashapp {
+  border-left: 4px solid #00d632;
+}
+.btn-cashapp:hover {
+  background: hsla(134, 100%, 42%, 0.08) !important;
+  border-color: #00d632 !important;
+  box-shadow: 0 0 15px rgba(0, 214, 50, 0.25), inset 0 0 8px rgba(0, 214, 50, 0.1);
+}
+.btn-cashapp:hover .payment-icon {
+  color: #00d632;
+  transform: scale(1.1);
+}
+
+.btn-venmo {
+  border-left: 4px solid #008cff;
+}
+.btn-venmo:hover {
+  background: hsla(207, 100%, 50%, 0.08) !important;
+  border-color: #008cff !important;
+  box-shadow: 0 0 15px rgba(0, 140, 255, 0.25), inset 0 0 8px rgba(0, 140, 255, 0.1);
+}
+.btn-venmo:hover .payment-icon {
+  color: #008cff;
+  transform: scale(1.1);
+}
+
+.btn-paypal {
+  border-left: 4px solid #003087;
+}
+.btn-paypal:hover {
+  background: hsla(218, 100%, 35%, 0.1) !important;
+  border-color: #0079c1 !important;
+  box-shadow: 0 0 15px rgba(0, 121, 193, 0.25), inset 0 0 8px rgba(0, 121, 193, 0.1);
+}
+.btn-paypal:hover .payment-icon {
+  color: #0079c1;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .donate-options {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
 }
