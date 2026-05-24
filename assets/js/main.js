@@ -298,6 +298,11 @@ document.addEventListener("DOMContentLoaded", () => {
       el.style.display = lang === "es" ? "" : "none";
     });
 
+    // Re-render Virtual Polaroid Wall if defined
+    if (typeof renderVirtualWall === "function") {
+      renderVirtualWall();
+    }
+
     // Update active book reader contents bilingually if visible
     const readerOverlay = document.getElementById("book-reader-overlay");
     if (readerOverlay && readerOverlay.classList.contains("active")) {
@@ -1228,11 +1233,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Live RSS feeds async downloader utilizing allorigins CORS proxy
   const rssFeeds = [
-    { source: "SWOP Org", url: "https://www.swop.net/feed", category: "land" },
-    { source: "La Jicarita", url: "https://lajicarita.wordpress.com/feed/", category: "land" },
+    { source: "Jacobin", url: "https://jacobin.com/feed/", category: "socialist" },
+    { source: "The Nation", url: "https://www.thenation.com/feed/", category: "socialist" },
+    { source: "Common Dreams", url: "https://www.commondreams.org/feed", category: "socialist" },
+    { source: "Labor Notes", url: "https://labornotes.org/feed", category: "labor" },
+    { source: "Payday Report", url: "https://paydayreport.com/feed/", category: "labor" },
+    { source: "Peoples World", url: "https://www.peoplesworld.org/feed/", category: "socialist" },
+    { source: "Liberation News", url: "https://www.liberationnews.org/feed/", category: "socialist" },
+    { source: "Democracy Now!", url: "https://www.democracynow.org/democracynow.rss", category: "labor" },
     { source: "Searchlight NM", url: "https://searchlightnm.org/feed/", category: "local" },
-    { source: "Peoples World", url: "https://www.peoplesworld.org/feed/", category: "labor" },
-    { source: "Liberation News", url: "https://www.liberationnews.org/feed/", category: "socialist" }
+    { source: "La Jicarita", url: "https://lajicarita.wordpress.com/feed/", category: "land" },
+    { source: "SWOP Org", url: "https://www.swop.net/feed", category: "land" }
   ];
 
   async function fetchNewsFeedAggregator() {
@@ -2230,4 +2241,596 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 500);
     }, 6000);
   }
+
+  // ==========================================================================
+  // 🖼️ VIRTUAL COLLABORATIVE ART WALL & COMRADE DISCUSSIONS SYSTEM
+  // ==========================================================================
+
+  // 1. Data Presets for the 12 premium artworks
+  const defaultShowcaseArt = [
+    {
+      id: "art-preset-12",
+      image: "assets/img/meme_12.png",
+      titleEn: "Peoples Food Sovereignty",
+      titleEs: "Soberanía Alimentaria del Pueblo",
+      category: "land",
+      author: "GreenhouseRebel",
+      date: "2026-05-23",
+      descriptionEn: "Our Community Compute Greenhouse captures server heat to grow local vegetables bilingually.",
+      descriptionEs: "El Invernadero Computacional captura calor de servidores para cultivar verduras bilingües.",
+      rot: "0.5deg"
+    },
+    {
+      id: "art-preset-1",
+      image: "assets/img/meme_1.png",
+      titleEn: "Workers Direct Action",
+      titleEs: "Acción Directa Obrera",
+      category: "labor",
+      author: "Compañero Carlos",
+      date: "2026-05-01",
+      descriptionEn: "True power comes from solidarity and organized labor strikes. Power to the working class!",
+      descriptionEs: "¡El verdadero poder proviene de la solidaridad y de las huelgas organizadas. Poder para la clase obrera!",
+      rot: "-2deg"
+    },
+    {
+      id: "art-preset-2",
+      image: "assets/img/meme_2.png",
+      titleEn: "Organize the Unorganized",
+      titleEs: "Organizar a los No Organizados",
+      category: "labor",
+      author: "Unionize505",
+      date: "2026-04-20",
+      descriptionEn: "Every shop, every warehouse, every office deserves a union. Stand together!",
+      descriptionEs: "Cada taller, cada almacén, cada oficina merece un sindicato. ¡Uníos!",
+      rot: "1.5deg"
+    },
+    {
+      id: "art-preset-3",
+      image: "assets/img/meme_3.png",
+      titleEn: "Hanover Zinc Miners",
+      titleEs: "Mineros de Hanover Zinc",
+      category: "labor",
+      author: "Local 890 Legacy",
+      date: "2026-05-10",
+      descriptionEn: "Honoring the historic Mexican-American wives' picket lines of the 1950 Empire Zinc Strike.",
+      descriptionEs: "Honrando el histórico piquete de las esposas mexicoamericanas en la huelga Empire Zinc de 1950.",
+      rot: "-1.2deg"
+    },
+    {
+      id: "art-preset-4",
+      image: "assets/img/meme_4.png",
+      titleEn: "No War But Class War",
+      titleEs: "No Más Guerra Que La de Clases",
+      category: "antiwar",
+      author: "AntiImperialistNM",
+      date: "2026-05-18",
+      descriptionEn: "Resources for healthcare, housing, and education—not foreign bombs or militarism.",
+      descriptionEs: "Recursos para salud, vivienda y educación; no bombas extranjeras ni militarismo.",
+      rot: "2deg"
+    },
+    {
+      id: "art-preset-5",
+      image: "assets/img/meme_5.png",
+      titleEn: "Land Back & Stewardship",
+      titleEs: "Devolución de Tierras",
+      category: "land",
+      author: "IndigenousFront",
+      date: "2026-05-15",
+      descriptionEn: "Restoring land sovereignty, ancestral rights, and ecological conservation to Native communities.",
+      descriptionEs: "Restableciendo la soberanía de la tierra, derechos ancestrales y ecología a las comunidades nativas.",
+      rot: "-2.5deg"
+    },
+    {
+      id: "art-preset-6",
+      image: "assets/img/meme_6.png",
+      titleEn: "Water is Life",
+      titleEs: "El Agua es de la Gente",
+      category: "land",
+      author: "AcequiaComadre",
+      date: "2026-05-22",
+      descriptionEn: "Taos acequias run deep. Protect community water rights from corporate privatization.",
+      descriptionEs: "Las acequias de Taos son profundas. Protege el agua comunitaria de la privatización corporativa.",
+      rot: "1deg"
+    },
+    {
+      id: "art-preset-7",
+      image: "assets/img/meme_7.png",
+      titleEn: "Mutual Aid is Solidarity",
+      titleEs: "Apoyo Mutuo es Solidaridad",
+      category: "mutualaid",
+      author: "BarelasComrade",
+      date: "2026-05-02",
+      descriptionEn: "Mutual aid is not charity; it is the direct cooperative action of neighbors protecting neighbors.",
+      descriptionEs: "El apoyo mutuo no es caridad; es la acción cooperativa directa de vecinos protegiendo a vecinos.",
+      rot: "-1.8deg"
+    },
+    {
+      id: "art-preset-8",
+      image: "assets/img/meme_8.png",
+      titleEn: "Health is a Common Right",
+      titleEs: "La Salud es un Derecho Común",
+      category: "mutualaid",
+      author: "MedicaSocialista",
+      date: "2026-04-30",
+      descriptionEn: "Universal healthcare is not a luxury or a corporate commodity. It belongs to the people.",
+      descriptionEs: "La salud universal no es un lujo ni una mercancía corporativa. Le pertenece al pueblo.",
+      rot: "2.2deg"
+    },
+    {
+      id: "art-preset-9",
+      image: "assets/img/meme_9.png",
+      titleEn: "Housing For All",
+      titleEs: "Vivienda Digna Común",
+      category: "mutualaid",
+      author: "BurqueTenant",
+      date: "2026-05-05",
+      descriptionEn: "Housing is a human necessity. Stop gentrification, luxury conversions, and predatory landlords.",
+      descriptionEs: "La vivienda es una necesidad humana. Alto a la gentrificación y a los caseros codiciosos.",
+      rot: "-1.5deg"
+    },
+    {
+      id: "art-preset-10",
+      image: "assets/img/meme_10.png",
+      titleEn: "Protect Our Sacred Lands",
+      titleEs: "Protege Nuestras Tierras",
+      category: "land",
+      author: "SierraGuard",
+      date: "2026-05-12",
+      descriptionEn: "Activist defense against mining exploration and luxury gentrification in Organ Mountains.",
+      descriptionEs: "Defensa activista contra la explotación minera y gentrificación en la Sierra de los Órganos.",
+      rot: "1.8deg"
+    },
+    {
+      id: "art-preset-11",
+      image: "assets/img/meme_11.png",
+      titleEn: "Books Not Bombs",
+      titleEs: "Libros No Bombas",
+      category: "antiwar",
+      author: "BibliotecaSals",
+      date: "2026-05-14",
+      descriptionEn: "Fund community study circles, political libraries, and youth education—not the war machine.",
+      descriptionEs: "Financia círculos de estudio comunitarios, bibliotecas populares y educación obrera; no la guerra.",
+      rot: "-2.2deg"
+    }
+  ];
+
+  // 2. Pre-populate default comments for specific presets so the wall feels alive instantly
+  const defaultCommentsMap = {
+    "art-preset-12": [
+      { author: "CompaSena", text: "This aquaponics loop is revolutionary. We need a pilot in Barelas!", date: new Date(Date.now() - 3 * 3600000).toISOString() },
+      { author: "Ecosocialist", text: "Compute heat integration saves so much energy. Brilliant design.", date: new Date(Date.now() - 24 * 3600000).toISOString() }
+    ],
+    "art-preset-1": [
+      { author: "LaborProud", text: "Solidarity forever! Organizing my local coffee shop next week.", date: new Date(Date.now() - 5 * 3600000).toISOString() },
+      { author: "ChicanoLoco", text: "May Day marches in Santa Fe were incredible. Keep this energy going!", date: new Date(Date.now() - 48 * 3600000).toISOString() }
+    ]
+  };
+
+  // Initialize Showcase database in LocalStorage
+  if (!localStorage.getItem("local_comrade_showcase")) {
+    localStorage.setItem("local_comrade_showcase", JSON.stringify(defaultShowcaseArt));
+    
+    // Set default comments
+    Object.keys(defaultCommentsMap).forEach(key => {
+      localStorage.setItem(`local_showcase_comments_${key}`, JSON.stringify(defaultCommentsMap[key]));
+    });
+  }
+
+  // Active wall states
+  let activeFilterCategory = "all";
+  let selectedArtThreadId = null;
+
+  // DOM Elements for showcase
+  const showcaseMasonryWall = document.getElementById("showcase-masonry-wall");
+  const showcaseUploadModal = document.getElementById("showcase-upload-modal");
+  const showcaseUploadBackdrop = document.getElementById("showcase-upload-backdrop");
+  const showcaseThreadModal = document.getElementById("showcase-thread-modal");
+  const showcaseThreadBackdrop = document.getElementById("showcase-thread-backdrop");
+
+  const btnOpenShowcaseUpload = document.getElementById("btn-open-showcase-upload");
+  const btnCloseShowcaseUpload = document.getElementById("btn-close-showcase-upload");
+  const btnCancelShowcaseUpload = document.getElementById("btn-cancel-showcase-upload");
+  const btnStudioShortcut = document.getElementById("btn-studio-shortcut");
+
+  const showcaseUploadForm = document.getElementById("showcase-upload-form");
+  const showcaseArtTitle = document.getElementById("showcase-art-title");
+  const showcaseArtCategory = document.getElementById("showcase-art-category");
+  const showcaseArtDescription = document.getElementById("showcase-art-description");
+  const showcaseArtAuthor = document.getElementById("showcase-art-author");
+  const showcaseArtAnon = document.getElementById("showcase-art-anon");
+  const showcaseArtFile = document.getElementById("showcase-art-file");
+  const btnShowcaseArtFileTrigger = document.getElementById("btn-showcase-art-file-trigger");
+  const showcaseArtFileName = document.getElementById("showcase-art-file-name");
+  const showcaseUploadStatus = document.getElementById("showcase-upload-status");
+
+  // Thread detail elements
+  const btnCloseShowcaseThread = document.getElementById("btn-close-showcase-thread");
+  const btnCloseShowcaseThreadDesktop = document.getElementById("btn-close-showcase-thread-desktop");
+  const threadArtImage = document.getElementById("thread-art-image");
+  const threadArtBadge = document.getElementById("thread-art-badge");
+  const threadArtTitle = document.getElementById("thread-art-title");
+  const threadArtAuthor = document.getElementById("thread-art-author");
+  const threadArtDate = document.getElementById("thread-art-date");
+  const threadArtDesc = document.getElementById("thread-art-desc");
+  const threadCommentsContainer = document.getElementById("thread-comments-container");
+  const threadCommentForm = document.getElementById("thread-comment-form");
+  const threadCommentAuthor = document.getElementById("thread-comment-author");
+  const threadCommentText = document.getElementById("thread-comment-text");
+
+  // Helper mapping for category labels
+  const categoryLabels = {
+    en: {
+      labor: "Labor Struggles",
+      land: "Land & Water",
+      antiwar: "Anti-War",
+      mutualaid: "Mutual Aid"
+    },
+    es: {
+      labor: "Lucha Obrera",
+      land: "Tierra y Acequias",
+      antiwar: "Anti-guerra",
+      mutualaid: "Apoyo Mutuo"
+    }
+  };
+
+  // Render Virtual Art Wall Polaroids
+  window.renderVirtualWall = function() {
+    if (!showcaseMasonryWall) return;
+    showcaseMasonryWall.innerHTML = "";
+
+    const items = JSON.parse(localStorage.getItem("local_comrade_showcase")) || [];
+    const filtered = activeFilterCategory === "all" 
+      ? items 
+      : items.filter(item => item.category === activeFilterCategory);
+
+    if (filtered.length === 0) {
+      showcaseMasonryWall.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1.5rem; background: rgba(255,255,255,0.02); border-radius: var(--radius-lg); border: 1px dashed hsl(var(--border-light));">
+          <p style="font-family: var(--font-syne); color: hsl(var(--text-muted)); font-size: 1rem; margin: 0;">
+            ${currentLang === "en" 
+              ? "No artwork in this category yet. Be the first to hang one!" 
+              : "Ninguna obra en esta categoría todavía. ¡Sé el primero en colgar una!"}
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    filtered.forEach(item => {
+      const comments = JSON.parse(localStorage.getItem(`local_showcase_comments_${item.id}`)) || [];
+      const title = currentLang === "en" ? item.titleEn : item.titleEs;
+      const desc = currentLang === "en" ? (item.descriptionEn || "") : (item.descriptionEs || "");
+      const categoryText = categoryLabels[currentLang][item.category] || item.category;
+
+      const card = document.createElement("div");
+      card.className = "polaroid-card animate-fade-in";
+      card.style.setProperty("--rot", item.rot || "0deg");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label", `Comrade Art: ${title} by ${item.author}`);
+
+      card.innerHTML = `
+        <div class="polaroid-photo-wrapper">
+          <span class="polaroid-tag">${categoryText}</span>
+          <img class="polaroid-photo" src="${item.image}" alt="${title}" loading="lazy" />
+        </div>
+        <div class="polaroid-caption">
+          <h5 class="polaroid-title">${title}</h5>
+          <div class="polaroid-meta">
+            <span>By: <span class="polaroid-author">${item.author}</span></span>
+            <span class="polaroid-comment-count">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px; height:12px; display:inline;">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              ${comments.length}
+            </span>
+          </div>
+        </div>
+      `;
+
+      card.addEventListener("click", () => openShowcaseThread(item.id));
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openShowcaseThread(item.id);
+        }
+      });
+
+      showcaseMasonryWall.appendChild(card);
+    });
+  };
+
+  // Helper to get time elapsed
+  function timeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+    
+    if (isNaN(seconds) || seconds < 0) return currentLang === "en" ? "Just now" : "Hace un momento";
+
+    const intervals = [
+      { labelEn: "year", labelEs: "año", seconds: 31536000 },
+      { labelEn: "month", labelEs: "mes", seconds: 2592000 },
+      { labelEn: "day", labelEs: "día", seconds: 86400 },
+      { labelEn: "hour", labelEs: "hora", seconds: 3600 },
+      { labelEn: "minute", labelEs: "minuto", seconds: 60 }
+    ];
+
+    for (const interval of intervals) {
+      const count = Math.floor(seconds / interval.seconds);
+      if (count >= 1) {
+        const esPlural = count > 1 ? (interval.labelEs === "mes" ? "es" : "s") : "";
+        if (currentLang === "en") {
+          return `${count} ${interval.labelEn}${count > 1 ? "s" : ""} ago`;
+        } else {
+          return `Hace ${count} ${interval.labelEs}${esPlural}`;
+        }
+      }
+    }
+    return currentLang === "en" ? "Just now" : "Hace un momento";
+  }
+
+  // Open Comment Thread Modal
+  function openShowcaseThread(id) {
+    const items = JSON.parse(localStorage.getItem("local_comrade_showcase")) || [];
+    const item = items.find(x => x.id === id);
+    if (!item) return;
+
+    selectedArtThreadId = id;
+    const title = currentLang === "en" ? item.titleEn : item.titleEs;
+    const desc = currentLang === "en" ? (item.descriptionEn || "") : (item.descriptionEs || "");
+    const categoryText = categoryLabels[currentLang][item.category] || item.category;
+
+    if (threadArtImage) threadArtImage.src = item.image;
+    if (threadArtBadge) {
+      threadArtBadge.textContent = categoryText;
+      threadArtBadge.style.background = item.category === "labor" ? "hsla(var(--color-sky) / 0.15)" : "hsla(var(--color-secondary) / 0.15)";
+      threadArtBadge.style.color = item.category === "labor" ? "hsl(var(--color-sky))" : "hsl(var(--color-secondary))";
+      threadArtBadge.style.borderColor = item.category === "labor" ? "hsla(var(--color-sky) / 0.35)" : "hsla(var(--color-secondary) / 0.35)";
+    }
+    if (threadArtTitle) threadArtTitle.textContent = title;
+    if (threadArtAuthor) threadArtAuthor.textContent = item.author;
+    if (threadArtDate) threadArtDate.textContent = item.date;
+    if (threadArtDesc) {
+      threadArtDesc.textContent = desc || (currentLang === "en" ? "No artist statement provided." : "No se proporcionó dossier de artista.");
+    }
+
+    renderThreadComments();
+
+    if (showcaseThreadModal) showcaseThreadModal.style.display = "block";
+    if (showcaseThreadBackdrop) showcaseThreadBackdrop.style.display = "block";
+    document.body.style.overflow = "hidden"; // locks scroll
+  }
+
+  function closeShowcaseThread() {
+    if (showcaseThreadModal) showcaseThreadModal.style.display = "none";
+    if (showcaseThreadBackdrop) showcaseThreadBackdrop.style.display = "none";
+    document.body.style.overflow = ""; // unlocks scroll
+    selectedArtThreadId = null;
+  }
+
+  // Render comments inside active thread
+  function renderThreadComments() {
+    if (!threadCommentsContainer || !selectedArtThreadId) return;
+    threadCommentsContainer.innerHTML = "";
+
+    const comments = JSON.parse(localStorage.getItem(`local_showcase_comments_${selectedArtThreadId}`)) || [];
+
+    if (comments.length === 0) {
+      threadCommentsContainer.innerHTML = `
+        <div style="text-align:center; padding: 2rem 1rem; color: hsl(var(--text-muted)); font-family: var(--font-syne); font-size: 0.85rem;">
+          <p style="margin:0;">💬 ${currentLang === "en" ? "No comrade discussion yet. Add your thoughts below!" : "Aún no hay debate. ¡Agrega tus comentarios abajo!"}</p>
+        </div>
+      `;
+      return;
+    }
+
+    comments.forEach(comment => {
+      const card = document.createElement("div");
+      card.className = "comrade-comment-card animate-fade-in";
+      card.innerHTML = `
+        <div class="comrade-comment-header">
+          <span class="comrade-comment-author">${comment.author}</span>
+          <span>${timeAgo(comment.date)}</span>
+        </div>
+        <p class="comrade-comment-text">${comment.text}</p>
+      `;
+      threadCommentsContainer.appendChild(card);
+    });
+
+    // Auto-scroll comments container to bottom
+    setTimeout(() => {
+      threadCommentsContainer.scrollTop = threadCommentsContainer.scrollHeight;
+    }, 50);
+  }
+
+  // Handle Comment Submission
+  threadCommentForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!selectedArtThreadId) return;
+
+    const author = threadCommentAuthor.value.trim() || "Anonymous";
+    const text = threadCommentText.value.trim();
+    if (!text) return;
+
+    const comments = JSON.parse(localStorage.getItem(`local_showcase_comments_${selectedArtThreadId}`)) || [];
+    const newComment = {
+      author: author,
+      text: text,
+      date: new Date().toISOString()
+    };
+
+    comments.push(newComment);
+    localStorage.setItem(`local_showcase_comments_${selectedArtThreadId}`, JSON.stringify(comments));
+
+    threadCommentText.value = "";
+    renderThreadComments();
+    renderVirtualWall(); // Updates polaroid comment count!
+  });
+
+  // Filter Chips event handlers
+  document.querySelectorAll(".wall-filter-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      document.querySelectorAll(".wall-filter-chip").forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      activeFilterCategory = chip.dataset.category || "all";
+      renderVirtualWall();
+    });
+  });
+
+  // Open Showcase upload modal
+  btnOpenShowcaseUpload?.addEventListener("click", () => {
+    if (showcaseUploadModal) showcaseUploadModal.style.display = "block";
+    if (showcaseUploadBackdrop) showcaseUploadBackdrop.style.display = "block";
+    if (showcaseUploadStatus) showcaseUploadStatus.textContent = "";
+  });
+
+  function closeShowcaseUpload() {
+    if (showcaseUploadModal) showcaseUploadModal.style.display = "none";
+    if (showcaseUploadBackdrop) showcaseUploadBackdrop.style.display = "none";
+    showcaseUploadForm?.reset();
+    if (showcaseArtFileName) showcaseArtFileName.textContent = "No image chosen. / Ninguna elegida.";
+    if (showcaseArtAuthor) {
+      showcaseArtAuthor.value = "Anonymous";
+      showcaseArtAuthor.disabled = true;
+    }
+    if (showcaseArtAnon) showcaseArtAnon.checked = true;
+  }
+
+  btnCloseShowcaseUpload?.addEventListener("click", closeShowcaseUpload);
+  btnCancelShowcaseUpload?.addEventListener("click", closeShowcaseUpload);
+  showcaseUploadBackdrop?.addEventListener("click", closeShowcaseUpload);
+
+  // Shortcut inside showcase to open the Poster Studio
+  btnStudioShortcut?.addEventListener("click", () => {
+    openMemeModal("assets/img/meme_1.png");
+  });
+
+  // Artist anonymous toggle handler
+  showcaseArtAnon?.addEventListener("change", () => {
+    if (showcaseArtAuthor) {
+      if (showcaseArtAnon.checked) {
+        showcaseArtAuthor.value = "Anonymous";
+        showcaseArtAuthor.disabled = true;
+      } else {
+        showcaseArtAuthor.value = "";
+        showcaseArtAuthor.disabled = false;
+        showcaseArtAuthor.focus();
+      }
+    }
+  });
+
+  // Image uploader triggers
+  let selectedShowcaseImageBase64 = null;
+  btnShowcaseArtFileTrigger?.addEventListener("click", () => {
+    showcaseArtFile?.click();
+  });
+
+  showcaseArtFile?.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (showcaseArtFileName) showcaseArtFileName.textContent = file.name;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      selectedShowcaseImageBase64 = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Hang Artwork Submission
+  showcaseUploadForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const title = showcaseArtTitle.value.trim();
+    const category = showcaseArtCategory.value;
+    const desc = showcaseArtDescription.value.trim();
+    const author = showcaseArtAnon.checked ? "Anonymous" : (showcaseArtAuthor.value.trim() || "Anonymous");
+
+    if (!selectedShowcaseImageBase64) {
+      if (showcaseUploadStatus) {
+        showcaseUploadStatus.textContent = currentLang === "en" ? "❌ Please choose a graphic slogan!" : "❌ ¡Elegir una imagen de eslogan!";
+        showcaseUploadStatus.style.color = "#ffb3b3";
+      }
+      return;
+    }
+
+    const items = JSON.parse(localStorage.getItem("local_comrade_showcase")) || [];
+    const newArt = {
+      id: `art-local-${Date.now()}`,
+      image: selectedShowcaseImageBase64,
+      titleEn: title,
+      titleEs: title,
+      category: category,
+      author: author,
+      date: new Date().toLocaleDateString(currentLang === "en" ? "en-US" : "es-MX", { year: "numeric", month: "short", day: "numeric" }),
+      descriptionEn: desc,
+      descriptionEs: desc,
+      rot: `${(Math.random() * 5 - 2.5).toFixed(1)}deg`
+    };
+
+    items.unshift(newArt);
+    localStorage.setItem("local_comrade_showcase", JSON.stringify(items));
+
+    // Reset uploader state
+    selectedShowcaseImageBase64 = null;
+    closeShowcaseUpload();
+    renderVirtualWall();
+  });
+
+  // Bind close buttons for thread overlay
+  btnCloseShowcaseThread?.addEventListener("click", closeShowcaseThread);
+  btnCloseShowcaseThreadDesktop?.addEventListener("click", closeShowcaseThread);
+  showcaseThreadBackdrop?.addEventListener("click", closeShowcaseThread);
+
+  // Initial draw of Virtual Wall on load
+  renderVirtualWall();
+
+  // ─── 13. URL DEEP-LINK DECODE & INSTANT STRIP (OCKHAM'S RAZOR) ───
+  function parseUrlParametersAndAutoload() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const studioParam = urlParams.get('studio');
+    const tidParam = urlParams.get('tid');
+    const topParam = urlParams.get('top');
+    const bottomParam = urlParams.get('bottom');
+    const layoutParam = urlParams.get('layout');
+    const fontParam = urlParams.get('font');
+    const sizeParam = urlParams.get('size');
+    const alignParam = urlParams.get('align');
+    const colorParam = urlParams.get('color');
+
+    const shouldOpen = (studioParam === 'true') || tidParam || topParam || bottomParam || layoutParam || fontParam || sizeParam || alignParam || colorParam;
+
+    if (shouldOpen) {
+      let targetImg = "assets/img/meme_1.png";
+      if (tidParam) {
+        const num = parseInt(tidParam, 10);
+        if (num >= 1 && num <= 12) {
+          targetImg = `assets/img/meme_${num}.png`;
+        }
+      }
+      
+      // Open modal with correct preset template
+      openMemeModal(targetImg);
+      
+      // Load query parameters into input elements if they exist
+      if (topParam !== null && memeTopText) memeTopText.value = topParam;
+      if (bottomParam !== null && memeBottomText) memeBottomText.value = bottomParam;
+      if (layoutParam !== null && memeLayout) memeLayout.value = layoutParam;
+      if (fontParam !== null && memeFontFamily) memeFontFamily.value = fontParam;
+      if (sizeParam !== null && memeFontSize) memeFontSize.value = sizeParam;
+      if (alignParam !== null && memeAlign) memeAlign.value = alignParam;
+      if (colorParam !== null && memeColor) memeColor.value = colorParam;
+      
+      // Instantly redraw canvas
+      redrawMeme();
+
+      // Clean the URL bar immediately to cure the refresh stuck modal bug (Ockham's Razor)
+      window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+    }
+  }
+
+  // Execute parameter parser
+  parseUrlParametersAndAutoload();
 });

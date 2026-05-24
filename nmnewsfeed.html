@@ -478,35 +478,59 @@
     // Feed sources configuration (with PSL and Liberation News feeds)
     const SOURCES = [
       {
-        id: 'searchlight',
-        name: 'Searchlight NM',
-        url: 'https://searchlightnm.org/feed/',
-        category: 'local',
-        perspective: 'independent', // NM Independent
-        biasLabel: 'NM Independent',
-        biasBg: 'hsla(var(--color-sky) / 0.1)',
-        biasBorder: 'hsla(var(--color-sky) / 0.3)',
-        biasColor: 'hsl(var(--color-sky))',
-        desc: 'Searchlight New Mexico is a nonpartisan, nonprofit news organization dedicated to investigative journalism. Its mission is to illuminate issues of concern to New Mexicans.'
+        id: 'jacobin',
+        name: 'Jacobin',
+        url: 'https://jacobin.com/feed/',
+        category: 'socialist',
+        perspective: 'progressive',
+        biasLabel: 'Democratic Socialist',
+        biasBg: 'hsla(var(--color-primary) / 0.1)',
+        biasBorder: 'hsla(var(--color-primary) / 0.3)',
+        biasColor: 'hsl(var(--color-primary))',
+        desc: 'Jacobin is a leading socialist voice, offering political, economic, and cultural analysis from a democratic socialist perspective.'
       },
       {
-        id: 'lajicarita',
-        name: 'La Jicarita',
-        url: 'https://lajicarita.wordpress.com/feed/',
-        category: 'land',
-        perspective: 'land', // Land Defense
-        biasLabel: 'Land Defense',
-        biasBg: 'rgba(107, 143, 94, 0.1)',
-        biasBorder: 'rgba(107, 143, 94, 0.3)',
-        biasColor: '#7dbb6a',
-        desc: 'La Jicarita is an independent online journal of environmental politics and community issues in northern New Mexico, focusing closely on land grants and acequia systems.'
+        id: 'thenation',
+        name: 'The Nation',
+        url: 'https://www.thenation.com/feed/',
+        category: 'socialist',
+        perspective: 'progressive',
+        biasLabel: 'Progressive Left',
+        biasBg: 'hsla(var(--color-primary) / 0.1)',
+        biasBorder: 'hsla(var(--color-primary) / 0.3)',
+        biasColor: 'hsl(var(--color-primary))',
+        desc: 'The Nation is a premium left-of-center weekly journal providing analysis of progressive movements, environmental politics, and worker solidarity.'
+      },
+      {
+        id: 'commondreams',
+        name: 'Common Dreams',
+        url: 'https://www.commondreams.org/feed',
+        category: 'socialist',
+        perspective: 'progressive',
+        biasLabel: 'Progressive Left',
+        biasBg: 'hsla(var(--color-primary) / 0.1)',
+        biasBorder: 'hsla(var(--color-primary) / 0.3)',
+        biasColor: 'hsl(var(--color-primary))',
+        desc: 'Common Dreams is a non-profit progressive newswire publishing daily headlines on economic justice, anti-war campaigns, and civil liberties.'
+      },
+      {
+        id: 'labornotes',
+        name: 'Labor Notes',
+        url: 'https://labornotes.org/feed',
+        category: 'labor',
+        perspective: 'labor',
+        biasLabel: 'Union Advocacy',
+        biasBg: 'hsla(var(--color-secondary) / 0.1)',
+        biasBorder: 'hsla(var(--color-secondary) / 0.3)',
+        biasColor: 'hsl(var(--color-secondary))',
+        desc: 'Labor Notes is a media and organizing project that has been the voice of union activists who want to put the movement back in the labor movement.'
       },
       {
         id: 'payday',
         name: 'Payday Report',
         url: 'https://paydayreport.com/feed/',
         category: 'labor',
-        perspective: 'labor', // Labor Advocacy
+        perspective: 'labor',
         biasLabel: 'Labor Advocacy',
         biasBg: 'hsla(var(--color-secondary) / 0.1)',
         biasBorder: 'hsla(var(--color-secondary) / 0.3)',
@@ -518,24 +542,12 @@
         name: "People's World",
         url: 'https://www.peoplesworld.org/feed/',
         category: 'socialist',
-        perspective: 'socialist', // Socialist Organ
-        biasLabel: 'Socialist Organ',
-        biasBg: 'hsla(var(--color-primary) / 0.1)',
-        biasBorder: 'hsla(var(--color-primary) / 0.3)',
-        biasColor: 'hsl(var(--color-primary))',
-        desc: 'Peoples World is a voice for progressive change, labor rights, peace, and environmental sustainability, reflecting socialist perspectives bilingually.'
-      },
-      {
-        id: 'psl',
-        name: 'PSL Org',
-        url: 'https://www.pslweb.org/feed/',
-        category: 'socialist',
         perspective: 'socialist',
         biasLabel: 'Socialist Organ',
         biasBg: 'hsla(var(--color-primary) / 0.1)',
         biasBorder: 'hsla(var(--color-primary) / 0.3)',
         biasColor: 'hsl(var(--color-primary))',
-        desc: 'Official news and declarations from the Party for Socialism and Liberation, discussing imperialist resistance and workers organization campaigns.'
+        desc: 'Peoples World is a voice for progressive change, labor rights, peace, and environmental sustainability, reflecting socialist perspectives bilingually.'
       },
       {
         id: 'liberation',
@@ -548,6 +560,54 @@
         biasBorder: 'hsla(var(--color-primary) / 0.3)',
         biasColor: 'hsl(var(--color-primary))',
         desc: 'Liberation News is the newspaper of the Party for Socialism and Liberation, reporting on daily class struggles, anti-war protests, and labor struggles.'
+      },
+      {
+        id: 'democracynow',
+        name: 'Democracy Now!',
+        url: 'https://www.democracynow.org/democracynow.rss',
+        category: 'labor',
+        perspective: 'progressive',
+        biasLabel: 'Progressive Left',
+        biasBg: 'hsla(var(--color-primary) / 0.1)',
+        biasBorder: 'hsla(var(--color-primary) / 0.3)',
+        biasColor: 'hsl(var(--color-primary))',
+        desc: 'Democracy Now! is an award-winning independent daily news hour offering global and domestic grassroots coverage of social justice movements.'
+      },
+      {
+        id: 'searchlight',
+        name: 'Searchlight NM',
+        url: 'https://searchlightnm.org/feed/',
+        category: 'local',
+        perspective: 'independent',
+        biasLabel: 'NM Independent',
+        biasBg: 'hsla(var(--color-sky) / 0.1)',
+        biasBorder: 'hsla(var(--color-sky) / 0.3)',
+        biasColor: 'hsl(var(--color-sky))',
+        desc: 'Searchlight New Mexico is a nonpartisan, nonprofit news organization dedicated to investigative journalism in New Mexico.'
+      },
+      {
+        id: 'lajicarita',
+        name: 'La Jicarita',
+        url: 'https://lajicarita.wordpress.com/feed/',
+        category: 'land',
+        perspective: 'land',
+        biasLabel: 'Land Defense',
+        biasBg: 'rgba(107, 143, 94, 0.1)',
+        biasBorder: 'rgba(107, 143, 94, 0.3)',
+        biasColor: '#7dbb6a',
+        desc: 'La Jicarita is an independent online journal of environmental politics and community issues in northern New Mexico.'
+      },
+      {
+        id: 'swop',
+        name: 'SWOP Org',
+        url: 'https://www.swop.net/feed',
+        category: 'land',
+        perspective: 'land',
+        biasLabel: 'Land Defense',
+        biasBg: 'rgba(107, 143, 94, 0.1)',
+        biasBorder: 'rgba(107, 143, 94, 0.3)',
+        biasColor: '#7dbb6a',
+        desc: 'Southwest Organizing Project organizes communities in New Mexico to realize racial and gender equality and social and economic justice.'
       }
     ];
 
